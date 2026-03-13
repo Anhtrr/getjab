@@ -317,33 +317,35 @@ export default function Timer() {
   }
 
   return (
-    <div className="flex flex-col gap-6 animate-fade-in-up pb-28">
-      <h1 className="text-2xl font-bold text-center mb-2 animate-fade-in-up">
-        Round Timer
-      </h1>
+    <>
+      <div className="flex flex-col gap-6 animate-fade-in-up pb-40">
+        <h1 className="text-2xl font-bold text-center mb-2 animate-fade-in-up">
+          Round Timer
+        </h1>
 
-      <TimerSettings
-        settings={timer.settings}
-        onChange={timer.setSettings}
-        disabled={isActive}
-      />
+        <TimerSettings
+          settings={timer.settings}
+          onChange={timer.setSettings}
+          disabled={isActive}
+        />
 
-      <TimerDisplay
-        secondsLeft={timer.secondsLeft}
-        state={timer.state}
-        currentRound={timer.currentRound}
-        totalRounds={timer.totalRounds}
-        warningAtSec={timer.settings.warningAtSec}
-        roundDurationSec={timer.settings.roundDurationSec}
-        restDurationSec={timer.settings.restDurationSec}
-      />
+        <TimerDisplay
+          secondsLeft={timer.secondsLeft}
+          state={timer.state}
+          currentRound={timer.currentRound}
+          totalRounds={timer.totalRounds}
+          warningAtSec={timer.settings.warningAtSec}
+          roundDurationSec={timer.settings.roundDurationSec}
+          restDurationSec={timer.settings.restDurationSec}
+        />
 
-      <p className="text-xs text-muted text-center tabular-nums">
-        {sessionSummary}
-      </p>
+        <p className="text-xs text-muted text-center tabular-nums">
+          {sessionSummary}
+        </p>
+      </div>
 
-      {/* Sticky Start button */}
-      <div className="fixed bottom-0 left-0 right-0 z-[60] px-4 pb-safe" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 5rem)" }}>
+      {/* Sticky Start button — outside animated container so fixed positioning works */}
+      <div className="fixed bottom-0 left-0 right-0 z-[60] px-4" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 4.5rem)" }}>
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/95 to-transparent pointer-events-none" />
         <div className="relative max-w-lg mx-auto">
           <TimerControls
@@ -355,6 +357,6 @@ export default function Timer() {
           />
         </div>
       </div>
-    </div>
+    </>
   );
 }
