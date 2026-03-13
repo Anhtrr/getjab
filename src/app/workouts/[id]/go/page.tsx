@@ -7,7 +7,7 @@ import { useAudio } from "@/hooks/useAudio";
 import { useWakeLock } from "@/hooks/useWakeLock";
 import { useComboCallout } from "@/hooks/useComboCallout";
 import { addWorkoutLog } from "@/lib/storage";
-import { initComboAudio, cancelSpeech } from "@/lib/comboAudio";
+import { initComboAudio, cancelSpeech, stopTTSKeepAlive } from "@/lib/comboAudio";
 import { useGamification } from "@/hooks/useGamification";
 import { calculateXP } from "@/lib/gamification/engine";
 import PostWorkoutRating from "@/components/PostWorkoutRating";
@@ -58,6 +58,20 @@ function formatTime(seconds: number): string {
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
   return `${mins}:${secs.toString().padStart(2, "0")}`;
+}
+
+function getWorkoutGlow(state: string, isResting: boolean, secondsLeft: number): string {
+  if (state === "preparing")
+    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(245,158,11,0.3) 0%, rgba(245,158,11,0.1) 35%, transparent 65%)";
+  if (isResting)
+    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(168,85,247,0.35) 0%, rgba(168,85,247,0.12) 35%, transparent 65%)";
+  if (state === "running" && secondsLeft <= 10)
+    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(239,68,68,0.4) 0%, rgba(239,68,68,0.15) 35%, transparent 65%)";
+  if (state === "running")
+    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(0,229,255,0.35) 0%, rgba(0,229,255,0.12) 35%, transparent 65%)";
+  if (state === "paused")
+    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(234,179,8,0.25) 0%, rgba(234,179,8,0.08) 35%, transparent 65%)";
+  return "none";
 }
 
 export default function WorkoutGoPage() {
@@ -239,6 +253,7 @@ export default function WorkoutGoPage() {
           setShowRating(true);
           clearTimer();
           clearWorkoutState();
+          stopTTSKeepAlive();
           return;
         }
 
@@ -504,6 +519,7 @@ export default function WorkoutGoPage() {
   useEffect(() => {
     return () => {
       clearTimer();
+      stopTTSKeepAlive();
       if (prepIntervalRef.current) clearInterval(prepIntervalRef.current);
     };
   }, [clearTimer]);
@@ -657,7 +673,7 @@ export default function WorkoutGoPage() {
   if (state === "paused" && hasSavedState) {
     return (
       <div className="fixed inset-0 bg-background flex flex-col items-center justify-center px-4" style={{ zIndex: 9999 }}>
-        <p className="text-xs font-bold uppercase tracking-widest text-accent mb-4">
+        <p className="text-xs font-bold uppercase tracking-widest text-yellow-400 mb-4">
           WORKOUT PAUSED
         </p>
         <div className="font-mono text-5xl font-black text-foreground mb-2 tabular-nums">
@@ -710,10 +726,14 @@ export default function WorkoutGoPage() {
   if (state === "preparing") {
     return (
       <div className="fixed inset-0 bg-background flex flex-col items-center justify-center" style={{ zIndex: 9999 }}>
-        <p className="text-xs font-bold uppercase tracking-widest text-accent mb-4 animate-pulse-ready">
+        <div
+          className="fixed inset-0 -z-10 pointer-events-none"
+          style={{ backgroundImage: "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(245,158,11,0.3) 0%, rgba(245,158,11,0.1) 35%, transparent 65%)" }}
+        />
+        <p className="text-xs font-bold uppercase tracking-widest text-amber-400 mb-4 animate-pulse-ready">
           GET READY
         </p>
-        <div className="font-mono text-9xl font-black text-accent animate-timer-warning tabular-nums">
+        <div className="font-mono text-9xl font-black text-amber-400 animate-pulse-ready tabular-nums">
           {prepCountdown}
         </div>
         <p className="text-muted text-sm mt-6">{workout.title}</p>
@@ -734,131 +754,136 @@ export default function WorkoutGoPage() {
     );
   }
 
+  const isWarning = state === "running" && !isResting && secondsLeft <= 10;
+  const stateColor = isResting
+    ? "text-purple-400"
+    : isWarning
+      ? "text-red-400"
+      : state === "paused"
+        ? "text-yellow-400"
+        : "text-accent";
+
+  const glowBg = isResting
+    ? "bg-purple-500"
+    : isWarning
+      ? "bg-red-500"
+      : "bg-[#00e5ff]";
+
+  const timerAnim = isResting
+    ? "text-purple-400 animate-rest-glow"
+    : isWarning
+      ? "text-red-400 animate-timer-warning"
+      : state === "running"
+        ? "text-accent animate-timer-glow"
+        : state === "paused"
+          ? "text-yellow-400"
+          : "";
+
   return (
     <div className="fixed inset-0 bg-background flex flex-col" style={{ zIndex: 9999 }}>
-      {/* Timer header */}
-      <div className="pt-safe pb-2 px-4 text-center" style={{ paddingTop: "max(env(safe-area-inset-top, 32px), 32px)" }}>
-        <div className="flex items-center justify-center gap-3 mb-1">
-          <span
-            className={`text-sm font-bold uppercase tracking-widest ${
-              isResting ? "text-blue-400" : "text-accent"
-            }`}
+      {/* Ambient background glow */}
+      <div
+        className={`fixed inset-0 -z-10 pointer-events-none transition-opacity duration-700 ${
+          isWarning ? "animate-timer-bg-pulse" : ""
+        }`}
+        style={{ backgroundImage: getWorkoutGlow(state, isResting, secondsLeft) }}
+      />
+
+      {/* Compact top bar */}
+      <div
+        className="flex items-center justify-between px-4"
+        style={{ paddingTop: "max(env(safe-area-inset-top, 12px), 12px)", height: "48px" }}
+      >
+        <div className="flex items-center gap-2">
+          <span className={`text-xs font-bold uppercase tracking-widest ${stateColor}`}>
+            {isResting ? "REST" : currentRound.type.toUpperCase()}
+          </span>
+          <span className="text-xs text-muted font-mono tabular-nums">
+            R{currentRoundIndex + 1}/{workout.rounds.length}
+          </span>
+        </div>
+        {!isResting && (
+          <span className="text-xs text-muted truncate max-w-[50%] text-right">
+            {currentRound.title}
+          </span>
+        )}
+      </div>
+
+      {/* Main content: timer + combos fill remaining space */}
+      <div className="flex-1 flex flex-col items-center justify-center gap-2 px-4 overflow-hidden">
+        {/* Countdown with glow backdrop */}
+        <div className="relative flex-shrink-0" onClick={handleCountdownTap}>
+          <div className={`absolute inset-0 blur-3xl opacity-20 rounded-full scale-150 ${glowBg}`} />
+          <div
+            role="timer"
+            aria-live="off"
+            aria-label={`${formatTime(secondsLeft)} remaining${isResting ? ", resting" : ""}`}
+            className={`relative font-mono font-black tabular-nums leading-none ${timerAnim}`}
+            style={{ fontSize: "clamp(7rem, 30vw, 16rem)" }}
           >
-            {isResting ? "REST" : currentRound.type}
-          </span>
-          <span className="text-sm text-muted">
-            {currentRoundIndex + 1} / {workout.rounds.length}
-          </span>
+            {formatTime(secondsLeft)}
+          </div>
         </div>
 
-        {!isResting && (
-          <p className="text-base text-muted mb-1">{currentRound.title}</p>
-        )}
-
-        <div
-          role="timer"
-          aria-live="off"
-          aria-label={`${formatTime(secondsLeft)} remaining${isResting ? ", resting" : ""}`}
-          onClick={handleCountdownTap}
-          className={`font-mono font-black tabular-nums leading-none ${
-            isResting
-              ? "text-blue-400 animate-rest-glow"
-              : secondsLeft <= 10
-                ? "text-accent animate-timer-warning"
-                : state === "running"
-                  ? "animate-timer-glow"
-                  : ""
-          }`}
-          style={{ fontSize: "clamp(5rem, 25vw, 12rem)" }}
-        >
-          {formatTime(secondsLeft)}
-        </div>
-      </div>
-
-      {/* Round info */}
-      <div className="flex-1 px-4 pb-4 overflow-y-auto hide-scrollbar">
-        {!isResting && (
-          <div className="max-w-lg mx-auto">
-            {/* Instructions & tips — only visible when paused */}
-            {state !== "running" && (
-              <>
-                <h2 className="font-bold text-xl mb-2">{currentRound.title}</h2>
-                <p className="text-sm text-muted leading-relaxed mb-4">
-                  {currentRound.instructions}
-                </p>
-              </>
-            )}
-
-            {currentRound.combos && currentRound.combos.length > 0 && (
-              hasCallableCombos && state === "running" ? (
-                <div className="mb-4">
-                  <ComboCallout state={calloutState} />
-                </div>
-              ) : (
-                <div className="space-y-2 mb-4">
-                  {currentRound.combos.map((combo, i) => (
-                    <div
-                      key={i}
-                      className="font-mono text-base card-glass rounded-xl px-4 py-3 text-center font-bold animate-fade-in-up"
-                    >
-                      {combo}
-                    </div>
-                  ))}
-                </div>
-              )
-            )}
-
-            {state !== "running" && currentRound.tips && currentRound.tips.length > 0 && (
-              <div className="space-y-1.5">
-                {currentRound.tips.map((tip, i) => (
-                  <p
-                    key={i}
-                    className="text-xs text-muted flex items-start gap-1.5"
-                  >
-                    <ChevronRight className="w-3 h-3 text-accent-secondary mt-0.5 shrink-0" />
-                    {tip}
+        {/* Combo callout (running) or rest info or paused details */}
+        <div className="w-full max-w-lg">
+          {!isResting ? (
+            <>
+              {/* Instructions & tips — only visible when paused */}
+              {state === "paused" && (
+                <div className="max-w-lg mx-auto mb-4">
+                  <h2 className="font-bold text-xl mb-2 text-center">{currentRound.title}</h2>
+                  <p className="text-sm text-muted leading-relaxed text-center mb-4">
+                    {currentRound.instructions}
                   </p>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {isResting && (
-          <div className="max-w-lg mx-auto text-center py-6">
-            <p className="text-lg font-bold text-blue-400 mb-1">Up Next</p>
-            <p className="text-base text-foreground font-medium mb-2">
-              {workout.rounds[currentRoundIndex + 1]?.title}
-            </p>
-            {workout.rounds[currentRoundIndex + 1]?.instructions && (
-              <p className="text-sm text-muted leading-relaxed mb-4">
-                {workout.rounds[currentRoundIndex + 1].instructions}
+                  {currentRound.combos && currentRound.combos.length > 0 && (
+                    <div className="space-y-2 mb-4">
+                      {currentRound.combos.map((combo, i) => (
+                        <div
+                          key={i}
+                          className="font-mono text-base card-glass rounded-xl px-4 py-3 text-center font-bold animate-fade-in-up"
+                        >
+                          {combo}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {currentRound.tips && currentRound.tips.length > 0 && (
+                    <div className="space-y-1.5">
+                      {currentRound.tips.map((tip, i) => (
+                        <p key={i} className="text-xs text-muted flex items-start gap-1.5">
+                          <ChevronRight className="w-3 h-3 text-accent-secondary mt-0.5 shrink-0" />
+                          {tip}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+              {/* Live combo callout — only during running */}
+              {currentRound.combos && currentRound.combos.length > 0 && hasCallableCombos && state === "running" && (
+                <ComboCallout state={calloutState} />
+              )}
+            </>
+          ) : (
+            <div className="text-center">
+              <p className="text-sm font-bold text-purple-400 mb-1">Up Next</p>
+              <p className="text-lg text-foreground font-medium">
+                {workout.rounds[currentRoundIndex + 1]?.title}
               </p>
-            )}
-            {workout.rounds[currentRoundIndex + 1]?.combos && (
-              <div className="space-y-2">
-                {workout.rounds[currentRoundIndex + 1].combos!.map((combo, i) => (
-                  <div
-                    key={i}
-                    className="font-mono text-base card-glass rounded-xl px-4 py-3 text-center text-muted font-bold"
-                  >
-                    {combo}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Controls */}
-      <div className="px-4 pt-4 border-t border-border" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 2rem)" }}>
-        <div className="flex items-center justify-center gap-4 max-w-lg mx-auto">
+      {/* Compact controls */}
+      <div className="px-4" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 0.5rem)" }}>
+        <div className="flex items-center justify-center gap-3 max-w-lg mx-auto">
           {state === "running" && (
             <button
               onClick={pauseWorkout}
               aria-label="Pause workout"
-              className="flex-1 btn-secondary border border-border text-foreground font-bold text-lg py-4 rounded-full"
+              className="btn-secondary border border-border text-muted font-bold text-sm px-6 py-2.5 rounded-full"
             >
               PAUSE
             </button>
@@ -867,7 +892,7 @@ export default function WorkoutGoPage() {
             <button
               onClick={resumeWorkout}
               aria-label="Resume workout"
-              className="flex-1 btn-primary text-lg py-4 rounded-full"
+              className="btn-primary text-lg px-8 py-3 rounded-full"
             >
               RESUME
             </button>
@@ -878,24 +903,26 @@ export default function WorkoutGoPage() {
               if (state === "running") pauseWorkout();
               setShowQuitConfirm(true);
             }}
-            className="btn-secondary border border-border text-muted font-medium px-6 py-4 rounded-full"
+            className="text-muted text-sm font-medium px-4 py-2.5"
           >
             QUIT
           </button>
         </div>
 
         {/* Round progress bar */}
-        <div className="flex gap-1 mt-4 max-w-lg mx-auto">
+        <div className="flex gap-0.5 mt-2 max-w-lg mx-auto">
           {workout.rounds.map((_, i) => (
             <div
               key={i}
-              className={`h-1.5 flex-1 rounded-full ${
+              className={`h-1 flex-1 rounded-full ${
                 i < currentRoundIndex
                   ? "bg-gradient-to-r from-[#00e5ff] to-[#0090ff] shadow-[0_0_4px_rgba(0,229,255,0.2)]"
                   : i === currentRoundIndex
                     ? isResting
-                      ? "bg-blue-400 shadow-[0_0_4px_rgba(96,165,250,0.3)]"
-                      : "bg-gradient-to-r from-[#0090ff] to-[#00e5ff] shadow-[0_0_4px_rgba(0,229,255,0.2)]"
+                      ? "bg-purple-400 shadow-[0_0_4px_rgba(168,85,247,0.3)]"
+                      : isWarning
+                        ? "bg-red-400 shadow-[0_0_4px_rgba(239,68,68,0.3)]"
+                        : "bg-gradient-to-r from-[#0090ff] to-[#00e5ff] shadow-[0_0_4px_rgba(0,229,255,0.2)]"
                     : "bg-border"
               }`}
             />
@@ -926,6 +953,7 @@ export default function WorkoutGoPage() {
                 onClick={() => {
                   clearTimer();
                   cancelSpeech();
+                  stopTTSKeepAlive();
                   clearWorkoutState();
                   if (prepIntervalRef.current) clearInterval(prepIntervalRef.current);
                   router.push(`/workouts/${workout.id}`);

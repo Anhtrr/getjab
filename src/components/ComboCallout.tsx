@@ -18,27 +18,43 @@ const PUNCH_COLORS: Record<string, { text: string; border: string; bg: string; g
     text: "#00e5ff",
     border: "rgba(0, 229, 255, 0.4)",
     bg: "rgba(0, 229, 255, 0.08)",
-    glow: "0 0 12px rgba(0, 229, 255, 0.25)",
+    glow: "0 0 20px rgba(0, 229, 255, 0.35), 0 0 40px rgba(0, 229, 255, 0.15)",
   },
   hook: {
     text: "#ff6b35",
     border: "rgba(255, 107, 53, 0.4)",
     bg: "rgba(255, 107, 53, 0.08)",
-    glow: "0 0 12px rgba(255, 107, 53, 0.25)",
+    glow: "0 0 20px rgba(255, 107, 53, 0.35), 0 0 40px rgba(255, 107, 53, 0.15)",
   },
   uppercut: {
     text: "#a855f7",
     border: "rgba(168, 85, 247, 0.4)",
     bg: "rgba(168, 85, 247, 0.08)",
-    glow: "0 0 12px rgba(168, 85, 247, 0.25)",
+    glow: "0 0 20px rgba(168, 85, 247, 0.35), 0 0 40px rgba(168, 85, 247, 0.15)",
   },
   defense: {
     text: "#10b981",
     border: "rgba(16, 185, 129, 0.4)",
     bg: "rgba(16, 185, 129, 0.08)",
-    glow: "0 0 12px rgba(16, 185, 129, 0.25)",
+    glow: "0 0 20px rgba(16, 185, 129, 0.35), 0 0 40px rgba(16, 185, 129, 0.15)",
   },
 };
+
+// ─── Adaptive card sizing ───
+
+interface CardSize {
+  w: string;
+  h: string;
+  numText: string;
+  nameText: string;
+}
+
+function getCardSize(punchCount: number): CardSize {
+  if (punchCount <= 2) return { w: "w-[140px]", h: "h-[160px]", numText: "text-5xl", nameText: "text-sm" };
+  if (punchCount === 3) return { w: "w-[120px]", h: "h-[140px]", numText: "text-5xl", nameText: "text-xs" };
+  if (punchCount === 4) return { w: "w-[100px]", h: "h-[120px]", numText: "text-4xl", nameText: "text-xs" };
+  return { w: "w-[88px]", h: "h-[108px]", numText: "text-3xl", nameText: "text-[10px]" };
+}
 
 // ─── Punch Card ───
 
@@ -46,10 +62,12 @@ function PunchCard({
   punch,
   index,
   phase,
+  size,
 }: {
   punch: ParsedPunch;
   index: number;
   phase: string;
+  size: CardSize;
 }) {
   const colors = PUNCH_COLORS[punch.type] || PUNCH_COLORS.straight;
   const isActive = phase === "entering" || phase === "holding";
@@ -58,12 +76,12 @@ function PunchCard({
     <div
       className={`
         flex flex-col items-center justify-center rounded-xl
-        w-[88px] h-[104px]
+        ${size.w} ${size.h}
         ${isActive ? "animate-punch-slam" : "opacity-0 scale-75 translate-y-3"}
         ${phase === "holding" ? "animate-punch-breathe" : ""}
       `}
       style={{
-        border: `2px solid ${isActive ? colors.border : "transparent"}`,
+        border: `3px solid ${isActive ? colors.border : "transparent"}`,
         background: isActive ? colors.bg : "transparent",
         boxShadow: isActive ? colors.glow : "none",
         animationDelay: phase === "entering" ? `${index * STAGGER_MS}ms` : undefined,
@@ -71,20 +89,20 @@ function PunchCard({
     >
       <span
         className={`font-mono font-black leading-none ${
-          typeof punch.number === "string" ? "text-2xl" : "text-4xl"
+          typeof punch.number === "string" ? size.nameText : size.numText
         }`}
         style={{ color: colors.text }}
       >
         {punch.number}
       </span>
       <span
-        className="text-xs font-bold uppercase tracking-wider mt-1"
+        className={`font-bold uppercase tracking-wider mt-1 ${size.nameText}`}
         style={{ color: colors.text, opacity: 0.8 }}
       >
         {punch.shortName}
       </span>
       {punch.target === "body" && (
-        <span className="text-[8px] font-bold uppercase text-amber-400 mt-0.5">
+        <span className="text-[9px] font-bold uppercase text-amber-400 mt-0.5">
           BODY
         </span>
       )}
@@ -98,7 +116,7 @@ function Connector({ index, phase }: { index: number; phase: string }) {
   const isActive = phase === "entering" || phase === "holding";
   return (
     <div
-      className={`w-3 h-0.5 rounded-full ${
+      className={`w-4 h-1 rounded-full ${
         isActive ? "bg-muted animate-fade-in" : "opacity-0"
       }`}
       style={{
@@ -131,18 +149,28 @@ function ActiveCombo({
 
   if (!activeCombo) return null;
 
+  const size = getCardSize(activeCombo.punches.length);
+
   return (
     <div
       className={`py-4 ${phase === "exiting" ? "animate-combo-exit" : "animate-combo-enter"}`}
     >
-      <div className="flex items-center justify-center gap-1 flex-wrap">
+      <div
+        className="flex items-center justify-center gap-1.5 flex-wrap"
+        style={{
+          maxWidth: activeCombo.punches.length > 4
+            ? `${3 * 96 + 3 * 20}px`
+            : undefined,
+        }}
+      >
         {activeCombo.punches.map((punch, i) => (
-          <div key={i} className="flex items-center gap-1">
+          <div key={i} className="flex items-center gap-1.5">
             {i > 0 && <Connector index={i} phase={phase} />}
             <PunchCard
               punch={punch}
               index={i}
               phase={phase}
+              size={size}
             />
           </div>
         ))}

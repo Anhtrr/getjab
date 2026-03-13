@@ -21,9 +21,39 @@ function pickVoice(): SpeechSynthesisVoice | null {
   return voices[0];
 }
 
+// ─── iOS TTS Keep-Alive ───
+// iOS Safari kills speechSynthesis after ~15s of inactivity.
+// Periodically speak a silent utterance to keep the engine warm.
+
+let keepAliveInterval: ReturnType<typeof setInterval> | null = null;
+
+export function startTTSKeepAlive(): void {
+  stopTTSKeepAlive();
+  if (typeof window === "undefined" || !window.speechSynthesis) return;
+
+  keepAliveInterval = setInterval(() => {
+    if (typeof window === "undefined" || !window.speechSynthesis) return;
+    if (!window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+      const silent = new SpeechSynthesisUtterance("");
+      silent.volume = 0;
+      window.speechSynthesis.speak(silent);
+    }
+  }, 10000);
+}
+
+export function stopTTSKeepAlive(): void {
+  if (keepAliveInterval) {
+    clearInterval(keepAliveInterval);
+    keepAliveInterval = null;
+  }
+}
+
 /** Initialize audio — call on user gesture (e.g., start button click) */
 export function initComboAudio(): void {
   if (typeof window === "undefined" || !window.speechSynthesis) return;
+
+  startTTSKeepAlive();
 
   // Voices may load asynchronously
   const tryLoad = () => {
