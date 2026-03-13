@@ -10,6 +10,7 @@ import { addWorkoutLog } from "@/lib/storage";
 import { notifyLogsChanged } from "@/hooks/useProgress";
 import { initComboAudio, cancelSpeech, stopTTSKeepAlive } from "@/lib/comboAudio";
 import { stopAudioKeepAlive } from "@/lib/audio";
+import { parseRoundCombos } from "@/lib/comboParser";
 import { useGamification } from "@/hooks/useGamification";
 import { calculateXP } from "@/lib/gamification/engine";
 import PostWorkoutRating from "@/components/PostWorkoutRating";
@@ -87,7 +88,6 @@ export default function WorkoutGoPage() {
   const [completedCalories, setCompletedCalories] = useState(0);
   const [isSharing, setIsSharing] = useState(false);
   const punchCountRef = useRef<{ total: number; byType: Record<string, number> }>({ total: 0, byType: {} });
-  const lastCountedComboIndexRef = useRef(-1);
   const startTimeRef = useRef<number>(0);
   const prepIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const prevLevelRef = useRef<number | null>(null);
@@ -187,16 +187,12 @@ export default function WorkoutGoPage() {
       state === "paused",
     );
 
-  // Track punches from combo callouts
-  useEffect(() => {
-    if (
-      calloutState.phase === "idle" &&
-      calloutState.lastCombo &&
-      calloutState.comboIndex > lastCountedComboIndexRef.current
-    ) {
-      lastCountedComboIndexRef.current = calloutState.comboIndex;
-      const combo = calloutState.lastCombo;
-      const counts = punchCountRef.current;
+  // Count punches from a round's combos when the round completes
+  const countRoundPunches = useCallback((combos: string[] | undefined) => {
+    if (!combos || combos.length === 0) return;
+    const parsed = parseRoundCombos(combos);
+    const counts = punchCountRef.current;
+    for (const combo of parsed) {
       for (const punch of combo.punches) {
         if (punch.type === "defense") continue;
         counts.total++;
@@ -204,7 +200,7 @@ export default function WorkoutGoPage() {
         counts.byType[key] = (counts.byType[key] || 0) + 1;
       }
     }
-  }, [calloutState.phase, calloutState.lastCombo, calloutState.comboIndex]);
+  }, []);
 
   const clearTimer = useCallback(() => {
     if (intervalRef.current) {
@@ -236,6 +232,7 @@ export default function WorkoutGoPage() {
         const roundIdx = currentRoundIndexRef.current;
         const round = workout.rounds[roundIdx];
         setRoundsCompleted((p) => p + 1);
+        countRoundPunches(round.combos);
 
         if (roundIdx >= workout.rounds.length - 1) {
           setState("complete");
@@ -282,7 +279,7 @@ export default function WorkoutGoPage() {
       warningFiredRef.current = false;
       return;
     }
-  }, [workout, audio, clearTimer]);
+  }, [workout, audio, clearTimer, countRoundPunches]);
 
   const beginRound1 = useCallback(() => {
     if (!workout) return;

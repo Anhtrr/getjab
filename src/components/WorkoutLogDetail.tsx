@@ -52,8 +52,8 @@ export default function WorkoutLogDetail({ log, onClose }: Props) {
   const dismiss = useCallback(() => {
     setDismissing(true);
     setTimeout(() => {
-      // Reset body scroll lock BEFORE unmount so the navbar
-      // is already in its final position when the overlay disappears
+      // Reset body scroll lock and restore navbar BEFORE unmount
+      document.body.removeAttribute("data-modal-open");
       document.body.style.position = "";
       document.body.style.top = "";
       document.body.style.left = "";
@@ -64,7 +64,7 @@ export default function WorkoutLogDetail({ log, onClose }: Props) {
     }, 300);
   }, [onClose]);
 
-  // Lock body scroll when modal is open
+  // Lock body scroll and hide navbar when modal is open
   useEffect(() => {
     scrollYRef.current = window.scrollY;
     document.body.style.position = "fixed";
@@ -72,8 +72,10 @@ export default function WorkoutLogDetail({ log, onClose }: Props) {
     document.body.style.left = "0";
     document.body.style.right = "0";
     document.body.style.overflow = "hidden";
+    document.body.setAttribute("data-modal-open", "true");
 
     return () => {
+      document.body.removeAttribute("data-modal-open");
       // Only reset if not already done by dismiss()
       if (document.body.style.position === "fixed") {
         document.body.style.position = "";
@@ -178,11 +180,6 @@ export default function WorkoutLogDetail({ log, onClose }: Props) {
         className="absolute inset-0 bg-black/60"
         style={{ opacity: backdropOpacity, transition: "opacity 0.3s ease-out" }}
       />
-      {/* Opaque bar covering the navbar zone so it doesn't ghost through */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-20 bg-black"
-        style={{ opacity: backdropOpacity, transition: "opacity 0.3s ease-out" }}
-      />
 
       {/* Sheet */}
       <div
@@ -266,7 +263,7 @@ export default function WorkoutLogDetail({ log, onClose }: Props) {
 
           <div className="card-glass rounded-xl p-3 text-center">
             <Gauge className="w-4 h-4 text-accent mx-auto mb-1" />
-            <p className={`text-lg font-bold ${ratingColors[log.rating]}`}>
+            <p className={`text-sm font-bold whitespace-nowrap ${ratingColors[log.rating]}`}>
               {ratingLabels[log.rating]}
             </p>
             <p className="text-[10px] uppercase tracking-wider text-muted">Effort</p>
