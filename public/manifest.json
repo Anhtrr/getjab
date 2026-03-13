@@ -1,0 +1,55 @@
+{
+  "name": "Jab - Combat Sports Workouts & Timer",
+  "short_name": "Jab",
+  "description": "Boxing, Muay Thai & kickboxing workouts with round timer, combo callouts, and progress tracking. Train like a fighter.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "orientation": "portrait",
+  "categories": ["health", "fitness"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Round Timer",
+      "short_name": "Timer",
+      "url": "/timer",
+      "description": "Start a custom round timer"
+    },
+    {
+      "name": "Workouts",
+      "short_name": "Workouts",
+      "url": "/workouts",
+      "description": "Browse boxing workouts"
+    },
+    {
+      "name": "Progress",
+      "short_name": "Progress",
+      "url": "/progress",
+      "description": "View your training progress"
+    }
+  ]
+}
