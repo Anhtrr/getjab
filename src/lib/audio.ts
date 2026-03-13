@@ -14,6 +14,41 @@ function getAudioContext(): AudioContext {
   return audioContext;
 }
 
+// ─── iOS keep-alive ───
+// iOS Safari suspends AudioContext after ~15s of inactivity.
+// Periodically play a silent buffer to keep the context alive.
+
+let keepAliveInterval: ReturnType<typeof setInterval> | null = null;
+
+export function startAudioKeepAlive(): void {
+  stopAudioKeepAlive();
+  keepAliveInterval = setInterval(() => {
+    if (!audioContext || audioContext.state === "closed") return;
+    if (audioContext.state === "suspended") {
+      audioContext.resume();
+    }
+    // Play a silent buffer to keep the context active
+    try {
+      const buf = audioContext.createBuffer(1, 1, audioContext.sampleRate);
+      const src = audioContext.createBufferSource();
+      src.buffer = buf;
+      src.connect(audioContext.destination);
+      src.start();
+    } catch {
+      // ignore — context may be in a bad state
+    }
+  }, 8000);
+}
+
+export function stopAudioKeepAlive(): void {
+  if (keepAliveInterval !== null) {
+    clearInterval(keepAliveInterval);
+    keepAliveInterval = null;
+  }
+}
+
+// ─── Bell synthesis ───
+
 function playBellStrike(ctx: AudioContext, startTime: number, volume: number = 0.5) {
   // Boxing ring bell: high-pitched, bright, metallic clang
   // Fundamental — sharp metallic tone (~800Hz, typical boxing bell)
@@ -116,5 +151,10 @@ export function playWarning() {
 }
 
 export function initAudio() {
-  getAudioContext();
+  const ctx = getAudioContext();
+  // Always resume on init — this is called from user gestures
+  if (ctx.state === "suspended") {
+    ctx.resume();
+  }
+  startAudioKeepAlive();
 }

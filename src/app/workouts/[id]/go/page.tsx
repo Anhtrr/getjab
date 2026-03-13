@@ -9,6 +9,7 @@ import { useComboCallout } from "@/hooks/useComboCallout";
 import { addWorkoutLog } from "@/lib/storage";
 import { notifyLogsChanged } from "@/hooks/useProgress";
 import { initComboAudio, cancelSpeech, stopTTSKeepAlive } from "@/lib/comboAudio";
+import { stopAudioKeepAlive } from "@/lib/audio";
 import { useGamification } from "@/hooks/useGamification";
 import { calculateXP } from "@/lib/gamification/engine";
 import PostWorkoutRating from "@/components/PostWorkoutRating";
@@ -189,9 +190,10 @@ export default function WorkoutGoPage() {
   useWakeLock(state === "running");
 
   const currentRoundForCallout = workout?.rounds[currentRoundIndex];
+  const isConditioning = currentRoundForCallout?.type === "conditioning";
   const { calloutState, settings: calloutSettings, updateSettings: updateCalloutSettings, hasCallableCombos } =
     useComboCallout(
-      currentRoundForCallout?.combos,
+      isConditioning ? undefined : currentRoundForCallout?.combos,
       state === "running",
       secondsLeft,
       currentRoundForCallout?.durationSec ?? 0,
@@ -255,6 +257,7 @@ export default function WorkoutGoPage() {
           clearTimer();
           clearWorkoutState();
           stopTTSKeepAlive();
+          stopAudioKeepAlive();
           return;
         }
 
@@ -522,6 +525,7 @@ export default function WorkoutGoPage() {
     return () => {
       clearTimer();
       stopTTSKeepAlive();
+      stopAudioKeepAlive();
       if (prepIntervalRef.current) clearInterval(prepIntervalRef.current);
     };
   }, [clearTimer]);
@@ -956,6 +960,7 @@ export default function WorkoutGoPage() {
                   clearTimer();
                   cancelSpeech();
                   stopTTSKeepAlive();
+                  stopAudioKeepAlive();
                   clearWorkoutState();
                   if (prepIntervalRef.current) clearInterval(prepIntervalRef.current);
                   router.push(`/workouts/${workout.id}`);

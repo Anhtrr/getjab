@@ -1,21 +1,19 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 import {
   initAudio,
   playRoundStart,
   playRoundEnd,
   playWarning,
+  stopAudioKeepAlive,
 } from "@/lib/audio";
 
 export function useAudio() {
-  const initialized = useRef(false);
-
+  // Always call initAudio on user gestures — it resumes the AudioContext
+  // and starts the keep-alive. No guard needed; initAudio is idempotent.
   const init = useCallback(() => {
-    if (!initialized.current) {
-      initAudio();
-      initialized.current = true;
-    }
+    initAudio();
   }, []);
 
   return {
@@ -23,5 +21,6 @@ export function useAudio() {
     playRoundStart,
     playRoundEnd,
     playWarning,
+    stopAudioKeepAlive,
   };
 }
