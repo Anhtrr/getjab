@@ -308,7 +308,7 @@ export default function Timer() {
             state={timer.state}
             onStart={handleStart}
             onPause={timer.pause}
-            onResume={timer.resume}
+            onResume={() => { audio.init(); timer.resume(); }}
             onReset={timer.reset}
           />
         </div>
@@ -317,10 +317,16 @@ export default function Timer() {
   }
 
   return (
-    <div className="flex flex-col gap-6 animate-fade-in-up">
+    <div className="flex flex-col gap-6 animate-fade-in-up pb-28">
       <h1 className="text-2xl font-bold text-center mb-2 animate-fade-in-up">
         Round Timer
       </h1>
+
+      <TimerSettings
+        settings={timer.settings}
+        onChange={timer.setSettings}
+        disabled={isActive}
+      />
 
       <TimerDisplay
         secondsLeft={timer.secondsLeft}
@@ -336,19 +342,19 @@ export default function Timer() {
         {sessionSummary}
       </p>
 
-      <TimerControls
-        state={timer.state}
-        onStart={handleStart}
-        onPause={timer.pause}
-        onResume={timer.resume}
-        onReset={timer.reset}
-      />
-
-      <TimerSettings
-        settings={timer.settings}
-        onChange={timer.setSettings}
-        disabled={isActive}
-      />
+      {/* Sticky Start button */}
+      <div className="fixed bottom-0 left-0 right-0 z-[60] px-4 pb-safe" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 5rem)" }}>
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/95 to-transparent pointer-events-none" />
+        <div className="relative max-w-lg mx-auto">
+          <TimerControls
+            state={timer.state}
+            onStart={handleStart}
+            onPause={timer.pause}
+            onResume={timer.resume}
+            onReset={timer.reset}
+          />
+        </div>
+      </div>
     </div>
   );
 }

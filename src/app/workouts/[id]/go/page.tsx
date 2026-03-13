@@ -493,11 +493,13 @@ export default function WorkoutGoPage() {
   }, [clearTimer]);
 
   const resumeWorkout = useCallback(() => {
+    audio.init();
+    initComboAudio();
     endTimeRef.current = Date.now() + remainingMsRef.current;
     setState("running");
     clearTimer();
     intervalRef.current = setInterval(tick, 250);
-  }, [tick, clearTimer]);
+  }, [audio, tick, clearTimer]);
 
   useEffect(() => {
     return () => {

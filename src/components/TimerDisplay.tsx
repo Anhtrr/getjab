@@ -24,24 +24,24 @@ function getGlowGradient(
   warningAtSec: number,
 ): string {
   if (state === "idle") return "none";
-  // Warning: red
+  // Warning: red — bold and unmistakable
   if (state === "running" && warningAtSec > 0 && secondsLeft <= warningAtSec)
-    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(239,68,68,0.25) 0%, rgba(239,68,68,0.1) 35%, transparent 65%)";
+    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(239,68,68,0.4) 0%, rgba(239,68,68,0.15) 35%, transparent 65%)";
   // Running: brand cyan
   if (state === "running")
-    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(0,229,255,0.2) 0%, rgba(0,229,255,0.07) 35%, transparent 65%)";
+    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(0,229,255,0.35) 0%, rgba(0,229,255,0.12) 35%, transparent 65%)";
   // Rest: purple/violet
   if (state === "resting")
-    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(168,85,247,0.22) 0%, rgba(168,85,247,0.08) 35%, transparent 65%)";
+    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(168,85,247,0.35) 0%, rgba(168,85,247,0.12) 35%, transparent 65%)";
   // Preparing: amber
   if (state === "preparing")
-    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(245,158,11,0.2) 0%, rgba(245,158,11,0.07) 35%, transparent 65%)";
+    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(245,158,11,0.3) 0%, rgba(245,158,11,0.1) 35%, transparent 65%)";
   // Paused: yellow
   if (state === "paused")
-    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(234,179,8,0.15) 0%, rgba(234,179,8,0.05) 35%, transparent 65%)";
+    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(234,179,8,0.25) 0%, rgba(234,179,8,0.08) 35%, transparent 65%)";
   // Complete: green
   if (state === "complete")
-    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(34,197,94,0.18) 0%, rgba(34,197,94,0.06) 35%, transparent 65%)";
+    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(34,197,94,0.3) 0%, rgba(34,197,94,0.1) 35%, transparent 65%)";
   return "none";
 }
 
@@ -231,7 +231,7 @@ function TimerDisplay({
           const mins = Math.floor(totalLeft / 60);
           const secs = totalLeft % 60;
           return (
-            <p className="text-xs text-muted tabular-nums mt-1">
+            <p className="text-sm text-muted/80 tabular-nums mt-2">
               {mins}:{secs.toString().padStart(2, "0")} total remaining
             </p>
           );

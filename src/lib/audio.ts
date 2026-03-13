@@ -1,6 +1,10 @@
 let audioContext: AudioContext | null = null;
 
 function getAudioContext(): AudioContext {
+  // iOS closes the context after background suspension — recreate if needed
+  if (audioContext && audioContext.state === "closed") {
+    audioContext = null;
+  }
   if (!audioContext) {
     audioContext = new AudioContext();
   }

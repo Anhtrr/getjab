@@ -152,6 +152,7 @@ export default function TimerSettings({
     { value: 1, label: "On" },
   ];
 
+  const hapticSupported = typeof navigator !== "undefined" && "vibrate" in navigator;
   const hapticOptions = [
     { value: 0, label: "Off" },
     { value: 1, label: "On" },
@@ -308,13 +309,15 @@ export default function TimerSettings({
               onChange={(v) => update({ muted: v === 0 })}
               disabled={disabled}
             />
-            <PillSelector
-              label="Haptic"
-              options={hapticOptions}
-              selectedValue={settings.hapticEnabled ? 1 : 0}
-              onChange={(v) => update({ hapticEnabled: v === 1 })}
-              disabled={disabled}
-            />
+            {hapticSupported && (
+              <PillSelector
+                label="Haptic"
+                options={hapticOptions}
+                selectedValue={settings.hapticEnabled ? 1 : 0}
+                onChange={(v) => update({ hapticEnabled: v === 1 })}
+                disabled={disabled}
+              />
+            )}
           </div>
         </div>
       )}
