@@ -12,6 +12,7 @@ export function generateStaticParams() {
     { id: "fight-conditioning" },
     { id: "counter-punching-workshop" },
     { id: "full-camp-round" },
+    { id: "anhs-heavy-bag" },
   ];
 }
 

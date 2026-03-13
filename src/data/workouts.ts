@@ -1196,6 +1196,165 @@ export const workouts: Workout[] = [
       },
     ],
   },
+  // === CUSTOM: ANH'S HEAVY BAG SESSION ===
+  {
+    id: "anhs-heavy-bag",
+    title: "Anh's Heavy Bag Session",
+    subtitle: "10 rounds · progressive combos",
+    description:
+      "Full heavy bag session: build from singles to complex combos, with a double burnout finisher. 3-minute rounds, 90-second rest.",
+    level: "advanced",
+    goal: "general",
+    durationMin: 43,
+    equipment: ["Heavy bag"],
+    isFree: true,
+    rounds: [
+      // Round 1: Singles only — jabs and crosses
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 90,
+        title: "Singles: Jab & Cross",
+        instructions:
+          "Single shots only. Focus on snapping the jab and sitting down on the cross. Every punch returns to guard.",
+        combos: ["1 (Jab)", "2 (Cross)"],
+        tips: [
+          "Pop the jab — fast out, fast back",
+          "Rotate your hips fully on the cross",
+          "Move your feet between shots",
+        ],
+      },
+      // Round 2: Power hooks & uppercuts — max 2-punch combos
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 90,
+        title: "Power Hooks & Uppercuts",
+        instructions:
+          "Hooks and uppercuts only. Throw singles or doubles max. Sit down on every shot — this is a power round.",
+        combos: ["3 (Lead Hook)", "4 (Rear Hook)", "5 (Lead Uppercut)", "6 (Rear Uppercut)", "3-4 (Hook-Hook)", "5-6 (Uppercut-Uppercut)"],
+        tips: [
+          "Turn your whole body into the hook",
+          "Short, tight arc — don't wind up",
+          "Uppercuts drive upward from the legs",
+        ],
+      },
+      // Round 3: Freeform — 3-punch combos
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 90,
+        title: "Building Combos",
+        instructions:
+          "Start linking punches. 3-punch combos mixing straights and hooks. Find your rhythm on the bag.",
+        combos: ["1-2-3 (Jab-Cross-Hook)", "1-1-2 (Jab-Jab-Cross)", "2-3-2 (Cross-Hook-Cross)"],
+        tips: [
+          "Every combo starts with a jab or a feint",
+          "Snap the last punch — don't let it die",
+        ],
+      },
+      // Round 4: Freeform — adding body work
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 90,
+        title: "Head & Body",
+        instructions:
+          "Mix levels. Go upstairs and downstairs. Dig to the body then come back up top.",
+        combos: ["1-2-3body (Jab-Cross-Body Hook)", "1-2body-3 (Jab-Body Cross-Hook)", "1-2-5body-2 (Jab-Cross-Body Uppercut-Cross)"],
+        tips: [
+          "Bend your knees to go to the body — don't just lean",
+          "Come back upstairs with authority",
+        ],
+      },
+      // Round 5: Freeform — 4-punch combos with defense
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 90,
+        title: "4-Punch Combinations",
+        instructions:
+          "Longer combos now. Throw 4-punch sequences and move. Slip after your combo like someone's firing back.",
+        combos: ["1-2-3-2 (Jab-Cross-Hook-Cross)", "1-2-5-2 (Jab-Cross-Uppercut-Cross)", "1-1-2-3 (Jab-Jab-Cross-Hook)"],
+        tips: [
+          "Stay balanced through all 4 punches",
+          "Slip or roll after every combo",
+        ],
+      },
+      // Round 6: Freeform — mixing everything, 4-5 punch
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 90,
+        title: "Full Arsenal",
+        instructions:
+          "Everything is on the table. Long combos, body shots, uppercuts, hooks. Work the bag like a real opponent.",
+        combos: ["1-2-3-4-2 (Jab-Cross-Hook-Hook-Cross)", "1-2-3body-2-3 (Jab-Cross-Body Hook-Cross-Hook)", "1-6-3-2 (Jab-Rear Uppercut-Hook-Cross)"],
+        tips: [
+          "Punch in bunches then reset",
+          "Throw combos from different angles",
+        ],
+      },
+      // Round 7: Freeform — hardest combos, 5-6 punch
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 90,
+        title: "Championship Round",
+        instructions:
+          "Dig deep. Long combinations with power on every shot. Move your head between combos. Fight like it's the last round.",
+        combos: ["1-2-3-2-1-2 (Jab-Cross-Hook-Cross-Jab-Cross)", "1-2-5body-2-3-2 (Jab-Cross-Body Uppercut-Cross-Hook-Cross)", "1-1-2-3-4-2 (Jab-Jab-Cross-Hook-Hook-Cross)"],
+        tips: [
+          "Don't slow down — empty the tank",
+          "Snap every punch, even when tired",
+        ],
+      },
+      // Round 8: Burnout — 1:30 jab-cross, 20s rest, 1:30 body hooks
+      {
+        type: "conditioning",
+        durationSec: 90,
+        restSec: 20,
+        title: "Burnout: Jab-Cross",
+        instructions:
+          "Non-stop jab-cross for 90 seconds. Don't stop. Short, fast punches. Breathe through it.",
+        combos: ["1-2 (Jab-Cross)"],
+        tips: [
+          "Short punches — don't overextend",
+          "Exhale on every punch",
+          "Your arms will burn — keep going",
+        ],
+      },
+      // Round 9: Burnout part 2
+      {
+        type: "conditioning",
+        durationSec: 90,
+        restSec: 90,
+        title: "Burnout: Body Hooks",
+        instructions:
+          "Non-stop body hooks for 90 seconds. Alternate left and right. Dig deep and rip to the body.",
+        combos: ["3body-4body (Body Hook-Body Hook)"],
+        tips: [
+          "Stay low — bend your knees",
+          "Turn into every hook",
+          "This is the hardest part — don't quit",
+        ],
+      },
+      // Round 10: Closer
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 0,
+        title: "Victory Lap",
+        instructions:
+          "Last round. You survived the burnout. Move and pick your shots. Throw what feels good. Leave it all on the bag.",
+        combos: ["1-2-3 (Jab-Cross-Hook)", "1-2-3-2 (Jab-Cross-Hook-Cross)", "1-2-5-2-3 (Jab-Cross-Uppercut-Cross-Hook)"],
+        tips: [
+          "Compose yourself — clean technique to finish",
+          "End the last 30 seconds with everything you've got",
+        ],
+      },
+    ],
+  },
 ];
 
 export function getWorkout(id: string): Workout | undefined {
