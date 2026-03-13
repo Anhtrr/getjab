@@ -36,6 +36,9 @@ export function startTTSKeepAlive(): void {
     // Only fire if nothing is speaking AND nothing is queued (pending)
     // — avoids canceling real combo utterances that haven't started yet
     if (!window.speechSynthesis.speaking && !window.speechSynthesis.pending) {
+      // cancel() resets iOS's internal speech engine state — without this,
+      // iOS Safari freezes speechSynthesis after too many queued utterances
+      window.speechSynthesis.cancel();
       const silent = new SpeechSynthesisUtterance("");
       silent.volume = 0;
       window.speechSynthesis.speak(silent);

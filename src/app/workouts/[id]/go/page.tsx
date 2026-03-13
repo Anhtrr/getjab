@@ -715,11 +715,13 @@ export default function WorkoutGoPage() {
   // Preparing state — full-screen countdown
   if (state === "preparing") {
     return (
-      <div className="fixed inset-0 bg-background flex flex-col items-center justify-center" style={{ zIndex: 9999 }}>
+      <div className="fixed inset-0" style={{ zIndex: 9999 }}>
+        <div className="absolute inset-0 bg-background" />
         <div
-          className="fixed inset-0 -z-10 pointer-events-none"
+          className="absolute inset-0 pointer-events-none"
           style={{ backgroundImage: "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(245,158,11,0.3) 0%, rgba(245,158,11,0.1) 35%, transparent 65%)" }}
         />
+        <div className="relative z-10 flex flex-col items-center justify-center h-full">
         <p className="text-xs font-bold uppercase tracking-widest text-amber-400 mb-4 animate-pulse-ready">
           GET READY
         </p>
@@ -740,6 +742,7 @@ export default function WorkoutGoPage() {
         >
           CANCEL
         </button>
+        </div>
       </div>
     );
   }
@@ -770,8 +773,11 @@ export default function WorkoutGoPage() {
           : "";
 
   return (
-    <div className="fixed inset-0 bg-background flex flex-col" style={{ zIndex: 9999 }}>
-      {/* Ambient background glow — crossfade layers to avoid rectangle flash */}
+    <div className="fixed inset-0" style={{ zIndex: 9999 }}>
+      {/* Opaque background */}
+      <div className="absolute inset-0 bg-background" />
+
+      {/* Ambient background glow — crossfade layers */}
       {(["preparing", "resting", "warning", "running", "paused"] as const).map((glowState) => {
         const isActive =
           glowState === "warning"
@@ -794,7 +800,7 @@ export default function WorkoutGoPage() {
         return (
           <div
             key={glowState}
-            className={`fixed inset-0 -z-10 pointer-events-none transition-opacity duration-700 ${
+            className={`absolute inset-0 pointer-events-none transition-opacity duration-700 ${
               glowState === "warning" && isActive ? "animate-timer-bg-pulse" : ""
             }`}
             style={{
@@ -805,6 +811,8 @@ export default function WorkoutGoPage() {
         );
       })}
 
+      {/* Content */}
+      <div className="relative z-10 flex flex-col h-full">
       {/* Compact top bar */}
       <div
         className="flex items-center justify-between px-4"
@@ -944,6 +952,8 @@ export default function WorkoutGoPage() {
             />
           ))}
         </div>
+      </div>
+
       </div>
 
       {/* Quit Confirmation */}

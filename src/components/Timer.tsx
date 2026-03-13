@@ -286,31 +286,68 @@ export default function Timer() {
   }
 
   if (isActive) {
+    const isTimerWarning = timer.state === "running" && timer.secondsLeft <= (timer.settings.warningAtSec ?? 10);
+
     return (
       <div
-        className="fixed inset-0 z-[100] bg-background flex flex-col justify-between overflow-hidden animate-fade-in"
+        className="fixed inset-0 z-[100] overflow-hidden animate-fade-in"
         style={{ height: "100dvh" }}
       >
-        <div className="flex-1 flex items-center justify-center">
-          <TimerDisplay
-            secondsLeft={timer.secondsLeft}
-            state={timer.state}
-            currentRound={timer.currentRound}
-            totalRounds={timer.totalRounds}
-            warningAtSec={timer.settings.warningAtSec}
-            roundDurationSec={timer.settings.roundDurationSec}
-            restDurationSec={timer.settings.restDurationSec}
-            onSkipPhase={timer.skipPhase}
-          />
-        </div>
-        <div className="px-4" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 3rem)" }}>
-          <TimerControls
-            state={timer.state}
-            onStart={handleStart}
-            onPause={timer.pause}
-            onResume={() => { audio.init(); timer.resume(); }}
-            onReset={timer.reset}
-          />
+        {/* Opaque background */}
+        <div className="absolute inset-0 bg-background" />
+
+        {/* Ambient glow — crossfade layers */}
+        {(["preparing", "resting", "warning", "running", "paused"] as const).map((glowState) => {
+          const active =
+            glowState === "warning"
+              ? isTimerWarning
+              : glowState === "running"
+                ? timer.state === "running" && !isTimerWarning
+                : timer.state === glowState;
+          const gradient =
+            glowState === "preparing"
+              ? "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(245,158,11,0.3) 0%, rgba(245,158,11,0.1) 35%, transparent 65%)"
+              : glowState === "resting"
+                ? "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(168,85,247,0.35) 0%, rgba(168,85,247,0.12) 35%, transparent 65%)"
+                : glowState === "warning"
+                  ? "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(239,68,68,0.4) 0%, rgba(239,68,68,0.15) 35%, transparent 65%)"
+                  : glowState === "running"
+                    ? "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(0,229,255,0.35) 0%, rgba(0,229,255,0.12) 35%, transparent 65%)"
+                    : "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(234,179,8,0.25) 0%, rgba(234,179,8,0.08) 35%, transparent 65%)";
+          return (
+            <div
+              key={glowState}
+              className={`absolute inset-0 pointer-events-none transition-opacity duration-700 ${
+                glowState === "warning" && active ? "animate-timer-bg-pulse" : ""
+              }`}
+              style={{ backgroundImage: gradient, opacity: active ? 1 : 0 }}
+            />
+          );
+        })}
+
+        {/* Content */}
+        <div className="relative z-10 flex flex-col justify-between h-full">
+          <div className="flex-1 flex items-center justify-center">
+            <TimerDisplay
+              secondsLeft={timer.secondsLeft}
+              state={timer.state}
+              currentRound={timer.currentRound}
+              totalRounds={timer.totalRounds}
+              warningAtSec={timer.settings.warningAtSec}
+              roundDurationSec={timer.settings.roundDurationSec}
+              restDurationSec={timer.settings.restDurationSec}
+              onSkipPhase={timer.skipPhase}
+            />
+          </div>
+          <div className="px-4" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 3rem)" }}>
+            <TimerControls
+              state={timer.state}
+              onStart={handleStart}
+              onPause={timer.pause}
+              onResume={() => { audio.init(); timer.resume(); }}
+              onReset={timer.reset}
+            />
+          </div>
         </div>
       </div>
     );
