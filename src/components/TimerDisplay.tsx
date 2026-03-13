@@ -18,32 +18,6 @@ function formatTime(seconds: number): string {
   return `${mins}:${secs.toString().padStart(2, "0")}`;
 }
 
-function getGlowGradient(
-  state: TimerState,
-  secondsLeft: number,
-  warningAtSec: number,
-): string {
-  if (state === "idle") return "none";
-  // Warning: red — bold and unmistakable
-  if (state === "running" && warningAtSec > 0 && secondsLeft <= warningAtSec)
-    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(239,68,68,0.4) 0%, rgba(239,68,68,0.15) 35%, transparent 65%)";
-  // Running: brand cyan
-  if (state === "running")
-    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(0,229,255,0.35) 0%, rgba(0,229,255,0.12) 35%, transparent 65%)";
-  // Rest: purple/violet
-  if (state === "resting")
-    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(168,85,247,0.35) 0%, rgba(168,85,247,0.12) 35%, transparent 65%)";
-  // Preparing: amber
-  if (state === "preparing")
-    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(245,158,11,0.3) 0%, rgba(245,158,11,0.1) 35%, transparent 65%)";
-  // Paused: yellow
-  if (state === "paused")
-    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(234,179,8,0.25) 0%, rgba(234,179,8,0.08) 35%, transparent 65%)";
-  // Complete: green
-  if (state === "complete")
-    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(34,197,94,0.3) 0%, rgba(34,197,94,0.1) 35%, transparent 65%)";
-  return "none";
-}
 
 function TimerDisplay({
   secondsLeft,
@@ -105,8 +79,6 @@ function TimerDisplay({
   const isActive = state !== "idle" && state !== "complete";
   const isWarning =
     state === "running" && warningAtSec > 0 && secondsLeft <= warningAtSec;
-  const glowGradient = getGlowGradient(state, secondsLeft, warningAtSec);
-
   // Segmented progress bar
   const roundProgress = useMemo(() => {
     if (!isActive || totalRounds <= 1) return null;
@@ -159,14 +131,42 @@ function TimerDisplay({
 
   return (
     <>
-      {/* Ambient radial glow — soft, centered, no hard edges */}
+      {/* Ambient radial glow — crossfade layers to avoid rectangle flash on color change */}
       {state !== "idle" && (
-        <div
-          className={`fixed inset-0 -z-10 pointer-events-none transition-opacity duration-700 ${
-            isWarning ? "animate-timer-bg-pulse" : ""
-          }`}
-          style={{ backgroundImage: glowGradient }}
-        />
+        <>
+          {(["running", "warning", "resting", "preparing", "paused", "complete"] as const).map((glowState) => {
+            const isActive =
+              glowState === "warning"
+                ? isWarning
+                : glowState === "running"
+                  ? state === "running" && !isWarning
+                  : state === glowState;
+            const gradient =
+              glowState === "warning"
+                ? "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(239,68,68,0.4) 0%, rgba(239,68,68,0.15) 35%, transparent 65%)"
+                : glowState === "running"
+                  ? "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(0,229,255,0.35) 0%, rgba(0,229,255,0.12) 35%, transparent 65%)"
+                  : glowState === "resting"
+                    ? "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(168,85,247,0.35) 0%, rgba(168,85,247,0.12) 35%, transparent 65%)"
+                    : glowState === "preparing"
+                      ? "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(245,158,11,0.3) 0%, rgba(245,158,11,0.1) 35%, transparent 65%)"
+                      : glowState === "paused"
+                        ? "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(234,179,8,0.25) 0%, rgba(234,179,8,0.08) 35%, transparent 65%)"
+                        : "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(34,197,94,0.3) 0%, rgba(34,197,94,0.1) 35%, transparent 65%)";
+            return (
+              <div
+                key={glowState}
+                className={`fixed inset-0 -z-10 pointer-events-none transition-opacity duration-700 ${
+                  glowState === "warning" && isActive ? "animate-timer-bg-pulse" : ""
+                }`}
+                style={{
+                  backgroundImage: gradient,
+                  opacity: isActive ? 1 : 0,
+                }}
+              />
+            );
+          })}
+        </>
       )}
 
       <div className="flex flex-col items-center justify-center gap-4 animate-fade-in w-full">

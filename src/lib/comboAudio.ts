@@ -33,8 +33,9 @@ export function startTTSKeepAlive(): void {
 
   keepAliveInterval = setInterval(() => {
     if (typeof window === "undefined" || !window.speechSynthesis) return;
-    if (!window.speechSynthesis.speaking) {
-      window.speechSynthesis.cancel();
+    // Only fire if nothing is speaking AND nothing is queued (pending)
+    // — avoids canceling real combo utterances that haven't started yet
+    if (!window.speechSynthesis.speaking && !window.speechSynthesis.pending) {
       const silent = new SpeechSynthesisUtterance("");
       silent.volume = 0;
       window.speechSynthesis.speak(silent);

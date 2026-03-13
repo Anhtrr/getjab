@@ -51,7 +51,17 @@ export default function WorkoutLogDetail({ log, onClose }: Props) {
 
   const dismiss = useCallback(() => {
     setDismissing(true);
-    setTimeout(() => onClose(), 300);
+    setTimeout(() => {
+      // Reset body scroll lock BEFORE unmount so the navbar
+      // is already in its final position when the overlay disappears
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.overflow = "";
+      window.scrollTo(0, scrollYRef.current);
+      onClose();
+    }, 300);
   }, [onClose]);
 
   // Lock body scroll when modal is open
@@ -64,12 +74,15 @@ export default function WorkoutLogDetail({ log, onClose }: Props) {
     document.body.style.overflow = "hidden";
 
     return () => {
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.left = "";
-      document.body.style.right = "";
-      document.body.style.overflow = "";
-      window.scrollTo(0, scrollYRef.current);
+      // Only reset if not already done by dismiss()
+      if (document.body.style.position === "fixed") {
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.left = "";
+        document.body.style.right = "";
+        document.body.style.overflow = "";
+        window.scrollTo(0, scrollYRef.current);
+      }
     };
   }, []);
 
@@ -163,6 +176,11 @@ export default function WorkoutLogDetail({ log, onClose }: Props) {
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/60"
+        style={{ opacity: backdropOpacity, transition: "opacity 0.3s ease-out" }}
+      />
+      {/* Opaque bar covering the navbar zone so it doesn't ghost through */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-20 bg-black"
         style={{ opacity: backdropOpacity, transition: "opacity 0.3s ease-out" }}
       />
 

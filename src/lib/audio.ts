@@ -16,34 +16,39 @@ function getAudioContext(): AudioContext {
 
 // ─── iOS keep-alive ───
 // iOS Safari suspends AudioContext after ~15s of inactivity.
-// Periodically play a silent buffer to keep the context alive.
+// A continuous silent oscillator (gain=0) keeps the context alive without
+// producing any audio output — so it won't interfere with speechSynthesis.
 
-let keepAliveInterval: ReturnType<typeof setInterval> | null = null;
+let keepAliveOsc: OscillatorNode | null = null;
+let keepAliveGain: GainNode | null = null;
 
 export function startAudioKeepAlive(): void {
   stopAudioKeepAlive();
-  keepAliveInterval = setInterval(() => {
-    if (!audioContext || audioContext.state === "closed") return;
-    if (audioContext.state === "suspended") {
-      audioContext.resume();
-    }
-    // Play a silent buffer to keep the context active
-    try {
-      const buf = audioContext.createBuffer(1, 1, audioContext.sampleRate);
-      const src = audioContext.createBufferSource();
-      src.buffer = buf;
-      src.connect(audioContext.destination);
-      src.start();
-    } catch {
-      // ignore — context may be in a bad state
-    }
-  }, 8000);
+  if (!audioContext || audioContext.state === "closed") return;
+
+  try {
+    keepAliveGain = audioContext.createGain();
+    keepAliveGain.gain.value = 0;
+    keepAliveGain.connect(audioContext.destination);
+
+    keepAliveOsc = audioContext.createOscillator();
+    keepAliveOsc.frequency.value = 1;
+    keepAliveOsc.connect(keepAliveGain);
+    keepAliveOsc.start();
+  } catch {
+    // ignore — context may be in a bad state
+  }
 }
 
 export function stopAudioKeepAlive(): void {
-  if (keepAliveInterval !== null) {
-    clearInterval(keepAliveInterval);
-    keepAliveInterval = null;
+  if (keepAliveOsc) {
+    try { keepAliveOsc.stop(); } catch { /* already stopped */ }
+    keepAliveOsc.disconnect();
+    keepAliveOsc = null;
+  }
+  if (keepAliveGain) {
+    keepAliveGain.disconnect();
+    keepAliveGain = null;
   }
 }
 
@@ -152,9 +157,19 @@ export function playWarning() {
 
 export function initAudio() {
   const ctx = getAudioContext();
-  // Always resume on init — this is called from user gestures
-  if (ctx.state === "suspended") {
-    ctx.resume();
-  }
-  startAudioKeepAlive();
+  // Force the context active during user gesture — resume + play a tiny
+  // silent tone so iOS unlocks the audio session immediately.
+  ctx.resume().then(() => {
+    try {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      gain.gain.value = 0;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.001);
+    } catch { /* ignore */ }
+    // Start the continuous silent oscillator to prevent iOS from suspending
+    startAudioKeepAlive();
+  });
 }

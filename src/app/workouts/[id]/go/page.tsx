@@ -62,19 +62,6 @@ function formatTime(seconds: number): string {
   return `${mins}:${secs.toString().padStart(2, "0")}`;
 }
 
-function getWorkoutGlow(state: string, isResting: boolean, secondsLeft: number): string {
-  if (state === "preparing")
-    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(245,158,11,0.3) 0%, rgba(245,158,11,0.1) 35%, transparent 65%)";
-  if (isResting)
-    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(168,85,247,0.35) 0%, rgba(168,85,247,0.12) 35%, transparent 65%)";
-  if (state === "running" && secondsLeft <= 10)
-    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(239,68,68,0.4) 0%, rgba(239,68,68,0.15) 35%, transparent 65%)";
-  if (state === "running")
-    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(0,229,255,0.35) 0%, rgba(0,229,255,0.12) 35%, transparent 65%)";
-  if (state === "paused")
-    return "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(234,179,8,0.25) 0%, rgba(234,179,8,0.08) 35%, transparent 65%)";
-  return "none";
-}
 
 export default function WorkoutGoPage() {
   const params = useParams();
@@ -787,13 +774,39 @@ export default function WorkoutGoPage() {
 
   return (
     <div className="fixed inset-0 bg-background flex flex-col" style={{ zIndex: 9999 }}>
-      {/* Ambient background glow */}
-      <div
-        className={`fixed inset-0 -z-10 pointer-events-none transition-opacity duration-700 ${
-          isWarning ? "animate-timer-bg-pulse" : ""
-        }`}
-        style={{ backgroundImage: getWorkoutGlow(state, isResting, secondsLeft) }}
-      />
+      {/* Ambient background glow — crossfade layers to avoid rectangle flash */}
+      {(["preparing", "resting", "warning", "running", "paused"] as const).map((glowState) => {
+        const isActive =
+          glowState === "warning"
+            ? state === "running" && !isResting && secondsLeft <= 10
+            : glowState === "running"
+              ? state === "running" && !isResting && secondsLeft > 10
+              : glowState === "resting"
+                ? isResting
+                : state === glowState;
+        const gradient =
+          glowState === "preparing"
+            ? "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(245,158,11,0.3) 0%, rgba(245,158,11,0.1) 35%, transparent 65%)"
+            : glowState === "resting"
+              ? "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(168,85,247,0.35) 0%, rgba(168,85,247,0.12) 35%, transparent 65%)"
+              : glowState === "warning"
+                ? "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(239,68,68,0.4) 0%, rgba(239,68,68,0.15) 35%, transparent 65%)"
+                : glowState === "running"
+                  ? "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(0,229,255,0.35) 0%, rgba(0,229,255,0.12) 35%, transparent 65%)"
+                  : "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(234,179,8,0.25) 0%, rgba(234,179,8,0.08) 35%, transparent 65%)";
+        return (
+          <div
+            key={glowState}
+            className={`fixed inset-0 -z-10 pointer-events-none transition-opacity duration-700 ${
+              glowState === "warning" && isActive ? "animate-timer-bg-pulse" : ""
+            }`}
+            style={{
+              backgroundImage: gradient,
+              opacity: isActive ? 1 : 0,
+            }}
+          />
+        );
+      })}
 
       {/* Compact top bar */}
       <div

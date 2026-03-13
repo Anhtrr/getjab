@@ -248,8 +248,8 @@ body::before {
   z-index: -1;
   background-image:
     radial-gradient(
-      ellipse 100% 20% at 50% 19%,
-      rgba(0, 229, 255, 0.07) 0%,
+      ellipse 100% 25% at 50% 28%,
+      rgba(0, 229, 255, 0.08) 0%,
       transparent 70%
     ),
     radial-gradient(
