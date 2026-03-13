@@ -57,6 +57,12 @@ export function stopTTSKeepAlive(): void {
 export function initComboAudio(): void {
   if (typeof window === "undefined" || !window.speechSynthesis) return;
 
+  // Unlock speech synthesis during user gesture (required by iOS Safari)
+  window.speechSynthesis.cancel();
+  const unlock = new SpeechSynthesisUtterance("");
+  unlock.volume = 0;
+  window.speechSynthesis.speak(unlock);
+
   startTTSKeepAlive();
 
   // Voices may load asynchronously

@@ -756,12 +756,6 @@ export default function WorkoutGoPage() {
         ? "text-yellow-400"
         : "text-accent";
 
-  const glowBg = isResting
-    ? "bg-purple-500"
-    : isWarning
-      ? "bg-red-500"
-      : "bg-[#00e5ff]";
-
   const timerAnim = isResting
     ? "text-purple-400 animate-rest-glow"
     : isWarning
@@ -835,9 +829,8 @@ export default function WorkoutGoPage() {
 
       {/* Main content: timer + combos fill remaining space */}
       <div className="flex-1 flex flex-col items-center justify-center gap-2 px-4 overflow-hidden">
-        {/* Countdown with glow backdrop */}
+        {/* Countdown (triple-tap to skip) */}
         <div className="relative flex-shrink-0" onClick={handleCountdownTap}>
-          <div className={`absolute inset-0 blur-3xl opacity-20 rounded-full scale-150 ${glowBg}`} />
           <div
             role="timer"
             aria-live="off"
