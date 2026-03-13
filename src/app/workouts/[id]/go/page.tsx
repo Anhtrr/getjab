@@ -7,6 +7,7 @@ import { useAudio } from "@/hooks/useAudio";
 import { useWakeLock } from "@/hooks/useWakeLock";
 import { useComboCallout } from "@/hooks/useComboCallout";
 import { addWorkoutLog } from "@/lib/storage";
+import { notifyLogsChanged } from "@/hooks/useProgress";
 import { initComboAudio, cancelSpeech, stopTTSKeepAlive } from "@/lib/comboAudio";
 import { useGamification } from "@/hooks/useGamification";
 import { calculateXP } from "@/lib/gamification/engine";
@@ -375,6 +376,7 @@ export default function WorkoutGoPage() {
 
       const log = { ...tempLog, xpEarned: xp.total };
       addWorkoutLog(log);
+      notifyLogsChanged();
 
       // Process gamification (persist badges, shields, PRs, challenge progress)
       const prevLevel = prevLevelRef.current ?? 1;

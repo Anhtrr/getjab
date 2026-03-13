@@ -87,6 +87,11 @@ export function exportAllData(): string {
     "jab_streak_shields",
     "jab_daily_challenge",
     "jab_personal_records",
+    "jab_timer_settings",
+    "jab_timer_presets",
+    "jab_preset_usage",
+    "jab_display_name",
+    "jab_callout_settings",
   ];
   for (const key of keys) {
     try {
@@ -107,7 +112,7 @@ export function importAllData(jsonStr: string): { success: boolean; error?: stri
     }
 
     // Validate expected array fields
-    const arrayKeys = [LOGS_KEY, CUSTOM_WORKOUTS_KEY, "jab_badges"];
+    const arrayKeys = [LOGS_KEY, CUSTOM_WORKOUTS_KEY, "jab_badges", "jab_timer_presets"];
     for (const key of arrayKeys) {
       if (data[key] !== undefined && !Array.isArray(data[key])) {
         return { success: false, error: `Invalid format for ${key}` };
@@ -124,7 +129,10 @@ export function importAllData(jsonStr: string): { success: boolean; error?: stri
     }
 
     // Validate expected object fields
-    const objectKeys = ["jab_streak_shields", "jab_daily_challenge", "jab_personal_records"];
+    const objectKeys = [
+      "jab_streak_shields", "jab_daily_challenge", "jab_personal_records",
+      "jab_timer_settings", "jab_preset_usage", "jab_callout_settings",
+    ];
     for (const key of objectKeys) {
       if (data[key] !== undefined && (typeof data[key] !== "object" || Array.isArray(data[key]))) {
         return { success: false, error: `Invalid format for ${key}` };
@@ -138,6 +146,11 @@ export function importAllData(jsonStr: string): { success: boolean; error?: stri
       "jab_streak_shields",
       "jab_daily_challenge",
       "jab_personal_records",
+      "jab_timer_settings",
+      "jab_timer_presets",
+      "jab_preset_usage",
+      "jab_display_name",
+      "jab_callout_settings",
     ];
     for (const key of keys) {
       if (data[key] !== undefined) {

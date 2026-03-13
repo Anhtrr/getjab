@@ -3,6 +3,8 @@
 import { useState, useRef } from "react";
 import { Download, Upload, Check, AlertTriangle } from "lucide-react";
 import { exportAllData, importAllData } from "@/lib/storage";
+import { notifyLogsChanged } from "@/hooks/useProgress";
+import { notifyGameStateChanged } from "@/hooks/useGamification";
 
 export default function DataManagement() {
   const [status, setStatus] = useState<{ type: "success" | "error"; message: string } | null>(null);
@@ -29,7 +31,9 @@ export default function DataManagement() {
     reader.onload = () => {
       const result = importAllData(reader.result as string);
       if (result.success) {
-        setStatus({ type: "success", message: "Data imported. Refresh to see changes." });
+        notifyLogsChanged();
+        notifyGameStateChanged();
+        setStatus({ type: "success", message: "Data imported successfully" });
       } else {
         setStatus({ type: "error", message: result.error || "Import failed" });
       }

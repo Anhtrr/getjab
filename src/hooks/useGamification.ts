@@ -38,6 +38,11 @@ function notify() {
   subscribers.forEach((cb) => cb());
 }
 
+/** Call after any direct localStorage write to gamification data (outside the hook) */
+export function notifyGameStateChanged() {
+  notify();
+}
+
 export function useGamification() {
   // Subscribe to version changes
   const version = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);

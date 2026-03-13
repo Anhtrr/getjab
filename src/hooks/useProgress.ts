@@ -28,6 +28,11 @@ function notify() {
   subscribers.forEach((cb) => cb());
 }
 
+/** Call after any direct localStorage write to workout logs (outside the hook) */
+export function notifyLogsChanged() {
+  notify();
+}
+
 function dayDiff(a: string, b: string): number {
   const dateA = new Date(a);
   const dateB = new Date(b);

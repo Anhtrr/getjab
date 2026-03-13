@@ -148,7 +148,7 @@ export default function Home() {
       <div className="relative mb-8 animate-fade-in-up">
         <div className="absolute -top-12 left-0 w-32 h-32 bg-[#00e5ff]/8 rounded-full blur-3xl pointer-events-none" />
         <h1 className="text-3xl font-black tracking-tight relative">
-          <span className="bg-gradient-to-r from-[#00e5ff] via-[#00c8ff] to-[#0090ff] bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(0,229,255,0.25)]">
+          <span className="bg-gradient-to-r from-[#00e5ff] via-[#00c8ff] to-[#0090ff] bg-clip-text text-transparent">
             JAB
           </span>
         </h1>
