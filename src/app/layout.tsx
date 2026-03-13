@@ -42,7 +42,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
       </head>
       <body className="antialiased bg-background text-foreground overflow-x-hidden">
-        <main className="min-h-screen pb-20 pt-safe animate-fade-in">{children}</main>
+        <main className="min-h-screen pb-20 pt-safe">{children}</main>
         <Navigation />
         <ActiveSessionBanner />
         <PWAInstallPrompt />
