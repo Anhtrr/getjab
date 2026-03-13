@@ -303,7 +303,7 @@ export default function Timer() {
             onSkipPhase={timer.skipPhase}
           />
         </div>
-        <div className="pb-safe px-4 pb-8">
+        <div className="px-4" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 3rem)" }}>
           <TimerControls
             state={timer.state}
             onStart={handleStart}

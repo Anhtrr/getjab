@@ -169,8 +169,8 @@ export default function WorkoutLogDetail({ log, onClose }: Props) {
       {/* Sheet */}
       <div
         ref={sheetRef}
-        className={`relative w-full max-w-lg bg-surface rounded-t-3xl p-6 pb-safe max-h-[85vh] overflow-y-auto overscroll-contain ${dismissing ? "" : "animate-slide-in-bottom"}`}
-        style={{ ...sheetStyle, paddingBottom: "max(env(safe-area-inset-bottom, 24px), 24px)" }}
+        className={`relative w-full max-w-lg bg-surface rounded-t-3xl p-6 max-h-[85vh] overflow-y-auto overscroll-contain ${dismissing ? "" : "animate-slide-in-bottom"}`}
+        style={{ ...sheetStyle, paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 5rem)" }}
         onClick={(e) => e.stopPropagation()}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}

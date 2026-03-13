@@ -850,7 +850,7 @@ export default function WorkoutGoPage() {
       </div>
 
       {/* Controls */}
-      <div className="px-4 pt-4 pb-safe border-t border-border">
+      <div className="px-4 pt-4 border-t border-border" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 2rem)" }}>
         <div className="flex items-center justify-center gap-4 max-w-lg mx-auto">
           {state === "running" && (
             <button
