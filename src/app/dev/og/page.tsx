@@ -101,8 +101,22 @@ export default function OgImagePage() {
             </p>
             <p
               style={{
-                fontSize: 20,
-                color: "rgba(255,255,255,0.4)",
+                fontSize: 18,
+                color: "#0a0a0a",
+                fontWeight: 700,
+                background: "linear-gradient(135deg, #00e5ff, #0090ff)",
+                display: "inline-block",
+                padding: "8px 20px",
+                borderRadius: 100,
+                marginBottom: 16,
+              }}
+            >
+              Free — No Ads, No Account
+            </p>
+            <p
+              style={{
+                fontSize: 18,
+                color: "rgba(255,255,255,0.35)",
                 fontWeight: 500,
               }}
             >

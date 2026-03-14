@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     title: "Jab",
   },
   openGraph: {
-    title: "Jab - Combat Sports Workouts & Timer",
+    title: "Jab - Free Boxing & Combat Sports Workouts with Guided Combos",
     description:
       "Boxing, Muay Thai & kickboxing workouts with round timer, combo callouts, and progress tracking. Train like a fighter.",
     type: "website",
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Jab - Combat Sports Workouts & Timer",
+    title: "Jab - Free Boxing & Combat Sports Workouts with Guided Combos",
     description:
       "Boxing, Muay Thai & kickboxing workouts with round timer, combo callouts, and progress tracking. Train like a fighter.",
     images: ["/og-image.png"],

@@ -38,7 +38,6 @@ export default function WorkoutLogDetail({ log, onClose }: Props) {
   const dragStartY = useRef<number | null>(null);
   const [dragOffset, setDragOffset] = useState(0);
   const isDragging = useRef(false);
-  const scrollYRef = useRef(0);
 
   const xp = calculateXP(
     log,
@@ -51,35 +50,25 @@ export default function WorkoutLogDetail({ log, onClose }: Props) {
 
   const dismiss = useCallback(() => {
     setDismissing(true);
-    setTimeout(() => {
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.left = "";
-      document.body.style.right = "";
-      document.body.style.overflow = "";
-      window.scrollTo(0, scrollYRef.current);
-      onClose();
-    }, 300);
+    setTimeout(onClose, 300);
   }, [onClose]);
 
-  // Lock body scroll when modal is open (navbar stays visible behind backdrop)
+  // Prevent background scrolling while sheet is open
   useEffect(() => {
-    scrollYRef.current = window.scrollY;
-    document.body.style.position = "fixed";
-    document.body.style.top = `-${scrollYRef.current}px`;
-    document.body.style.left = "0";
-    document.body.style.right = "0";
+    document.documentElement.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
 
+    // iOS: prevent touch-scroll on areas outside the sheet
+    const preventScroll = (e: TouchEvent) => {
+      if (sheetRef.current?.contains(e.target as Node)) return;
+      e.preventDefault();
+    };
+    document.addEventListener("touchmove", preventScroll, { passive: false });
+
     return () => {
-      if (document.body.style.position === "fixed") {
-        document.body.style.position = "";
-        document.body.style.top = "";
-        document.body.style.left = "";
-        document.body.style.right = "";
-        document.body.style.overflow = "";
-        window.scrollTo(0, scrollYRef.current);
-      }
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+      document.removeEventListener("touchmove", preventScroll);
     };
   }, []);
 
