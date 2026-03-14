@@ -6,6 +6,7 @@ import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import ServiceWorkerRegistrar from "@/components/ServiceWorkerRegistrar";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://getjab.app"),
   title: "Jab - Combat Sports Workouts & Timer",
   description:
     "Boxing, Muay Thai & kickboxing workouts with round timer, combo callouts, and progress tracking. Train like a fighter.",
@@ -17,8 +18,26 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Jab - Combat Sports Workouts & Timer",
-    description: "Boxing, Muay Thai & kickboxing workouts with round timer, combo callouts, and progress tracking. Train like a fighter.",
+    description:
+      "Boxing, Muay Thai & kickboxing workouts with round timer, combo callouts, and progress tracking. Train like a fighter.",
     type: "website",
+    url: "https://getjab.app",
+    siteName: "Jab",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Jab - Combat Sports Workouts & Timer",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Jab - Combat Sports Workouts & Timer",
+    description:
+      "Boxing, Muay Thai & kickboxing workouts with round timer, combo callouts, and progress tracking. Train like a fighter.",
+    images: ["/og-image.png"],
   },
 };
 
