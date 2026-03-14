@@ -25,6 +25,7 @@ jobs:
           cache: npm
 
       - run: npm ci
+      - run: rm -rf .next out
       - run: npx next build
 
       - uses: actions/upload-pages-artifact@v3
