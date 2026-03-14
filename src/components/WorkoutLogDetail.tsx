@@ -35,9 +35,6 @@ export default function WorkoutLogDetail({ log, onClose }: Props) {
   const { gameState } = useGamification();
   const workout = workouts.find((w) => w.id === log.workoutId);
   const sheetRef = useRef<HTMLDivElement>(null);
-  const dragStartY = useRef<number | null>(null);
-  const [dragOffset, setDragOffset] = useState(0);
-  const isDragging = useRef(false);
 
   const xp = calculateXP(
     log,
@@ -71,40 +68,6 @@ export default function WorkoutLogDetail({ log, onClose }: Props) {
       document.removeEventListener("touchmove", preventScroll);
     };
   }, []);
-
-  // Swipe-to-dismiss handlers
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    const sheet = sheetRef.current;
-    if (!sheet) return;
-    // Only allow drag when scrolled to top
-    if (sheet.scrollTop > 0) return;
-    dragStartY.current = e.touches[0].clientY;
-    isDragging.current = false;
-  }, []);
-
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (dragStartY.current === null) return;
-    const deltaY = e.touches[0].clientY - dragStartY.current;
-    if (deltaY > 0) {
-      isDragging.current = true;
-      // Rubber-band resistance — gets harder to drag the further you go
-      setDragOffset(deltaY * 0.6);
-      e.preventDefault();
-    } else {
-      dragStartY.current = null;
-      setDragOffset(0);
-    }
-  }, []);
-
-  const handleTouchEnd = useCallback(() => {
-    if (dragOffset > 80) {
-      dismiss();
-    } else {
-      setDragOffset(0);
-    }
-    dragStartY.current = null;
-    isDragging.current = false;
-  }, [dragOffset, dismiss]);
 
   const handleShare = useCallback(async () => {
     if (!gameState) return;
@@ -144,15 +107,7 @@ export default function WorkoutLogDetail({ log, onClose }: Props) {
 
   const sheetStyle: React.CSSProperties = dismissing
     ? { transform: "translateY(100%)", transition: "transform 0.3s cubic-bezier(0.4, 0, 1, 1)" }
-    : dragOffset > 0
-      ? { transform: `translateY(${dragOffset}px)`, transition: isDragging.current ? "none" : "transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)" }
-      : { transition: "transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)" };
-
-  const backdropOpacity = dismissing
-    ? 0
-    : dragOffset > 0
-      ? Math.max(0, 1 - dragOffset / 200)
-      : 1;
+    : { transition: "transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)" };
 
   return (
     <div
@@ -162,7 +117,7 @@ export default function WorkoutLogDetail({ log, onClose }: Props) {
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/60"
-        style={{ opacity: backdropOpacity, transition: "opacity 0.3s ease-out" }}
+        style={{ opacity: dismissing ? 0 : 1, transition: "opacity 0.3s ease-out" }}
       />
 
       {/* Sheet */}
@@ -171,15 +126,7 @@ export default function WorkoutLogDetail({ log, onClose }: Props) {
         className={`relative w-full max-w-lg bg-surface rounded-t-3xl p-6 max-h-[85vh] overflow-y-auto overscroll-contain ${dismissing ? "" : "animate-slide-in-bottom"}`}
         style={{ ...sheetStyle, paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 1.5rem)" }}
         onClick={(e) => e.stopPropagation()}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
       >
-        {/* Handle — visual swipe affordance */}
-        <div className="flex justify-center mb-4 cursor-grab">
-          <div className="w-10 h-1 rounded-full bg-border" />
-        </div>
-
         {/* Close button */}
         <button
           onClick={dismiss}
