@@ -17,9 +17,15 @@ export default function ServiceWorkerRegistrar() {
     }
 
     // Only register in production
-    navigator.serviceWorker.register("/sw.js").catch(() => {
-      // Service worker registration failed - not critical
-    });
+    navigator.serviceWorker
+      .register("/sw.js", { updateViaCache: "none" })
+      .then((registration) => {
+        // Check for updates immediately
+        registration.update();
+      })
+      .catch(() => {
+        // Service worker registration failed - not critical
+      });
   }, []);
 
   return null;
