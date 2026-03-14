@@ -1,34 +1,35 @@
 "use client";
 
 import Link from "next/link";
-import { Sparkles, Check } from "lucide-react";
+import { Sparkles, Check, Lock } from "lucide-react";
 
-const currentFeatures = [
+const freeFeatures = [
   "All boxing & combat sports workouts",
-  "Custom workout builder",
-  "Round timer with bell sounds",
-  "Combo callout system",
-  "Progress tracking & streaks",
-  "XP, levels & achievements",
-  "Training heatmap & personal records",
+  "Round timer with bell sounds & presets",
+  "Real-time combo callouts (audio + visual)",
+  "Progress tracking, streaks & heatmap",
+  "XP, levels & 25+ achievement badges",
+  "Personal records tracking",
   "Shareable workout cards",
+  "Offline support — no internet needed",
+  "No account required",
 ];
 
-const upcomingFeatures = [
-  "Social feed & friends",
+const proFeatures = [
+  "Custom workout builder",
+  "Cloud backup & sync across devices",
+  "Advanced analytics & training trends",
   "Structured training programs",
-  "Advanced analytics & trends",
-  "Cloud backup & sync",
 ];
 
 export default function PricingPage() {
   return (
     <div className="px-4 pt-8 pb-8 max-w-lg mx-auto">
       <h1 className="text-2xl font-bold text-center mb-2">
-        Everything is Free
+        Train Free. Forever.
       </h1>
       <p className="text-muted text-sm text-center mb-8">
-        All features unlocked. Train without limits.
+        The full training experience is free — no paywalls, no ads, no account needed.
       </p>
 
       <div className="space-y-4 stagger-children">
@@ -43,7 +44,7 @@ export default function PricingPage() {
             <span className="text-sm font-normal text-muted">/forever</span>
           </p>
           <ul className="space-y-2 mb-6">
-            {currentFeatures.map((f, i) => (
+            {freeFeatures.map((f, i) => (
               <li key={i} className="text-sm flex items-start gap-2">
                 <Check className="w-4 h-4 text-accent mt-0.5 shrink-0" />
                 {f}
@@ -65,13 +66,13 @@ export default function PricingPage() {
             <h2 className="text-lg font-bold">Pro — Coming Soon</h2>
           </div>
           <p className="text-sm text-muted mb-4">
-            We&apos;re building premium features. Your progress and data will
-            carry over when Pro launches.
+            We&apos;re building advanced tools for serious fighters.
+            Everything above stays free — Pro adds power features on top.
           </p>
           <ul className="space-y-2">
-            {upcomingFeatures.map((f, i) => (
+            {proFeatures.map((f, i) => (
               <li key={i} className="text-sm flex items-start gap-2 text-muted">
-                <Sparkles className="w-3.5 h-3.5 text-muted mt-0.5 shrink-0" />
+                <Lock className="w-3.5 h-3.5 text-muted mt-0.5 shrink-0" />
                 {f}
               </li>
             ))}
