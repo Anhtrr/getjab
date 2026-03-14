@@ -1,10 +1,12 @@
-const CACHE_NAME = "jab-v7";
+const CACHE_NAME = "jab-v8";
 const STATIC_ASSETS = [
   "/",
   "/timer/",
   "/workouts/",
   "/progress/",
   "/pricing/",
+  "/privacy/",
+  "/support/",
   "/learn/combos/",
   "/learn/first-workout/",
   "/manifest.json",
