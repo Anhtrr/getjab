@@ -9,14 +9,7 @@ export const metadata: Metadata = {
 export default function SupportPage() {
   return (
     <div className="px-4 pt-8 pb-8 max-w-lg mx-auto">
-      <Link
-        href="/"
-        className="text-muted text-sm hover:text-foreground mb-6 inline-block"
-      >
-        &larr; Home
-      </Link>
-
-      <h1 className="text-2xl font-bold mb-2">Support</h1>
+      <h1 className="text-2xl font-bold mb-2 animate-fade-in-up">Support</h1>
       <p className="text-muted text-sm mb-8">
         Need help? We&apos;re here for you.
       </p>
