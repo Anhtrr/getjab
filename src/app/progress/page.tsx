@@ -13,6 +13,7 @@ import PersonalRecordsList from "@/components/gamification/PersonalRecordsList";
 import DataManagement from "@/components/DataManagement";
 import WorkoutLogDetail from "@/components/WorkoutLogDetail";
 import { workouts } from "@/data/workouts";
+import Link from "next/link";
 import { Dumbbell, ChevronRight } from "lucide-react";
 import type { WorkoutLog } from "@/lib/types";
 
@@ -177,6 +178,15 @@ export default function ProgressPage() {
         {/* Data Management */}
         <div className="animate-fade-in-up" style={{ animationDelay: "420ms" }}>
           <DataManagement />
+        </div>
+
+        {/* Utility Links */}
+        <div className="animate-fade-in-up text-center text-xs text-muted pt-2 pb-4" style={{ animationDelay: "480ms" }}>
+          <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
+          <span className="mx-2">·</span>
+          <Link href="/support" className="hover:text-foreground transition-colors">Support</Link>
+          <span className="mx-2">·</span>
+          <Link href="/pricing" className="hover:text-foreground transition-colors">Pricing</Link>
         </div>
       </div>
 
