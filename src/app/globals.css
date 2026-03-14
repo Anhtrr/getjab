@@ -29,7 +29,7 @@ html, body {
   background-color: #0a0a0a;
 }
 
-/* Hide scrollbars globally — keep scroll, lose the bar */
+/* Hide scrollbars globally - keep scroll, lose the bar */
 ::-webkit-scrollbar {
   display: none;
 }
@@ -239,7 +239,7 @@ body {
     Helvetica, Arial, sans-serif;
 }
 
-/* Ambient glow layer — sits between html bg and body content */
+/* Ambient glow layer - sits between html bg and body content */
 body::before {
   content: "";
   position: fixed;

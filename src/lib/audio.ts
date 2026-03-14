@@ -1,7 +1,7 @@
 let audioContext: AudioContext | null = null;
 
 function getAudioContext(): AudioContext {
-  // iOS closes the context after background suspension — recreate if needed
+  // iOS closes the context after background suspension - recreate if needed
   if (audioContext && audioContext.state === "closed") {
     audioContext = null;
   }
@@ -17,7 +17,7 @@ function getAudioContext(): AudioContext {
 // ─── iOS keep-alive ───
 // iOS Safari suspends AudioContext after ~15s of inactivity.
 // A continuous silent oscillator (gain=0) keeps the context alive without
-// producing any audio output — so it won't interfere with speechSynthesis.
+// producing any audio output - so it won't interfere with speechSynthesis.
 
 let keepAliveOsc: OscillatorNode | null = null;
 let keepAliveGain: GainNode | null = null;
@@ -36,7 +36,7 @@ export function startAudioKeepAlive(): void {
     keepAliveOsc.connect(keepAliveGain);
     keepAliveOsc.start();
   } catch {
-    // ignore — context may be in a bad state
+    // ignore - context may be in a bad state
   }
 }
 
@@ -56,7 +56,7 @@ export function stopAudioKeepAlive(): void {
 
 function playBellStrike(ctx: AudioContext, startTime: number, volume: number = 0.5) {
   // Boxing ring bell: high-pitched, bright, metallic clang
-  // Fundamental — sharp metallic tone (~800Hz, typical boxing bell)
+  // Fundamental - sharp metallic tone (~800Hz, typical boxing bell)
   const fund = ctx.createOscillator();
   const fundGain = ctx.createGain();
   fund.type = "sine";
@@ -70,7 +70,7 @@ function playBellStrike(ctx: AudioContext, startTime: number, volume: number = 0
   fund.start(startTime);
   fund.stop(startTime + 0.8);
 
-  // Partial 2 — bright ring, non-harmonic (~2.7x for metallic character)
+  // Partial 2 - bright ring, non-harmonic (~2.7x for metallic character)
   const p2 = ctx.createOscillator();
   const p2Gain = ctx.createGain();
   p2.type = "sine";
@@ -84,7 +84,7 @@ function playBellStrike(ctx: AudioContext, startTime: number, volume: number = 0
   p2.start(startTime);
   p2.stop(startTime + 0.5);
 
-  // Partial 3 — high shimmer (~5.4x)
+  // Partial 3 - high shimmer (~5.4x)
   const p3 = ctx.createOscillator();
   const p3Gain = ctx.createGain();
   p3.type = "sine";
@@ -97,7 +97,7 @@ function playBellStrike(ctx: AudioContext, startTime: number, volume: number = 0
   p3.start(startTime);
   p3.stop(startTime + 0.2);
 
-  // Partial 4 — ultra-high sizzle for metallic brightness
+  // Partial 4 - ultra-high sizzle for metallic brightness
   const p4 = ctx.createOscillator();
   const p4Gain = ctx.createGain();
   p4.type = "sine";
@@ -157,7 +157,7 @@ export function playWarning() {
 
 export function initAudio() {
   const ctx = getAudioContext();
-  // Force the context active during user gesture — resume + play a tiny
+  // Force the context active during user gesture - resume + play a tiny
   // silent tone so iOS unlocks the audio session immediately.
   ctx.resume().then(() => {
     try {

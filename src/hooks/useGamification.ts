@@ -47,7 +47,7 @@ export function useGamification() {
   // Subscribe to version changes
   const version = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
-  // Compute full game state from current data — wrapped in try/catch
+  // Compute full game state from current data - wrapped in try/catch
   const gameState: GameState | null = useMemo(() => {
     if (typeof window === "undefined") return null;
 

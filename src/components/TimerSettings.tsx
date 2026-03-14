@@ -196,7 +196,7 @@ export default function TimerSettings({
               )}
             </button>
           ))}
-          {/* Save Current — only visible when expanded or few presets */}
+          {/* Save Current - only visible when expanded or few presets */}
           {(showAllPresets || presets.length <= 2) && (
             <button
               onClick={handleSavePreset}

@@ -296,7 +296,7 @@ export default function Timer() {
         {/* Opaque background */}
         <div className="absolute inset-0 bg-background" />
 
-        {/* Ambient glow — crossfade layers */}
+        {/* Ambient glow - crossfade layers */}
         {(["preparing", "resting", "warning", "running", "paused"] as const).map((glowState) => {
           const active =
             glowState === "warning"

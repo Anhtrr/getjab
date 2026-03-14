@@ -55,7 +55,7 @@ export default function AchievementGrid({ earned }: AchievementGridProps) {
             <button
               key={badge.id}
               onClick={() => setSelected(selected === badge.id ? null : badge.id)}
-              aria-label={`${badge.name}${isEarned ? " — earned" : " — locked"}`}
+              aria-label={`${badge.name}${isEarned ? ", earned" : ", locked"}`}
               className={`aspect-square rounded-xl flex items-center justify-center transition-all border ${
                 isEarned
                   ? `bg-surface/80 ${RARITY_BORDER[badge.rarity]} ${RARITY_GLOW[badge.rarity]}`

@@ -1050,7 +1050,7 @@ export const workouts: Workout[] = [
           "Pull - 2-3-2 (Cross-Hook-Cross)",
         ],
         tips: [
-          "Defense flows into offense seamlessly",
+          "Let your defense flow right into offense",
           "Every defense creates a counter opportunity",
         ],
       },
@@ -1209,7 +1209,7 @@ export const workouts: Workout[] = [
     equipment: ["Heavy bag"],
     isFree: true,
     rounds: [
-      // Round 1: Singles only — jabs and crosses
+      // Round 1: Singles only - jabs and crosses
       {
         type: "bagwork",
         durationSec: 180,
@@ -1219,27 +1219,27 @@ export const workouts: Workout[] = [
           "Single shots only. Focus on snapping the jab and sitting down on the cross. Every punch returns to guard.",
         combos: ["1 (Jab)", "2 (Cross)"],
         tips: [
-          "Pop the jab — fast out, fast back",
+          "Pop the jab. Fast out, fast back",
           "Rotate your hips fully on the cross",
           "Move your feet between shots",
         ],
       },
-      // Round 2: Power hooks & uppercuts — max 2-punch combos
+      // Round 2: Power hooks & uppercuts - max 2-punch combos
       {
         type: "bagwork",
         durationSec: 180,
         restSec: 90,
         title: "Power Hooks & Uppercuts",
         instructions:
-          "Hooks and uppercuts only. Throw singles or doubles max. Sit down on every shot — this is a power round.",
+          "Hooks and uppercuts only. Throw singles or doubles max. Sit down on every shot. This is a power round.",
         combos: ["3 (Lead Hook)", "4 (Rear Hook)", "5 (Lead Uppercut)", "6 (Rear Uppercut)", "3-4 (Hook-Hook)", "5-6 (Uppercut-Uppercut)"],
         tips: [
           "Turn your whole body into the hook",
-          "Short, tight arc — don't wind up",
+          "Short, tight arc. Don't wind up",
           "Uppercuts drive upward from the legs",
         ],
       },
-      // Round 3: Freeform — 3-punch combos
+      // Round 3: Freeform - 3-punch combos
       {
         type: "bagwork",
         durationSec: 180,
@@ -1250,10 +1250,10 @@ export const workouts: Workout[] = [
         combos: ["1-2-3 (Jab-Cross-Hook)", "1-1-2 (Jab-Jab-Cross)", "2-3-2 (Cross-Hook-Cross)"],
         tips: [
           "Every combo starts with a jab or a feint",
-          "Snap the last punch — don't let it die",
+          "Snap the last punch. Don't let it die",
         ],
       },
-      // Round 4: Freeform — adding body work
+      // Round 4: Freeform - adding body work
       {
         type: "bagwork",
         durationSec: 180,
@@ -1263,11 +1263,11 @@ export const workouts: Workout[] = [
           "Mix levels. Go upstairs and downstairs. Dig to the body then come back up top.",
         combos: ["1-2-3body (Jab-Cross-Body Hook)", "1-2body-3 (Jab-Body Cross-Hook)", "1-2-5body-2 (Jab-Cross-Body Uppercut-Cross)"],
         tips: [
-          "Bend your knees to go to the body — don't just lean",
+          "Bend your knees to go to the body. Don't just lean",
           "Come back upstairs with authority",
         ],
       },
-      // Round 5: Freeform — 4-punch combos with defense
+      // Round 5: Freeform - 4-punch combos with defense
       {
         type: "bagwork",
         durationSec: 180,
@@ -1281,7 +1281,7 @@ export const workouts: Workout[] = [
           "Slip or roll after every combo",
         ],
       },
-      // Round 6: Freeform — mixing everything, 4-5 punch
+      // Round 6: Freeform - mixing everything, 4-5 punch
       {
         type: "bagwork",
         durationSec: 180,
@@ -1295,7 +1295,7 @@ export const workouts: Workout[] = [
           "Throw combos from different angles",
         ],
       },
-      // Round 7: Freeform — hardest combos, 5-6 punch
+      // Round 7: Freeform - hardest combos, 5-6 punch
       {
         type: "bagwork",
         durationSec: 180,
@@ -1305,11 +1305,11 @@ export const workouts: Workout[] = [
           "Dig deep. Long combinations with power on every shot. Move your head between combos. Fight like it's the last round.",
         combos: ["1-2-3-2-1-2 (Jab-Cross-Hook-Cross-Jab-Cross)", "1-2-5body-2-3-2 (Jab-Cross-Body Uppercut-Cross-Hook-Cross)", "1-1-2-3-4-2 (Jab-Jab-Cross-Hook-Hook-Cross)"],
         tips: [
-          "Don't slow down — empty the tank",
+          "Don't slow down. Empty the tank",
           "Snap every punch, even when tired",
         ],
       },
-      // Round 8: Burnout — 1:30 jab-cross, 20s rest, 1:30 body hooks
+      // Round 8: Burnout - 1:30 jab-cross, 20s rest, 1:30 body hooks
       {
         type: "conditioning",
         durationSec: 90,
@@ -1319,9 +1319,9 @@ export const workouts: Workout[] = [
           "Non-stop jab-cross for 90 seconds. Don't stop. Short, fast punches. Breathe through it.",
         combos: ["1-2 (Jab-Cross)"],
         tips: [
-          "Short punches — don't overextend",
+          "Short punches. Don't overextend",
           "Exhale on every punch",
-          "Your arms will burn — keep going",
+          "Your arms will burn. Keep going",
         ],
       },
       // Round 9: Burnout part 2
@@ -1334,9 +1334,9 @@ export const workouts: Workout[] = [
           "Non-stop body hooks for 90 seconds. Alternate left and right. Dig deep and rip to the body.",
         combos: ["3body-4body (Body Hook-Body Hook)"],
         tips: [
-          "Stay low — bend your knees",
+          "Stay low, bend your knees",
           "Turn into every hook",
-          "This is the hardest part — don't quit",
+          "This is the hardest part. Don't quit",
         ],
       },
       // Round 10: Closer
@@ -1349,7 +1349,7 @@ export const workouts: Workout[] = [
           "Last round. You survived the burnout. Move and pick your shots. Throw what feels good. Leave it all on the bag.",
         combos: ["1-2-3 (Jab-Cross-Hook)", "1-2-3-2 (Jab-Cross-Hook-Cross)", "1-2-5-2-3 (Jab-Cross-Uppercut-Cross-Hook)"],
         tips: [
-          "Compose yourself — clean technique to finish",
+          "Compose yourself. Clean technique to finish",
           "End the last 30 seconds with everything you've got",
         ],
       },

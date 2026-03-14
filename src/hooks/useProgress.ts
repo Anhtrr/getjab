@@ -44,7 +44,7 @@ function dayDiff(a: string, b: string): number {
 export function useProgress() {
   const logsJson = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
-  // Memoize everything derived from logs — no redundant localStorage reads
+  // Memoize everything derived from logs - no redundant localStorage reads
   const { logs, streak, workoutDates, totalWorkouts } = useMemo(() => {
     const parsed: WorkoutLog[] = JSON.parse(logsJson);
 

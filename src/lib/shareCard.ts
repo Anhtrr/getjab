@@ -94,7 +94,7 @@ export async function generateShareCard(
   // ─── Background ───
   drawCardBackground(ctx);
 
-  // ─── Date (top center — safe from profile pic overlay) ───
+  // ─── Date (top center - safe from profile pic overlay) ───
   ctx.textAlign = "center";
   ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
   ctx.font = `400 22px ${FONT}`;
@@ -239,21 +239,21 @@ export async function generateShareCard(
     ctx.fillText(`🔥 ${data.streakCurrent} day streak`, CARD_W / 2, CARD_H - 340);
   }
 
-  // "FIGHTERS DON'T QUIT" — motivational tagline
+  // "FIGHTERS DON'T QUIT" - motivational tagline
   ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
   ctx.font = `600 22px ${FONT}`;
   ctx.letterSpacing = "5px";
   ctx.fillText("FIGHTERS DON'T QUIT", CARD_W / 2 + 3, CARD_H - 270);
   ctx.letterSpacing = "0px";
 
-  // "JAB" — large brand mark (the thing we want viewers to remember)
+  // "JAB" - large brand mark (the thing we want viewers to remember)
   ctx.fillStyle = "#00e5ff";
   ctx.font = `800 56px ${FONT}`;
   ctx.letterSpacing = "12px";
   ctx.fillText("JAB", CARD_W / 2 + 6, CARD_H - 200);
   ctx.letterSpacing = "0px";
 
-  // @handle — what to search for
+  // @handle - what to search for
   ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
   ctx.font = `400 20px ${FONT}`;
   ctx.fillText("@getjabapp", CARD_W / 2, CARD_H - 160);
@@ -388,7 +388,7 @@ export async function sharePRCard(
 ): Promise<void> {
   const blob = await generatePRCard(data);
   const file = new File([blob], "jab-pr.png", { type: "image/png" });
-  const shareText = `New Personal Record: ${data.prLabel} — ${data.value} ${data.prUnit} | Level ${data.level} ${data.title} | @getjabapp`;
+  const shareText = `New Personal Record: ${data.prLabel} - ${data.value} ${data.prUnit} | Level ${data.level} ${data.title} | @getjabapp`;
 
   await shareOrDownload(file, shareText, "jab-pr.png");
 }
@@ -414,14 +414,14 @@ export async function generateLevelUpCard(
   ctx.fillStyle = "#0a0a0a";
   ctx.fillRect(0, 0, CARD_W, CARD_H);
 
-  // Centered cyan glow — stronger for celebration
+  // Centered cyan glow - stronger for celebration
   const glowCenter = ctx.createRadialGradient(CARD_W / 2, CARD_H / 2 - 100, 0, CARD_W / 2, CARD_H / 2 - 100, 600);
   glowCenter.addColorStop(0, "rgba(0, 229, 255, 0.18)");
   glowCenter.addColorStop(1, "rgba(0, 229, 255, 0)");
   ctx.fillStyle = glowCenter;
   ctx.fillRect(0, 0, CARD_W, CARD_H);
 
-  // Red accent glow — bottom
+  // Red accent glow - bottom
   const glowBot = ctx.createRadialGradient(CARD_W / 2, CARD_H - 200, 0, CARD_W / 2, CARD_H - 200, 400);
   glowBot.addColorStop(0, "rgba(255, 60, 40, 0.08)");
   glowBot.addColorStop(1, "rgba(255, 60, 40, 0)");

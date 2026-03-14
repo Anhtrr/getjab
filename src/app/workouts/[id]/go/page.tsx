@@ -212,7 +212,7 @@ export default function WorkoutGoPage() {
   const tick = useCallback(() => {
     if (stateRef.current !== "running" || !workout) return;
 
-    // Wall-clock derived remaining time — eliminates drift
+    // Wall-clock derived remaining time - eliminates drift
     const remaining = Math.max(0, Math.ceil((endTimeRef.current - Date.now()) / 1000));
     setSecondsLeft(remaining);
 
@@ -414,7 +414,7 @@ export default function WorkoutGoPage() {
         caloriesEstimate: completedCalories || undefined,
       });
     } catch {
-      // User cancelled or share failed — silently ignore
+      // User cancelled or share failed - silently ignore
     } finally {
       setIsSharing(false);
     }
@@ -430,7 +430,7 @@ export default function WorkoutGoPage() {
       setRoundsCompleted((p) => p + 1);
 
       if (roundIdx >= workout.rounds.length - 1) {
-        // Last round — complete
+        // Last round - complete
         setState("complete");
         setWorkoutComplete(true);
         setShowRating(true);
@@ -555,7 +555,7 @@ export default function WorkoutGoPage() {
         <p className="text-muted text-lg mb-2">{workout.title}</p>
         <p className="text-muted mb-4">
           {roundsCompleted} of {workout.rounds.length} rounds completed
-          {rated && " — Logged!"}
+          {rated && " - Logged!"}
         </p>
 
         {/* Stats summary */}
@@ -659,7 +659,7 @@ export default function WorkoutGoPage() {
     );
   }
 
-  // Restored paused state — show resume prompt
+  // Restored paused state - show resume prompt
   if (state === "paused" && hasSavedState) {
     return (
       <div className="fixed inset-0 bg-background flex flex-col items-center justify-center px-4" style={{ zIndex: 9999 }}>
@@ -671,7 +671,7 @@ export default function WorkoutGoPage() {
         </div>
         <p className="text-muted text-sm mb-1">
           Round {currentRoundIndex + 1} of {workout.rounds.length}
-          {isResting ? " (Rest)" : ` — ${currentRound.title}`}
+          {isResting ? " (Rest)" : ` - ${currentRound.title}`}
         </p>
         <p className="text-muted text-xs mb-8">
           {roundsCompleted} rounds completed
@@ -712,7 +712,7 @@ export default function WorkoutGoPage() {
     );
   }
 
-  // Preparing state — full-screen countdown
+  // Preparing state - full-screen countdown
   if (state === "preparing") {
     return (
       <div className="fixed inset-0" style={{ zIndex: 9999 }}>
@@ -771,7 +771,7 @@ export default function WorkoutGoPage() {
       {/* Opaque background */}
       <div className="absolute inset-0 bg-background" />
 
-      {/* Ambient background glow — crossfade layers */}
+      {/* Ambient background glow - crossfade layers */}
       {(["preparing", "resting", "warning", "running", "paused"] as const).map((glowState) => {
         const isActive =
           glowState === "warning"
@@ -846,7 +846,7 @@ export default function WorkoutGoPage() {
         <div className="w-full max-w-lg">
           {!isResting ? (
             <>
-              {/* Instructions & tips — only visible when paused */}
+              {/* Instructions & tips - only visible when paused */}
               {state === "paused" && (
                 <div className="max-w-lg mx-auto mb-4">
                   <h2 className="font-bold text-xl mb-2 text-center">{currentRound.title}</h2>
@@ -877,7 +877,7 @@ export default function WorkoutGoPage() {
                   )}
                 </div>
               )}
-              {/* Live combo callout — only during running */}
+              {/* Live combo callout - only during running */}
               {currentRound.combos && currentRound.combos.length > 0 && hasCallableCombos && state === "running" && (
                 <ComboCallout state={calloutState} />
               )}

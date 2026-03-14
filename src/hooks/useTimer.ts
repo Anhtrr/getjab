@@ -106,7 +106,7 @@ export function useTimer(
 
     if (currentState !== "running" && currentState !== "resting" && currentState !== "preparing") return;
 
-    // Derive seconds from wall clock — eliminates drift
+    // Derive seconds from wall clock - eliminates drift
     const remaining = Math.max(0, Math.ceil((endTimeRef.current - Date.now()) / 1000));
     setSecondsLeft(remaining);
 
@@ -264,7 +264,7 @@ export function useTimer(
     if (cur === "running") {
       onRoundEnd?.();
       if (roundRef.current >= s.rounds) {
-        // Last round — complete
+        // Last round - complete
         const completedAt = new Date().toISOString();
         const startedAt = startedAtRef.current || completedAt;
         const elapsed = (new Date(completedAt).getTime() - new Date(startedAt).getTime()) / 60000;

@@ -34,9 +34,9 @@ export function startTTSKeepAlive(): void {
   keepAliveInterval = setInterval(() => {
     if (typeof window === "undefined" || !window.speechSynthesis) return;
     // Only fire if nothing is speaking AND nothing is queued (pending)
-    // — avoids canceling real combo utterances that haven't started yet
+    // - avoids canceling real combo utterances that haven't started yet
     if (!window.speechSynthesis.speaking && !window.speechSynthesis.pending) {
-      // cancel() resets iOS's internal speech engine state — without this,
+      // cancel() resets iOS's internal speech engine state - without this,
       // iOS Safari freezes speechSynthesis after too many queued utterances
       window.speechSynthesis.cancel();
       const silent = new SpeechSynthesisUtterance("");
@@ -53,7 +53,7 @@ export function stopTTSKeepAlive(): void {
   }
 }
 
-/** Initialize audio — call on user gesture (e.g., start button click) */
+/** Initialize audio - call on user gesture (e.g., start button click) */
 export function initComboAudio(): void {
   if (typeof window === "undefined" || !window.speechSynthesis) return;
 

@@ -222,7 +222,7 @@ export default function FirstWorkoutPage() {
         &larr; Home
       </Link>
 
-      {/* Progress dots — tappable */}
+      {/* Progress dots - tappable */}
       <div className="flex gap-1.5 mb-8">
         {steps.map((_, i) => (
           <button
@@ -296,7 +296,7 @@ export default function FirstWorkoutPage() {
         )}
       </div>
 
-      {/* Swipe hint — only on first step */}
+      {/* Swipe hint - only on first step */}
       {currentStep === 0 && (
         <p className="text-center text-xs text-muted mt-6 animate-fade-in">
           Swipe to continue

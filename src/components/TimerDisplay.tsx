@@ -147,7 +147,7 @@ function TimerDisplay({
           </div>
         )}
 
-        {/* Timer digits — large and dominant (triple-tap to skip) */}
+        {/* Timer digits - large and dominant (triple-tap to skip) */}
         <div className="relative" onClick={handleCountdownTap}>
           {/* Glow backdrop */}
           {isActive && (

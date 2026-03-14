@@ -376,7 +376,7 @@ export default function Home() {
             className="space-y-3 animate-fade-in-up"
             style={{ animationDelay: nextDelay() }}
           >
-            {/* "New to Boxing?" — only for users with 1-2 workouts (new users have it in Welcome Hero) */}
+            {/* "New to Boxing?" - only for users with 1-2 workouts (new users have it in Welcome Hero) */}
             {!isNewUser && (
               <Link
                 href="/learn/first-workout"

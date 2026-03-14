@@ -123,7 +123,7 @@ export default function ScrollPicker({
         }}
       />
 
-      {/* Fade edges — transparent black to blend with any parent background */}
+      {/* Fade edges - transparent black to blend with any parent background */}
       <div
         className="absolute top-0 left-0 right-0 pointer-events-none z-20"
         style={{

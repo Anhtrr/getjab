@@ -28,7 +28,7 @@ export default function OgImagePage() {
 
   return (
     <div style={{ background: "#000", padding: 0, margin: 0 }}>
-      {/* OG Image Canvas — exactly 1200x630. Right-click → Capture node screenshot */}
+      {/* OG Image Canvas - exactly 1200x630. Right-click → Capture node screenshot */}
       <div
         id="og-canvas"
         className="relative overflow-hidden"
@@ -111,7 +111,7 @@ export default function OgImagePage() {
                 marginBottom: 16,
               }}
             >
-              Free — No Ads, No Account
+              Free / No Ads / No Account
             </p>
             <p
               style={{

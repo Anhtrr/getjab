@@ -76,7 +76,7 @@ export function parseCombo(raw: string): ParsedCombo {
       const reg = PUNCH_REGISTRY[num];
       punches.push({ number: num, ...reg });
     } else {
-      // Unrecognized token — freeform
+      // Unrecognized token - freeform
       isCallable = false;
       break;
     }

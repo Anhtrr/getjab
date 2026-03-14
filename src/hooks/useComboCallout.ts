@@ -134,12 +134,12 @@ export function useComboCallout(
   }, [combosKey, resetToIdle]);
 
   // Fire a callout: enter → hold → exit lifecycle
-  // CSS animation-delay handles the per-punch stagger — no JS timeouts per punch
+  // CSS animation-delay handles the per-punch stagger - no JS timeouts per punch
   const fireCallout = useCallback((combo: ParsedCombo) => {
     clearAllTimeouts();
     const s = settingsRef.current;
 
-    // Phase 1: ENTERING — all punches set immediately, CSS staggers the reveal
+    // Phase 1: ENTERING - all punches set immediately, CSS staggers the reveal
     phaseRef.current = "entering";
     setCalloutState((prev) => ({
       ...prev,
@@ -156,7 +156,7 @@ export function useComboCallout(
     const enterDone = (combo.punches.length - 1) * STAGGER_MS + SLAM_DURATION_MS;
     const holdDuration = getHold(s.pacing, combo.punches.length) * 1000;
 
-    // Phase 2: HOLDING — all punches visible, subtle breathe animation
+    // Phase 2: HOLDING - all punches visible, subtle breathe animation
     const holdTimeout = setTimeout(() => {
       phaseRef.current = "holding";
       setCalloutState((prev) => ({
@@ -166,7 +166,7 @@ export function useComboCallout(
     }, enterDone);
     timeoutsRef.current.push(holdTimeout);
 
-    // Phase 3: EXITING — fade out
+    // Phase 3: EXITING - fade out
     const exitTimeout = setTimeout(() => {
       phaseRef.current = "exiting";
       setCalloutState((prev) => ({
@@ -176,7 +176,7 @@ export function useComboCallout(
     }, enterDone + holdDuration);
     timeoutsRef.current.push(exitTimeout);
 
-    // Phase 4: IDLE — clean slate
+    // Phase 4: IDLE - clean slate
     const idleTimeout = setTimeout(() => {
       phaseRef.current = "idle";
       setCalloutState((prev) => ({

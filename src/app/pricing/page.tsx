@@ -11,7 +11,7 @@ const freeFeatures = [
   "XP, levels & 25+ achievement badges",
   "Personal records tracking",
   "Shareable workout cards",
-  "Offline support — no internet needed",
+  "Works offline, no internet needed",
   "No account required",
 ];
 
@@ -29,7 +29,7 @@ export default function PricingPage() {
         Train Free. Forever.
       </h1>
       <p className="text-muted text-sm text-center mb-8">
-        The full training experience is free — no paywalls, no ads, no account needed.
+        The full training experience is free. No paywalls, no ads, no account needed.
       </p>
 
       <div className="space-y-4 stagger-children">
@@ -63,11 +63,11 @@ export default function PricingPage() {
         <div className="card-glass rounded-2xl p-6 animate-fade-in-up opacity-70">
           <div className="flex items-center gap-2 mb-3">
             <Sparkles className="w-5 h-5 text-accent" />
-            <h2 className="text-lg font-bold">Pro — Coming Soon</h2>
+            <h2 className="text-lg font-bold">Pro (Coming Soon)</h2>
           </div>
           <p className="text-sm text-muted mb-4">
             We&apos;re building advanced tools for serious fighters.
-            Everything above stays free — Pro adds power features on top.
+            Everything above stays free. Pro adds power features on top.
           </p>
           <ul className="space-y-2">
             {proFeatures.map((f, i) => (

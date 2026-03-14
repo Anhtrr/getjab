@@ -10,7 +10,7 @@ import {
 } from "@/lib/audio";
 
 export function useAudio() {
-  // Always call initAudio on user gestures — it resumes the AudioContext
+  // Always call initAudio on user gestures - it resumes the AudioContext
   // and starts the keep-alive. No guard needed; initAudio is idempotent.
   const init = useCallback(() => {
     initAudio();
