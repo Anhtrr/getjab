@@ -269,11 +269,6 @@ body::before {
     );
 }
 
-/* Hide navbar when a modal sheet is open */
-body[data-modal-open] nav {
-  display: none;
-}
-
 /* ─── Safe Area ─── */
 
 .pt-safe {

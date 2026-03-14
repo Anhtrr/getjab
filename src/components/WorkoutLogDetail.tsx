@@ -52,8 +52,6 @@ export default function WorkoutLogDetail({ log, onClose }: Props) {
   const dismiss = useCallback(() => {
     setDismissing(true);
     setTimeout(() => {
-      // Reset body scroll lock and restore navbar BEFORE unmount
-      document.body.removeAttribute("data-modal-open");
       document.body.style.position = "";
       document.body.style.top = "";
       document.body.style.left = "";
@@ -64,7 +62,7 @@ export default function WorkoutLogDetail({ log, onClose }: Props) {
     }, 300);
   }, [onClose]);
 
-  // Lock body scroll and hide navbar when modal is open
+  // Lock body scroll when modal is open (navbar stays visible behind backdrop)
   useEffect(() => {
     scrollYRef.current = window.scrollY;
     document.body.style.position = "fixed";
@@ -72,11 +70,8 @@ export default function WorkoutLogDetail({ log, onClose }: Props) {
     document.body.style.left = "0";
     document.body.style.right = "0";
     document.body.style.overflow = "hidden";
-    document.body.setAttribute("data-modal-open", "true");
 
     return () => {
-      document.body.removeAttribute("data-modal-open");
-      // Only reset if not already done by dismiss()
       if (document.body.style.position === "fixed") {
         document.body.style.position = "";
         document.body.style.top = "";
@@ -185,7 +180,7 @@ export default function WorkoutLogDetail({ log, onClose }: Props) {
       <div
         ref={sheetRef}
         className={`relative w-full max-w-lg bg-surface rounded-t-3xl p-6 max-h-[85vh] overflow-y-auto overscroll-contain ${dismissing ? "" : "animate-slide-in-bottom"}`}
-        style={{ ...sheetStyle, paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 5rem)" }}
+        style={{ ...sheetStyle, paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 1.5rem)" }}
         onClick={(e) => e.stopPropagation()}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
