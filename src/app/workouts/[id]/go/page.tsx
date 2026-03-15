@@ -304,6 +304,7 @@ export default function WorkoutGoPage() {
         warningFiredRef.current = false;
         audio.playRoundStart();
         if (hapticEnabledRef.current) vibrateRoundStart();
+        announceRound(workout.rounds[nextIdx].title);
         return;
       }
 
