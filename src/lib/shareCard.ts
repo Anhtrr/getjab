@@ -1,3 +1,6 @@
+import { Capacitor } from "@capacitor/core";
+import { Share } from "@capacitor/share";
+import { Filesystem, Directory } from "@capacitor/filesystem";
 import type { BoxingTitle } from "./gamification/types";
 
 export interface ShareCardData {
@@ -590,10 +593,26 @@ function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
 }
 
 async function shareOrDownload(file: File, _shareText: string, filename: string): Promise<void> {
-  if (navigator.share) {
+  // On native iOS, use Capacitor's native share for proper "Save Image" support
+  if (Capacitor.isNativePlatform()) {
     try {
-      // Only pass files - adding text causes iOS to save a separate text file
-      await navigator.share({ files: [file] });
+      const reader = new FileReader();
+      const base64 = await new Promise<string>((resolve, reject) => {
+        reader.onload = () => {
+          const result = reader.result as string;
+          resolve(result.split(",")[1]);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const saved = await Filesystem.writeFile({
+        path: filename,
+        data: base64,
+        directory: Directory.Cache,
+      });
+
+      await Share.share({ files: [saved.uri] });
       return;
     } catch (e) {
       if (e instanceof Error && e.name === "AbortError") return;
@@ -601,6 +620,17 @@ async function shareOrDownload(file: File, _shareText: string, filename: string)
     }
   }
 
+  // Web/PWA: use navigator.share
+  if (navigator.share) {
+    try {
+      await navigator.share({ files: [file] });
+      return;
+    } catch (e) {
+      if (e instanceof Error && e.name === "AbortError") return;
+    }
+  }
+
+  // Fallback: download
   const url = URL.createObjectURL(file);
   const a = document.createElement("a");
   a.href = url;
