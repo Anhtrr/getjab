@@ -7,11 +7,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Enable elastic scroll bounce after the bridge loads
         DispatchQueue.main.async {
-            if let vc = self.window?.rootViewController as? CAPBridgeViewController {
-                vc.webView?.scrollView.bounces = true
-                vc.webView?.scrollView.alwaysBounceVertical = true
+            if let vc = self.window?.rootViewController as? CAPBridgeViewController,
+               let webView = vc.webView {
+                let bgColor = UIColor(red: 10/255, green: 10/255, blue: 10/255, alpha: 1) // #0a0a0a
+
+                // Match the scroll bounce background to the app background
+                webView.scrollView.backgroundColor = bgColor
+                webView.backgroundColor = bgColor
+                webView.isOpaque = false
+
+                // Enable vertical bounce only
+                webView.scrollView.bounces = true
+                webView.scrollView.alwaysBounceVertical = false
+                webView.scrollView.alwaysBounceHorizontal = false
+
+                // Prevent horizontal scrolling entirely
+                webView.scrollView.showsHorizontalScrollIndicator = false
+                webView.scrollView.showsVerticalScrollIndicator = false
             }
         }
         return true
