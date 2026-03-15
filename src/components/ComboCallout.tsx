@@ -196,9 +196,9 @@ export function ComboCallout({
 // ─── Pacing Selector ───
 
 const PACING_OPTIONS: { value: CalloutPacing; label: string; desc: string }[] = [
-  { value: "slow", label: "Slow", desc: "14s intervals" },
-  { value: "medium", label: "Medium", desc: "9s intervals" },
-  { value: "fast", label: "Fast", desc: "5s intervals" },
+  { value: "slow", label: "Slow", desc: "More time per combo" },
+  { value: "medium", label: "Medium", desc: "Balanced pace" },
+  { value: "fast", label: "Fast", desc: "Less time per combo" },
   { value: "progressive", label: "Progressive", desc: "Speeds up" },
 ];
 

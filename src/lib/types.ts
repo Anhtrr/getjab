@@ -110,9 +110,9 @@ export interface CalloutSettings {
 
 export const PACING_CONFIG: Record<
   Exclude<CalloutPacing, "progressive">,
-  { interval: number; hold: number; endBuffer: number }
+  { baseInterval: number; perPunch: number; hold: number; endBuffer: number }
 > = {
-  slow: { interval: 14, hold: 3.5, endBuffer: 6 },
-  medium: { interval: 9, hold: 2.5, endBuffer: 5 },
-  fast: { interval: 5, hold: 2, endBuffer: 3 },
+  slow: { baseInterval: 4, perPunch: 2, hold: 3.5, endBuffer: 6 },
+  medium: { baseInterval: 2.5, perPunch: 1.5, hold: 2.5, endBuffer: 5 },
+  fast: { baseInterval: 1.5, perPunch: 1, hold: 2, endBuffer: 3 },
 };

@@ -40,15 +40,14 @@ function saveSettings(settings: CalloutSettings): void {
   } catch {}
 }
 
-function getInterval(pacing: CalloutPacing, elapsedRatio: number): number {
+function getInterval(pacing: CalloutPacing, punchCount: number, elapsedRatio: number): number {
   if (pacing === "progressive") {
-    return lerp(
-      PACING_CONFIG.slow.interval,
-      PACING_CONFIG.fast.interval,
-      elapsedRatio,
-    );
+    const slowInterval = PACING_CONFIG.slow.baseInterval + PACING_CONFIG.slow.perPunch * punchCount;
+    const fastInterval = PACING_CONFIG.fast.baseInterval + PACING_CONFIG.fast.perPunch * punchCount;
+    return lerp(slowInterval, fastInterval, elapsedRatio);
   }
-  return PACING_CONFIG[pacing].interval;
+  const config = PACING_CONFIG[pacing];
+  return config.baseInterval + config.perPunch * punchCount;
 }
 
 function getHold(pacing: CalloutPacing, punchCount: number): number {
@@ -208,9 +207,10 @@ export function useComboCallout(
       const combo = callable[rotationIndexRef.current % callable.length];
       rotationIndexRef.current++;
 
-      // Calculate next interval
+      // Calculate next interval based on the combo's punch count
       const elapsedRatio = elapsed / roundDurationSec;
-      const interval = getInterval(s.pacing, elapsedRatio);
+      const punchCount = combo.punches.filter(p => p.type !== "defense").length || 1;
+      const interval = getInterval(s.pacing, punchCount, elapsedRatio);
       nextCalloutAtRef.current = elapsed + interval;
 
       setCalloutState((prev) => ({
