@@ -288,6 +288,9 @@ export default function WorkoutGoPage() {
           endTimeRef.current = Date.now() + round.restSec * 1000;
           setSecondsLeft(round.restSec);
           warningFiredRef.current = false;
+          // Announce the next round during rest so the user knows what's coming
+          const nextRound = workout.rounds[roundIdx + 1];
+          if (nextRound) announceRound(nextRound.title);
           return;
         }
 
@@ -301,7 +304,6 @@ export default function WorkoutGoPage() {
         warningFiredRef.current = false;
         audio.playRoundStart();
         if (hapticEnabledRef.current) vibrateRoundStart();
-        announceRound(workout.rounds[nextIdx].title);
         return;
       }
 
@@ -310,7 +312,6 @@ export default function WorkoutGoPage() {
       if (nextIdx >= workout.rounds.length) return;
       audio.playRoundStart();
       if (hapticEnabledRef.current) vibrateRoundStart();
-      announceRound(workout.rounds[nextIdx].title);
       setCurrentRoundIndex(nextIdx);
       currentRoundIndexRef.current = nextIdx;
       setIsResting(false);
@@ -333,8 +334,7 @@ export default function WorkoutGoPage() {
     intervalRef.current = setInterval(tick, 250);
     audio.playRoundStart();
     if (hapticEnabledRef.current) vibrateRoundStart();
-    if (workout.rounds[0]) announceRound(workout.rounds[0].title);
-  }, [workout, audio, tick, clearTimer, announceRound]);
+  }, [workout, audio, tick, clearTimer]);
 
   const startWorkout = useCallback(() => {
     if (!workout) return;
@@ -359,6 +359,9 @@ export default function WorkoutGoPage() {
 
     setPrepCountdown(prepDuration);
     setState("preparing");
+
+    // Announce round 1 during prep
+    if (workout.rounds[0]) announceRound(workout.rounds[0].title);
 
     // Clear any existing prep interval
     if (prepIntervalRef.current) clearInterval(prepIntervalRef.current);
