@@ -27,6 +27,9 @@
 /* ─── Overscroll background ─── */
 html, body {
   background-color: #0a0a0a;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 /* Hide scrollbars globally - keep scroll, lose the bar */
