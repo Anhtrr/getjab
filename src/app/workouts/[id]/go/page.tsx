@@ -479,6 +479,7 @@ export default function WorkoutGoPage() {
     const cur = stateRef.current;
 
     if (cur === "running" && !isRestingRef.current) {
+      cancelSpeech();
       const roundIdx = currentRoundIndexRef.current;
       const round = workout.rounds[roundIdx];
       setRoundsCompleted((p) => p + 1);
@@ -501,6 +502,8 @@ export default function WorkoutGoPage() {
         endTimeRef.current = Date.now() + round.restSec * 1000;
         setSecondsLeft(round.restSec);
         warningFiredRef.current = false;
+        const nextRound = workout.rounds[roundIdx + 1];
+        if (nextRound) announceRound(nextRound.title);
         return;
       }
 
@@ -512,11 +515,13 @@ export default function WorkoutGoPage() {
       endTimeRef.current = Date.now() + workout.rounds[nextIdx].durationSec * 1000;
       setSecondsLeft(workout.rounds[nextIdx].durationSec);
       warningFiredRef.current = false;
+      announceRound(workout.rounds[nextIdx].title);
       return;
     }
 
     if (cur === "running" && isRestingRef.current) {
       // Skip rest → next round
+      cancelSpeech();
       const nextIdx = currentRoundIndexRef.current + 1;
       if (nextIdx >= workout.rounds.length) return;
       setCurrentRoundIndex(nextIdx);
@@ -526,9 +531,10 @@ export default function WorkoutGoPage() {
       endTimeRef.current = Date.now() + workout.rounds[nextIdx].durationSec * 1000;
       setSecondsLeft(workout.rounds[nextIdx].durationSec);
       warningFiredRef.current = false;
+      announceRound(workout.rounds[nextIdx].title);
       return;
     }
-  }, [workout, clearTimer]);
+  }, [workout, clearTimer, announceRound]);
 
   const handleCountdownTap = useCallback(() => {
     if (state !== "running") return;
