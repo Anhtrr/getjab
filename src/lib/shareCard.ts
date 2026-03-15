@@ -622,21 +622,23 @@ async function shareOrDownload(file: File, _shareText: string, filename: string)
 
   // Web/PWA: use navigator.share
   if (navigator.share) {
-    try {
-      await navigator.share({ files: [file] });
-      return;
-    } catch (e) {
-      if (e instanceof Error && e.name === "AbortError") return;
+    // Check file sharing support first
+    const canShareFiles = navigator.canShare?.({ files: [file] });
+    if (canShareFiles) {
+      try {
+        await navigator.share({ files: [file] });
+        return;
+      } catch (e) {
+        if (e instanceof Error && e.name === "AbortError") return;
+        // User gesture may have expired from async canvas generation.
+        // Fall through to open image directly.
+      }
     }
   }
 
-  // Fallback: download
+  // Fallback: open image in new tab so user can long-press to save
   const url = URL.createObjectURL(file);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
+  window.open(url, "_blank");
 }
 
 function wrapText(
