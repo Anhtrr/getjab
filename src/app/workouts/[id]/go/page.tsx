@@ -353,6 +353,7 @@ export default function WorkoutGoPage() {
     const prepDuration = prepTimeSec;
 
     if (prepDuration <= 0) {
+      if (workout.rounds[0]) announceRound(workout.rounds[0].title);
       beginRound1();
       return;
     }

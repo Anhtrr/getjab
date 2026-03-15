@@ -16,7 +16,7 @@ const STORAGE_KEY = "jab_callout_settings";
 const STAGGER_MS = 150;
 const SLAM_DURATION_MS = 350;
 const EXIT_DURATION_MS = 400;
-const FIRST_CALLOUT_AT = 2; // seconds elapsed before first callout
+const FIRST_CALLOUT_AT = 3; // seconds elapsed before first callout (allows round title announcement to finish)
 
 function lerp(a: number, b: number, t: number): number {
   return a + (b - a) * Math.max(0, Math.min(1, t));
