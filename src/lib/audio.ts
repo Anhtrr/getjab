@@ -1,8 +1,9 @@
 let audioContext: AudioContext | null = null;
 
 function getAudioContext(): AudioContext {
-  // iOS closes the context after background suspension - recreate if needed
-  if (audioContext && audioContext.state === "closed") {
+  // iOS can close or interrupt the context after suspension - recreate if needed
+  if (audioContext && (audioContext.state === "closed" || audioContext.state as string === "interrupted")) {
+    try { audioContext.close(); } catch {}
     audioContext = null;
   }
   if (!audioContext) {
@@ -156,6 +157,11 @@ export function playWarning() {
 }
 
 export function initAudio() {
+  // If the existing context is not running, force a fresh one
+  if (audioContext && audioContext.state !== "running" && audioContext.state !== "suspended") {
+    try { audioContext.close(); } catch {}
+    audioContext = null;
+  }
   const ctx = getAudioContext();
   // Force the context active during user gesture - resume + play a tiny
   // silent tone so iOS unlocks the audio session immediately.
