@@ -94,7 +94,7 @@ export default function Navigation() {
   if (pathname.endsWith("/go") || pathname.includes("/go")) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 glass border-t border-white/5 z-50" aria-label="Main navigation">
+    <nav className="fixed bottom-0 left-0 right-0 glass border-t border-white/5 z-50" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }} aria-label="Main navigation">
       <div className="max-w-lg mx-auto flex justify-around items-center h-16" role="tablist">
         {tabs.map((tab) => {
           const isActive =
