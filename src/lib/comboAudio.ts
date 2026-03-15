@@ -119,6 +119,23 @@ export function speakCombo(
   window.speechSynthesis.speak(utterance);
 }
 
+/** Speak arbitrary text (for round announcements) */
+export function speakText(text: string): void {
+  if (typeof window === "undefined" || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = 1.1;
+  utterance.pitch = 0.9;
+  utterance.volume = 0.9;
+
+  if (voicesLoaded && selectedVoice) {
+    utterance.voice = selectedVoice;
+  }
+
+  window.speechSynthesis.speak(utterance);
+}
+
 /** Cancel any current speech */
 export function cancelSpeech(): void {
   if (typeof window === "undefined" || !window.speechSynthesis) return;

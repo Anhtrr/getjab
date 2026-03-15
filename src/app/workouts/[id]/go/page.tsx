@@ -8,7 +8,7 @@ import { useWakeLock } from "@/hooks/useWakeLock";
 import { useComboCallout } from "@/hooks/useComboCallout";
 import { addWorkoutLog } from "@/lib/storage";
 import { notifyLogsChanged } from "@/hooks/useProgress";
-import { initComboAudio, cancelSpeech, stopTTSKeepAlive } from "@/lib/comboAudio";
+import { initComboAudio, cancelSpeech, stopTTSKeepAlive, speakText } from "@/lib/comboAudio";
 import { stopAudioKeepAlive } from "@/lib/audio";
 import { vibrateRoundStart, vibrateRoundEnd, vibrateWarning } from "@/lib/haptics";
 import { parseRoundCombos } from "@/lib/comboParser";
@@ -232,6 +232,11 @@ export default function WorkoutGoPage() {
     }
   }, []);
 
+  // Announce round title via TTS after bell
+  const announceRound = useCallback((title: string) => {
+    setTimeout(() => speakText(title), 600);
+  }, []);
+
   const clearTimer = useCallback(() => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -296,6 +301,7 @@ export default function WorkoutGoPage() {
         warningFiredRef.current = false;
         audio.playRoundStart();
         if (hapticEnabledRef.current) vibrateRoundStart();
+        announceRound(workout.rounds[nextIdx].title);
         return;
       }
 
@@ -304,6 +310,7 @@ export default function WorkoutGoPage() {
       if (nextIdx >= workout.rounds.length) return;
       audio.playRoundStart();
       if (hapticEnabledRef.current) vibrateRoundStart();
+      announceRound(workout.rounds[nextIdx].title);
       setCurrentRoundIndex(nextIdx);
       currentRoundIndexRef.current = nextIdx;
       setIsResting(false);
@@ -313,7 +320,7 @@ export default function WorkoutGoPage() {
       warningFiredRef.current = false;
       return;
     }
-  }, [workout, audio, clearTimer, countRoundPunches]);
+  }, [workout, audio, clearTimer, countRoundPunches, announceRound]);
 
   const beginRound1 = useCallback(() => {
     if (!workout) return;
@@ -326,7 +333,8 @@ export default function WorkoutGoPage() {
     intervalRef.current = setInterval(tick, 250);
     audio.playRoundStart();
     if (hapticEnabledRef.current) vibrateRoundStart();
-  }, [workout, audio, tick, clearTimer]);
+    if (workout.rounds[0]) announceRound(workout.rounds[0].title);
+  }, [workout, audio, tick, clearTimer, announceRound]);
 
   const startWorkout = useCallback(() => {
     if (!workout) return;
