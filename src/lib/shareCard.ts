@@ -273,28 +273,7 @@ export async function shareWorkoutCard(
   parts.push(`Level ${data.level} ${data.title}`);
   const shareText = parts.join(" | ") + " | @getjabapp";
 
-  if (navigator.share) {
-    try {
-      await navigator.share({ text: shareText, files: [file] });
-      return;
-    } catch (e) {
-      if (e instanceof Error && e.name === "AbortError") return;
-      try {
-        await navigator.share({ text: shareText });
-        return;
-      } catch {
-        // Fall through to download
-      }
-    }
-  }
-
-  // Fallback: download the image
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "jab-workout.png";
-  a.click();
-  URL.revokeObjectURL(url);
+  await shareOrDownload(file, shareText, "jab-workout.png");
 }
 
 // ─── PR Share Card ───
@@ -610,19 +589,15 @@ function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
   });
 }
 
-async function shareOrDownload(file: File, shareText: string, filename: string): Promise<void> {
+async function shareOrDownload(file: File, _shareText: string, filename: string): Promise<void> {
   if (navigator.share) {
     try {
-      await navigator.share({ text: shareText, files: [file] });
+      // Only pass files - adding text causes iOS to save a separate text file
+      await navigator.share({ files: [file] });
       return;
     } catch (e) {
       if (e instanceof Error && e.name === "AbortError") return;
-      try {
-        await navigator.share({ text: shareText });
-        return;
-      } catch {
-        // Fall through to download
-      }
+      // Fall through to download
     }
   }
 

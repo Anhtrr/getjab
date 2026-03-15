@@ -476,6 +476,9 @@ export default function WorkoutGoPage() {
         setWorkoutComplete(true);
         setShowRating(true);
         clearTimer();
+        clearWorkoutState();
+        stopTTSKeepAlive();
+        stopAudioKeepAlive();
         return;
       }
 
