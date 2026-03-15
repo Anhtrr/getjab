@@ -132,6 +132,8 @@ export default function WorkoutGoPage() {
   const endTimeRef = useRef(0);
   const remainingMsRef = useRef(0);
 
+  const restAnnouncedRef = useRef(false);
+
   // Triple-tap to skip phase (hidden dev shortcut)
   const skipTapCountRef = useRef(0);
   const skipTapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -211,10 +213,10 @@ export default function WorkoutGoPage() {
   const { calloutState, settings: calloutSettings, updateSettings: updateCalloutSettings, hasCallableCombos } =
     useComboCallout(
       isConditioning ? undefined : currentRoundForCallout?.combos,
-      state === "running",
+      state === "running" && !isResting,
       secondsLeft,
       currentRoundForCallout?.durationSec ?? 0,
-      state === "paused",
+      state === "paused" || isResting,
     );
 
   // Count punches from a round's combos when the round completes
@@ -262,6 +264,18 @@ export default function WorkoutGoPage() {
       if (hapticEnabledRef.current) vibrateWarning();
     }
 
+    // Announce next round near the end of rest (4 seconds before rest ends)
+    if (
+      isRestingRef.current &&
+      !restAnnouncedRef.current &&
+      remaining <= 4 &&
+      remaining > 0
+    ) {
+      restAnnouncedRef.current = true;
+      const nextRound = workout.rounds[currentRoundIndexRef.current + 1];
+      if (nextRound) announceRound(nextRound.title);
+    }
+
     if (remaining <= 0) {
       if (!isRestingRef.current) {
         audio.playRoundEnd();
@@ -288,9 +302,7 @@ export default function WorkoutGoPage() {
           endTimeRef.current = Date.now() + round.restSec * 1000;
           setSecondsLeft(round.restSec);
           warningFiredRef.current = false;
-          // Announce the next round during rest so the user knows what's coming
-          const nextRound = workout.rounds[roundIdx + 1];
-          if (nextRound) announceRound(nextRound.title);
+          restAnnouncedRef.current = false;
           return;
         }
 
@@ -502,8 +514,7 @@ export default function WorkoutGoPage() {
         endTimeRef.current = Date.now() + round.restSec * 1000;
         setSecondsLeft(round.restSec);
         warningFiredRef.current = false;
-        const nextRound = workout.rounds[roundIdx + 1];
-        if (nextRound) announceRound(nextRound.title);
+        restAnnouncedRef.current = false;
         return;
       }
 
