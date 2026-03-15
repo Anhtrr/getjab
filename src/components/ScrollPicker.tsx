@@ -15,7 +15,7 @@ interface ScrollPickerProps {
 }
 
 const ITEM_HEIGHT = 44;
-const VISIBLE_ITEMS = 3;
+const VISIBLE_ITEMS = 5;
 const CONTAINER_HEIGHT = ITEM_HEIGHT * VISIBLE_ITEMS;
 
 export default function ScrollPicker({

@@ -22,6 +22,7 @@ import NewBadgeModal from "@/components/gamification/NewBadgeModal";
 import { shareWorkoutCard } from "@/lib/shareCard";
 import { estimateCalories } from "@/lib/calories";
 import { getDisplayName, setDisplayName } from "@/lib/displayName";
+import { Capacitor } from "@capacitor/core";
 import { Trophy, ChevronRight, Share2 } from "lucide-react";
 import type { TimerState, PunchStats } from "@/lib/types";
 import type { XPBreakdown, PlayerLevel } from "@/lib/gamification/types";
@@ -88,6 +89,34 @@ export default function WorkoutGoPage() {
   const [completedPunchStats, setCompletedPunchStats] = useState<PunchStats | null>(null);
   const [completedCalories, setCompletedCalories] = useState(0);
   const [isSharing, setIsSharing] = useState(false);
+
+  // Load prep time and haptic setting from shared timer settings
+  const [prepTimeSec, setPrepTimeSec] = useState(() => {
+    try {
+      const raw = localStorage.getItem("jab_timer_settings");
+      if (raw) { const p = JSON.parse(raw); if (typeof p.prepTimeSec === "number") return p.prepTimeSec; }
+    } catch {}
+    return 10;
+  });
+  const [hapticEnabled, setHapticEnabled] = useState(() => {
+    try {
+      const raw = localStorage.getItem("jab_timer_settings");
+      if (raw) { const p = JSON.parse(raw); if (typeof p.hapticEnabled === "boolean") return p.hapticEnabled; }
+    } catch {}
+    return Capacitor.isNativePlatform();
+  });
+  const hapticEnabledRef = useRef(hapticEnabled);
+  useEffect(() => { hapticEnabledRef.current = hapticEnabled; }, [hapticEnabled]);
+
+  const saveSetting = useCallback((key: string, value: unknown) => {
+    try {
+      const raw = localStorage.getItem("jab_timer_settings");
+      const settings = raw ? JSON.parse(raw) : {};
+      settings[key] = value;
+      localStorage.setItem("jab_timer_settings", JSON.stringify(settings));
+    } catch {}
+  }, []);
+
   const punchCountRef = useRef<{ total: number; byType: Record<string, number> }>({ total: 0, byType: {} });
   const startTimeRef = useRef<number>(0);
   const prepIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -225,13 +254,13 @@ export default function WorkoutGoPage() {
     ) {
       warningFiredRef.current = true;
       audio.playWarning();
-      vibrateWarning();
+      if (hapticEnabledRef.current) vibrateWarning();
     }
 
     if (remaining <= 0) {
       if (!isRestingRef.current) {
         audio.playRoundEnd();
-        vibrateRoundEnd();
+        if (hapticEnabledRef.current) vibrateRoundEnd();
         const roundIdx = currentRoundIndexRef.current;
         const round = workout.rounds[roundIdx];
         setRoundsCompleted((p) => p + 1);
@@ -266,7 +295,7 @@ export default function WorkoutGoPage() {
         setSecondsLeft(workout.rounds[nextIdx].durationSec);
         warningFiredRef.current = false;
         audio.playRoundStart();
-        vibrateRoundStart();
+        if (hapticEnabledRef.current) vibrateRoundStart();
         return;
       }
 
@@ -274,7 +303,7 @@ export default function WorkoutGoPage() {
       const nextIdx = currentRoundIndexRef.current + 1;
       if (nextIdx >= workout.rounds.length) return;
       audio.playRoundStart();
-      vibrateRoundStart();
+      if (hapticEnabledRef.current) vibrateRoundStart();
       setCurrentRoundIndex(nextIdx);
       currentRoundIndexRef.current = nextIdx;
       setIsResting(false);
@@ -296,7 +325,7 @@ export default function WorkoutGoPage() {
     clearTimer();
     intervalRef.current = setInterval(tick, 250);
     audio.playRoundStart();
-    vibrateRoundStart();
+    if (hapticEnabledRef.current) vibrateRoundStart();
   }, [workout, audio, tick, clearTimer]);
 
   const startWorkout = useCallback(() => {
@@ -313,15 +342,7 @@ export default function WorkoutGoPage() {
     setShowRating(false);
     setRated(false);
 
-    // Read prep time from timer settings (shared with standalone timer)
-    let prepDuration = 10;
-    try {
-      const raw = localStorage.getItem("jab_timer_settings");
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (typeof parsed.prepTimeSec === "number") prepDuration = parsed.prepTimeSec;
-      }
-    } catch {}
+    const prepDuration = prepTimeSec;
 
     if (prepDuration <= 0) {
       beginRound1();
@@ -342,7 +363,7 @@ export default function WorkoutGoPage() {
       if (remaining <= 3 && remaining > 0 && remaining < lastPrepWarning) {
         lastPrepWarning = remaining;
         audio.playWarning();
-        vibrateWarning();
+        if (hapticEnabledRef.current) vibrateWarning();
       }
       if (remaining <= 0) {
         if (prepIntervalRef.current) clearInterval(prepIntervalRef.current);
@@ -655,11 +676,51 @@ export default function WorkoutGoPage() {
         </p>
         <p className="text-sm text-muted mb-6">Tap start when you&apos;re ready</p>
 
-        <div className="mb-8 max-w-xs mx-auto">
+        <div className="mb-8 max-w-xs mx-auto space-y-4">
           <CalloutPacingSelector
             settings={calloutSettings}
             onUpdate={updateCalloutSettings}
           />
+
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Get Ready</span>
+            <div className="flex gap-1.5">
+              {[{ value: 0, label: "Off" }, { value: 5, label: "5s" }, { value: 10, label: "10s" }, { value: 15, label: "15s" }].map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => { setPrepTimeSec(opt.value); saveSetting("prepTimeSec", opt.value); }}
+                  className={`text-xs font-medium px-3 py-1.5 rounded-full transition-all active:scale-95 ${
+                    prepTimeSec === opt.value
+                      ? "bg-gradient-to-r from-[#00e5ff] to-[#0090ff] text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
+                      : "bg-surface border border-border text-muted hover:text-foreground hover:border-[#00e5ff]/20"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {(Capacitor.isNativePlatform() || (typeof navigator !== "undefined" && "vibrate" in navigator)) && (
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Haptic</span>
+              <div className="flex gap-1.5">
+                {[{ value: false, label: "Off" }, { value: true, label: "On" }].map((opt) => (
+                  <button
+                    key={String(opt.value)}
+                    onClick={() => { setHapticEnabled(opt.value); saveSetting("hapticEnabled", opt.value); }}
+                    className={`text-xs font-medium px-3 py-1.5 rounded-full transition-all active:scale-95 ${
+                      hapticEnabled === opt.value
+                        ? "bg-gradient-to-r from-[#00e5ff] to-[#0090ff] text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
+                        : "bg-surface border border-border text-muted hover:text-foreground hover:border-[#00e5ff]/20"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <button

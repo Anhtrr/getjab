@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
                 // Enable vertical bounce only
                 webView.scrollView.bounces = true
-                webView.scrollView.alwaysBounceVertical = false
+                webView.scrollView.alwaysBounceVertical = true
                 webView.scrollView.alwaysBounceHorizontal = false
 
                 // Prevent horizontal scrolling entirely

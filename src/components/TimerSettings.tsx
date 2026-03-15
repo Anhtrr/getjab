@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback } from "react";
 import { X, Save, ChevronDown, SlidersHorizontal } from "lucide-react";
+import { Capacitor } from "@capacitor/core";
 import type { TimerSettings as TimerSettingsType } from "@/lib/types";
 import {
   getPresets,
@@ -152,7 +153,7 @@ export default function TimerSettings({
     { value: 1, label: "On" },
   ];
 
-  const hapticSupported = typeof navigator !== "undefined" && "vibrate" in navigator;
+  const hapticSupported = typeof navigator !== "undefined" && ("vibrate" in navigator || Capacitor.isNativePlatform());
   const hapticOptions = [
     { value: 0, label: "Off" },
     { value: 1, label: "On" },
