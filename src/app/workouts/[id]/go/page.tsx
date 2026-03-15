@@ -10,6 +10,7 @@ import { addWorkoutLog } from "@/lib/storage";
 import { notifyLogsChanged } from "@/hooks/useProgress";
 import { initComboAudio, cancelSpeech, stopTTSKeepAlive } from "@/lib/comboAudio";
 import { stopAudioKeepAlive } from "@/lib/audio";
+import { vibrateRoundStart, vibrateRoundEnd, vibrateWarning } from "@/lib/haptics";
 import { parseRoundCombos } from "@/lib/comboParser";
 import { useGamification } from "@/hooks/useGamification";
 import { calculateXP } from "@/lib/gamification/engine";
@@ -174,7 +175,7 @@ export default function WorkoutGoPage() {
     }
   }, [workout, state, currentRoundIndex, secondsLeft, isResting, roundsCompleted]);
 
-  useWakeLock(state === "running");
+  useWakeLock(state === "running" || state === "paused" || isResting || state === "preparing");
 
   const currentRoundForCallout = workout?.rounds[currentRoundIndex];
   const isConditioning = currentRoundForCallout?.type === "conditioning";
@@ -224,11 +225,13 @@ export default function WorkoutGoPage() {
     ) {
       warningFiredRef.current = true;
       audio.playWarning();
+      vibrateWarning();
     }
 
     if (remaining <= 0) {
       if (!isRestingRef.current) {
         audio.playRoundEnd();
+        vibrateRoundEnd();
         const roundIdx = currentRoundIndexRef.current;
         const round = workout.rounds[roundIdx];
         setRoundsCompleted((p) => p + 1);
@@ -263,6 +266,7 @@ export default function WorkoutGoPage() {
         setSecondsLeft(workout.rounds[nextIdx].durationSec);
         warningFiredRef.current = false;
         audio.playRoundStart();
+        vibrateRoundStart();
         return;
       }
 
@@ -270,6 +274,7 @@ export default function WorkoutGoPage() {
       const nextIdx = currentRoundIndexRef.current + 1;
       if (nextIdx >= workout.rounds.length) return;
       audio.playRoundStart();
+      vibrateRoundStart();
       setCurrentRoundIndex(nextIdx);
       currentRoundIndexRef.current = nextIdx;
       setIsResting(false);
@@ -291,6 +296,7 @@ export default function WorkoutGoPage() {
     clearTimer();
     intervalRef.current = setInterval(tick, 250);
     audio.playRoundStart();
+    vibrateRoundStart();
   }, [workout, audio, tick, clearTimer]);
 
   const startWorkout = useCallback(() => {
@@ -307,8 +313,21 @@ export default function WorkoutGoPage() {
     setShowRating(false);
     setRated(false);
 
-    // Start prep countdown using wall-clock timing
-    const prepDuration = 10;
+    // Read prep time from timer settings (shared with standalone timer)
+    let prepDuration = 10;
+    try {
+      const raw = localStorage.getItem("jab_timer_settings");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (typeof parsed.prepTimeSec === "number") prepDuration = parsed.prepTimeSec;
+      }
+    } catch {}
+
+    if (prepDuration <= 0) {
+      beginRound1();
+      return;
+    }
+
     setPrepCountdown(prepDuration);
     setState("preparing");
 
@@ -323,6 +342,7 @@ export default function WorkoutGoPage() {
       if (remaining <= 3 && remaining > 0 && remaining < lastPrepWarning) {
         lastPrepWarning = remaining;
         audio.playWarning();
+        vibrateWarning();
       }
       if (remaining <= 0) {
         if (prepIntervalRef.current) clearInterval(prepIntervalRef.current);

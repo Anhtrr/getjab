@@ -34,7 +34,7 @@ const DEFAULT_SETTINGS: TimerSettings = {
   roundDurationSec: 180,
   restDurationSec: 60,
   warningAtSec: 10,
-  prepTimeSec: 5,
+  prepTimeSec: 10,
 };
 
 function loadTimerSettings(): TimerSettings {
@@ -313,6 +313,23 @@ export function useTimer(
       return;
     }
   }, [onRoundStart, onRoundEnd, onComplete, clearTimer]);
+
+  // Auto-pause on visibility change (tab switch, nav away)
+  useEffect(() => {
+    function handleVisibility() {
+      const cur = stateRef.current;
+      if (document.hidden && (cur === "running" || cur === "resting" || cur === "preparing")) {
+        prePauseStateRef.current =
+          cur === "resting" ? "resting" : cur === "preparing" ? "preparing" : "running";
+        remainingMsRef.current = Math.max(0, endTimeRef.current - Date.now());
+        setState("paused");
+        stateRef.current = "paused";
+        clearTimer();
+      }
+    }
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, [clearTimer]);
 
   useEffect(() => {
     return clearTimer;
