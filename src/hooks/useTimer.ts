@@ -73,6 +73,7 @@ export function useTimer(
   const roundRef = useRef(currentRound);
   const settingsRef = useRef(settings);
   const warningFiredRef = useRef(false);
+  const lastPrepWarningRef = useRef(0);
   const prePauseStateRef = useRef<"running" | "resting" | "preparing">("running");
   const startedAtRef = useRef<string | null>(null);
 
@@ -112,6 +113,10 @@ export function useTimer(
 
     // Handle preparing countdown
     if (currentState === "preparing") {
+      if (remaining <= 3 && remaining > 0 && remaining < lastPrepWarningRef.current) {
+        lastPrepWarningRef.current = remaining;
+        onWarning?.();
+      }
       if (remaining <= 0) {
         setState("running");
         stateRef.current = "running";
@@ -195,6 +200,7 @@ export function useTimer(
       setSecondsLeft(s.prepTimeSec);
       endTimeRef.current = Date.now() + s.prepTimeSec * 1000;
       warningFiredRef.current = false;
+      lastPrepWarningRef.current = s.prepTimeSec + 1;
       intervalRef.current = setInterval(tick, 250);
     } else {
       setState("running");
