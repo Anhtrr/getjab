@@ -255,15 +255,16 @@ export function speakText(text: string): void {
 
 /** Cancel any current speech or clip playback */
 export function cancelSpeech(): void {
-  clipPlaybackActive = false;
-  for (const t of clipTimeouts) clearTimeout(t);
-  clipTimeouts = [];
-
-  // Stop any currently playing buffer source
+  // Stop any currently playing buffer source FIRST to prevent onended from scheduling new timeouts
   if (activeSource) {
     try { activeSource.stop(); } catch {}
     activeSource = null;
   }
+
+  // Then set the flag and clear timeouts
+  clipPlaybackActive = false;
+  for (const t of clipTimeouts) clearTimeout(t);
+  clipTimeouts = [];
 
   if (typeof window !== "undefined" && window.speechSynthesis) {
     window.speechSynthesis.cancel();

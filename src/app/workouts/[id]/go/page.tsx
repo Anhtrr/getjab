@@ -134,12 +134,14 @@ export default function WorkoutGoPage() {
   const [hasSavedState, setHasSavedState] = useState(false);
   const restoredRef = useRef(false);
   const autostartRef = useRef(false);
+  const audioPreInitRef = useRef(false);
 
-  // Check for autostart flag from detail page
+  // Check for autostart flag from detail page (audio already initialized there)
   useEffect(() => {
     if (typeof sessionStorage !== "undefined" && sessionStorage.getItem("jab_autostart")) {
       sessionStorage.removeItem("jab_autostart");
       autostartRef.current = true;
+      audioPreInitRef.current = true; // Audio was initialized on detail page button tap
     }
   }, []);
 
@@ -351,8 +353,12 @@ export default function WorkoutGoPage() {
 
   const startWorkout = useCallback(() => {
     if (!workout) return;
-    audio.init();
-    initComboAudio();
+    // Only init audio if not already done (detail page button does it on user gesture)
+    if (!audioPreInitRef.current) {
+      audio.init();
+      initComboAudio();
+    }
+    audioPreInitRef.current = false; // Reset for next time
     setCurrentRoundIndex(0);
     currentRoundIndexRef.current = 0;
     setIsResting(false);
@@ -401,14 +407,13 @@ export default function WorkoutGoPage() {
   // Auto-start if navigated from detail page with autostart flag
   // If no flag and no saved state, redirect back to detail page (idle config page is removed)
   useEffect(() => {
-    if (state !== "idle" || !workout) return;
-    if (hasSavedState) return; // show resume UI
+    if (state !== "idle" || !workout || hasSavedState) return;
 
     if (autostartRef.current) {
       autostartRef.current = false;
       startWorkout();
     } else {
-      // No autostart flag - user navigated here directly, send them to detail page
+      // No autostart flag and no saved state - redirect to detail page
       router.replace(`/workouts/${workout.id}`);
     }
   }, [state, workout, hasSavedState, startWorkout, router]);
