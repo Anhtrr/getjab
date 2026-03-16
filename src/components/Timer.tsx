@@ -360,12 +360,6 @@ export default function Timer() {
           Round Timer
         </h1>
 
-        <TimerSettings
-          settings={timer.settings}
-          onChange={timer.setSettings}
-          disabled={isActive}
-        />
-
         <TimerDisplay
           secondsLeft={timer.secondsLeft}
           state={timer.state}
@@ -379,6 +373,12 @@ export default function Timer() {
         <p className="text-xs text-muted text-center tabular-nums">
           {sessionSummary}
         </p>
+
+        <TimerSettings
+          settings={timer.settings}
+          onChange={timer.setSettings}
+          disabled={isActive}
+        />
       </div>
 
       <div className="fixed left-0 right-0 z-40 px-4 pb-3" style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 3.5rem)" }}>

@@ -614,13 +614,13 @@ async function shareOrDownload(file: File, _shareText: string, filename: string)
 
       await Share.share({
         title: 'Share Workout',
-        url: result.uri,
+        files: [result.uri],
       });
       return;
     } catch (e) {
       if (e instanceof Error && (e.name === "AbortError" || e.message?.includes("User cancelled"))) return;
-      // Only fall through on non-cancel errors
       console.error("Native share failed:", e);
+      return; // Don't fall through to web share on native
     }
   }
 
