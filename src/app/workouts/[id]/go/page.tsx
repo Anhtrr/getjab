@@ -709,7 +709,14 @@ export default function WorkoutGoPage() {
         </p>
         <p className="text-sm text-muted mb-6">Tap start when you&apos;re ready</p>
 
-        <div className="mb-8 max-w-xs md:max-w-md mx-auto space-y-4">
+        <button
+          onClick={startWorkout}
+          className="btn-primary text-xl w-full py-5 rounded-full animate-start-glow mb-8"
+        >
+          START
+        </button>
+
+        <div className="mb-6 max-w-xs md:max-w-md mx-auto space-y-4">
           <CalloutPacingSelector
             settings={calloutSettings}
             onUpdate={updateCalloutSettings}
@@ -760,15 +767,8 @@ export default function WorkoutGoPage() {
         </div>
 
         <button
-          onClick={startWorkout}
-          className="btn-primary text-xl px-16 py-5 rounded-full"
-        >
-          START
-        </button>
-
-        <button
           onClick={() => router.back()}
-          className="block mx-auto mt-6 text-muted text-sm hover:text-foreground"
+          className="block mx-auto text-muted text-sm hover:text-foreground"
         >
           &larr; Go back
         </button>

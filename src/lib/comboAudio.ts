@@ -75,7 +75,7 @@ function playBuffer(buffer: AudioBuffer): { source: AudioBufferSourceNode; durat
   const ctx = getAudioContext();
   const source = ctx.createBufferSource();
   const gain = ctx.createGain();
-  gain.gain.value = 0.9;
+  gain.gain.value = 1.5;
   source.buffer = buffer;
   source.connect(gain);
   gain.connect(ctx.destination);

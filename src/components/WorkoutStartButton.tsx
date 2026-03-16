@@ -10,7 +10,7 @@ export default function WorkoutStartButton({
   return (
     <Link
       href={`/workouts/${workoutId}/go`}
-      className="block w-full text-center btn-primary text-lg py-4 rounded-full"
+      className="block w-full text-center btn-primary text-lg py-4 rounded-full animate-start-glow"
     >
       Start Workout
     </Link>

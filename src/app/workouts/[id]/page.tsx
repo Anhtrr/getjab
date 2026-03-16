@@ -105,7 +105,7 @@ export default function WorkoutDetailPage() {
         )}
       </div>
 
-      <div className="space-y-3 mb-8 stagger-children">
+      <div className="space-y-3 pb-24 stagger-children">
         {workout.rounds.map((round, i) => (
           <div
             key={i}
@@ -146,7 +146,11 @@ export default function WorkoutDetailPage() {
         ))}
       </div>
 
-      <WorkoutStartButton workoutId={workout.id} />
+      <div className="fixed bottom-0 left-0 right-0 z-40 px-4 glass border-t border-white/5" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 3.5rem)" }}>
+        <div className="max-w-lg md:max-w-2xl mx-auto pt-3">
+          <WorkoutStartButton workoutId={workout.id} />
+        </div>
+      </div>
     </div>
   );
 }

@@ -229,7 +229,7 @@ export function CalloutPacingSelector({
               onClick={() => onUpdate({ pacing: opt.value })}
               className={`card-glass rounded-xl px-3 py-2.5 text-left transition-all ${
                 settings.pacing === opt.value
-                  ? "!border-accent !shadow-[0_0_12px_rgba(0,229,255,0.15)]"
+                  ? "!border-accent/40 animate-preset-glow"
                   : ""
               }`}
             >

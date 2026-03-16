@@ -21,7 +21,7 @@ function TimerControls({
       {state === "idle" && (
         <button
           onClick={onStart}
-          className="btn-primary text-lg px-12 py-4 rounded-full animate-start-glow"
+          className="btn-primary text-xl w-full py-5 rounded-full animate-start-glow"
         >
           START
         </button>

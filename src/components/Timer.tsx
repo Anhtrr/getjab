@@ -359,6 +359,16 @@ export default function Timer() {
         Round Timer
       </h1>
 
+      <div className="px-4 max-w-lg md:max-w-2xl mx-auto w-full">
+        <TimerControls
+          state={timer.state}
+          onStart={handleStart}
+          onPause={timer.pause}
+          onResume={() => { audio.init(); timer.resume(); }}
+          onReset={timer.reset}
+        />
+      </div>
+
       <TimerSettings
         settings={timer.settings}
         onChange={timer.setSettings}
@@ -378,16 +388,6 @@ export default function Timer() {
       <p className="text-xs text-muted text-center tabular-nums">
         {sessionSummary}
       </p>
-
-      <div className="px-4 max-w-lg md:max-w-2xl mx-auto w-full">
-        <TimerControls
-          state={timer.state}
-          onStart={handleStart}
-          onPause={timer.pause}
-          onResume={timer.resume}
-          onReset={timer.reset}
-        />
-      </div>
     </div>
   );
 }
