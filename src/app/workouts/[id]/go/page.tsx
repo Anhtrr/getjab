@@ -15,7 +15,7 @@ import { parseRoundCombos } from "@/lib/comboParser";
 import { useGamification } from "@/hooks/useGamification";
 import { calculateXP } from "@/lib/gamification/engine";
 import PostWorkoutRating from "@/components/PostWorkoutRating";
-import { ComboCallout, CalloutPacingSelector } from "@/components/ComboCallout";
+import { ComboCallout } from "@/components/ComboCallout";
 import XPGainToast from "@/components/gamification/XPGainToast";
 import LevelUpModal from "@/components/gamification/LevelUpModal";
 import NewBadgeModal from "@/components/gamification/NewBadgeModal";
@@ -107,15 +107,6 @@ export default function WorkoutGoPage() {
   });
   const hapticEnabledRef = useRef(hapticEnabled);
   useEffect(() => { hapticEnabledRef.current = hapticEnabled; }, [hapticEnabled]);
-
-  const saveSetting = useCallback((key: string, value: unknown) => {
-    try {
-      const raw = localStorage.getItem("jab_timer_settings");
-      const settings = raw ? JSON.parse(raw) : {};
-      settings[key] = value;
-      localStorage.setItem("jab_timer_settings", JSON.stringify(settings));
-    } catch {}
-  }, []);
 
   const punchCountRef = useRef<{ total: number; byType: Record<string, number> }>({ total: 0, byType: {} });
   const startTimeRef = useRef<number>(0);
@@ -219,7 +210,7 @@ export default function WorkoutGoPage() {
 
   const currentRoundForCallout = workout?.rounds[currentRoundIndex];
   const isConditioning = currentRoundForCallout?.type === "conditioning";
-  const { calloutState, settings: calloutSettings, updateSettings: updateCalloutSettings, hasCallableCombos } =
+  const { calloutState, hasCallableCombos } =
     useComboCallout(
       isConditioning ? undefined : currentRoundForCallout?.combos,
       state === "running" && !isResting,
@@ -408,12 +399,19 @@ export default function WorkoutGoPage() {
   }, [workout, audio, beginRound1]);
 
   // Auto-start if navigated from detail page with autostart flag
+  // If no flag and no saved state, redirect back to detail page (idle config page is removed)
   useEffect(() => {
-    if (autostartRef.current && state === "idle" && workout && !hasSavedState) {
+    if (state !== "idle" || !workout) return;
+    if (hasSavedState) return; // show resume UI
+
+    if (autostartRef.current) {
       autostartRef.current = false;
       startWorkout();
+    } else {
+      // No autostart flag - user navigated here directly, send them to detail page
+      router.replace(`/workouts/${workout.id}`);
     }
-  }, [state, workout, hasSavedState, startWorkout]);
+  }, [state, workout, hasSavedState, startWorkout, router]);
 
   const handleRate = useCallback(
     (rating: 1 | 2 | 3 | 4) => {
@@ -718,77 +716,10 @@ export default function WorkoutGoPage() {
   }
 
   if (state === "idle") {
+    // Idle state redirects to detail page (handled by useEffect above)
     return (
       <div className="px-4 pt-12 pb-8 max-w-lg md:max-w-2xl mx-auto text-center">
-        <h1 className="text-2xl font-bold mb-2">{workout.title}</h1>
-        <p className="text-muted mb-2">
-          {workout.rounds.length} rounds &middot; {workout.durationMin} min
-        </p>
-        <p className="text-sm text-muted mb-6">Tap start when you&apos;re ready</p>
-
-        <button
-          onClick={startWorkout}
-          className="btn-primary text-xl w-full py-5 rounded-full animate-start-glow mb-8"
-        >
-          START
-        </button>
-
-        <div className="mb-6 max-w-xs md:max-w-md mx-auto space-y-4">
-          <CalloutPacingSelector
-            settings={calloutSettings}
-            onUpdate={updateCalloutSettings}
-            extraSettings={
-              <>
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Get Ready</span>
-                  <div className="flex gap-1.5">
-                    {[{ value: 0, label: "Off" }, { value: 5, label: "5s" }, { value: 10, label: "10s" }, { value: 15, label: "15s" }].map((opt) => (
-                      <button
-                        key={opt.value}
-                        onClick={() => { setPrepTimeSec(opt.value); saveSetting("prepTimeSec", opt.value); }}
-                        className={`text-xs font-medium px-3 py-1.5 rounded-full transition-all active:scale-95 ${
-                          prepTimeSec === opt.value
-                            ? "bg-gradient-to-r from-[#00e5ff] to-[#0090ff] text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
-                            : "bg-surface border border-border text-muted hover:text-foreground hover:border-[#00e5ff]/20"
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {(Capacitor.isNativePlatform() || (typeof navigator !== "undefined" && "vibrate" in navigator)) && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Haptic</span>
-                    <div className="flex gap-1.5">
-                      {[{ value: false, label: "Off" }, { value: true, label: "On" }].map((opt) => (
-                        <button
-                          key={String(opt.value)}
-                          onClick={() => { setHapticEnabled(opt.value); saveSetting("hapticEnabled", opt.value); }}
-                          className={`text-xs font-medium px-3 py-1.5 rounded-full transition-all active:scale-95 ${
-                            hapticEnabled === opt.value
-                              ? "bg-gradient-to-r from-[#00e5ff] to-[#0090ff] text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
-                              : "bg-surface border border-border text-muted hover:text-foreground hover:border-[#00e5ff]/20"
-                          }`}
-                        >
-                          {opt.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </>
-            }
-          />
-        </div>
-
-        <button
-          onClick={() => router.back()}
-          className="block mx-auto text-muted text-sm hover:text-foreground"
-        >
-          &larr; Go back
-        </button>
+        <p className="text-muted">Loading workout...</p>
       </div>
     );
   }
@@ -826,16 +757,7 @@ export default function WorkoutGoPage() {
           <button
             onClick={() => {
               clearWorkoutState();
-              setHasSavedState(false);
-              setState("idle");
-              setCurrentRoundIndex(0);
-              currentRoundIndexRef.current = 0;
-              setSecondsLeft(0);
-              endTimeRef.current = 0;
-              remainingMsRef.current = 0;
-              setRoundsCompleted(0);
-              setIsResting(false);
-              isRestingRef.current = false;
+              router.push(`/workouts/${workout.id}`);
             }}
             className="w-full btn-secondary border border-border text-muted font-medium py-4 rounded-full"
           >
@@ -870,7 +792,10 @@ export default function WorkoutGoPage() {
           onClick={() => {
             if (prepIntervalRef.current) clearInterval(prepIntervalRef.current);
             prepIntervalRef.current = null;
-            setState("idle");
+            cancelSpeech();
+            stopTTSKeepAlive();
+            stopAudioKeepAlive();
+            router.push(`/workouts/${workout.id}`);
           }}
           className="mt-12 btn-secondary border border-border text-muted font-medium px-8 py-3 rounded-full"
         >
