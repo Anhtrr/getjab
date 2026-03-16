@@ -606,17 +606,21 @@ async function shareOrDownload(file: File, _shareText: string, filename: string)
         reader.readAsDataURL(file);
       });
 
-      const saved = await Filesystem.writeFile({
+      const result = await Filesystem.writeFile({
         path: filename,
         data: base64,
         directory: Directory.Cache,
       });
 
-      await Share.share({ files: [saved.uri] });
+      await Share.share({
+        title: 'Share Workout',
+        url: result.uri,
+      });
       return;
     } catch (e) {
-      if (e instanceof Error && e.name === "AbortError") return;
-      // Fall through to download
+      if (e instanceof Error && (e.name === "AbortError" || e.message?.includes("User cancelled"))) return;
+      // Only fall through on non-cancel errors
+      console.error("Native share failed:", e);
     }
   }
 
