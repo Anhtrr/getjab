@@ -149,18 +149,6 @@ function TimerDisplay({
 
         {/* Timer digits - large and dominant (triple-tap to skip) */}
         <div className="relative" onClick={handleCountdownTap}>
-          {/* Glow backdrop */}
-          {isActive && (
-            <div
-              className={`absolute inset-0 blur-3xl opacity-20 rounded-full scale-150 ${
-                state === "resting"
-                  ? "bg-purple-500"
-                  : isWarning
-                    ? "bg-red-500"
-                    : "bg-[#00e5ff]"
-              }`}
-            />
-          )}
           <div
             className={`relative font-mono font-black tabular-nums tracking-wider leading-none ${
               state === "idle"
