@@ -2,6 +2,9 @@
 
 import { useState, useRef } from "react";
 import { Download, Upload, Check, AlertTriangle } from "lucide-react";
+import { Capacitor } from "@capacitor/core";
+import { Share } from "@capacitor/share";
+import { Filesystem, Directory } from "@capacitor/filesystem";
 import { exportAllData, importAllData } from "@/lib/storage";
 import { notifyLogsChanged } from "@/hooks/useProgress";
 import { notifyGameStateChanged } from "@/hooks/useGamification";
@@ -10,16 +13,33 @@ export default function DataManagement() {
   const [status, setStatus] = useState<{ type: "success" | "error"; message: string } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  function handleExport() {
+  async function handleExport() {
     const data = exportAllData();
-    const blob = new Blob([data], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `jab-backup-${new Date().toISOString().split("T")[0]}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    setStatus({ type: "success", message: "Data exported successfully" });
+    const filename = `jab-backup-${new Date().toISOString().split("T")[0]}.json`;
+
+    if (Capacitor.isNativePlatform()) {
+      try {
+        const saved = await Filesystem.writeFile({
+          path: filename,
+          data: btoa(unescape(encodeURIComponent(data))),
+          directory: Directory.Cache,
+        });
+        await Share.share({ files: [saved.uri] });
+        setStatus({ type: "success", message: "Data exported successfully" });
+      } catch (e) {
+        if (e instanceof Error && e.name === "AbortError") return;
+        setStatus({ type: "error", message: "Export failed" });
+      }
+    } else {
+      const blob = new Blob([data], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+      setStatus({ type: "success", message: "Data exported successfully" });
+    }
     setTimeout(() => setStatus(null), 3000);
   }
 
