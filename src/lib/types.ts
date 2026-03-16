@@ -106,6 +106,7 @@ export interface CalloutSettings {
   pacing: CalloutPacing;
   audioEnabled: boolean;
   audioMode: "names" | "numbers";
+  comboOrder?: "sequential" | "random";
 }
 
 export const PACING_CONFIG: Record<

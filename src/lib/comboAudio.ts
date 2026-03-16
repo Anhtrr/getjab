@@ -228,7 +228,7 @@ export function speakCombo(
 
   // Play clips sequentially using AudioContext buffers
   clipPlaybackActive = true;
-  const GAP_MS = 150;
+  const GAP_MS = 80;
 
   async function playNext(index: number) {
     if (!clipPlaybackActive || index >= keys.length) return;

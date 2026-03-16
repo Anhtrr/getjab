@@ -24,7 +24,7 @@ function lerp(a: number, b: number, t: number): number {
 
 function loadSettings(): CalloutSettings {
   if (typeof window === "undefined") {
-    return { pacing: "medium", audioEnabled: true, audioMode: "names" };
+    return { pacing: "medium", audioEnabled: true, audioMode: "names", comboOrder: "random" };
   }
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -204,8 +204,19 @@ export function useComboCallout(
 
     // Check if it's time for the next callout
     if (elapsed >= nextCalloutAtRef.current && phaseRef.current === "idle") {
-      const combo = callable[rotationIndexRef.current % callable.length];
-      rotationIndexRef.current++;
+      let combo: ParsedCombo;
+      if (s.comboOrder === "random" && callable.length > 1) {
+        // Pick a random combo, avoiding the last one called
+        let idx: number;
+        do {
+          idx = Math.floor(Math.random() * callable.length);
+        } while (idx === (rotationIndexRef.current - 1) % callable.length && callable.length > 1);
+        combo = callable[idx];
+        rotationIndexRef.current = idx + 1;
+      } else {
+        combo = callable[rotationIndexRef.current % callable.length];
+        rotationIndexRef.current++;
+      }
 
       // Calculate next interval based on the combo's punch count
       const elapsedRatio = elapsed / roundDurationSec;

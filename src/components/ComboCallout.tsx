@@ -297,6 +297,29 @@ export function CalloutPacingSelector({
           </div>
         </div>
       )}
+
+      {/* Combo order toggle */}
+      <div className="flex items-center justify-between">
+        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Combo Order</span>
+        <div className="flex gap-1.5">
+          {([
+            { value: "sequential" as const, label: "In Order" },
+            { value: "random" as const, label: "Random" },
+          ]).map((opt) => (
+            <button
+              key={opt.value}
+              onClick={() => onUpdate({ comboOrder: opt.value })}
+              className={`text-xs font-medium px-3 py-1.5 rounded-full transition-all active:scale-95 ${
+                (settings.comboOrder ?? "random") === opt.value
+                  ? "bg-gradient-to-r from-[#00e5ff] to-[#0090ff] text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
+                  : "bg-surface border border-border text-muted hover:text-foreground hover:border-[#00e5ff]/20"
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
