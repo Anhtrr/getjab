@@ -10,7 +10,12 @@ const PUNCH_AUDIO_MAP: Record<string, string> = {
   "rear hook": "/audio/rear-hook.mp3",
   "lead uppercut": "/audio/uppercut.mp3",
   "rear uppercut": "/audio/rear-uppercut.mp3",
-  "body": "/audio/body.mp3",
+  "body jab": "/audio/body-jab.mp3",
+  "body cross": "/audio/body-cross.mp3",
+  "body lead hook": "/audio/body-hook.mp3",
+  "body rear hook": "/audio/body-hook.mp3",
+  "body lead uppercut": "/audio/body-uppercut.mp3",
+  "body rear uppercut": "/audio/body-uppercut.mp3",
   "slip left": "/audio/slip.mp3",
   "slip right": "/audio/slip.mp3",
   "roll left": "/audio/roll.mp3",
@@ -22,6 +27,13 @@ const PUNCH_AUDIO_MAP: Record<string, string> = {
   "four": "/audio/four.mp3",
   "five": "/audio/five.mp3",
   "six": "/audio/six.mp3",
+  // Body + number compounds
+  "body one": "/audio/body-jab.mp3",
+  "body two": "/audio/body-cross.mp3",
+  "body three": "/audio/body-hook.mp3",
+  "body four": "/audio/body-hook.mp3",
+  "body five": "/audio/body-uppercut.mp3",
+  "body six": "/audio/body-uppercut.mp3",
 };
 
 const ROUND_AUDIO_MAP: Record<string, string> = {
@@ -55,24 +67,12 @@ function playClip(src: string): Promise<void> {
   });
 }
 
-interface ClipEntry {
-  key: string;
-  isBodyPrefix: boolean;
-}
-
-function getPunchClipEntries(punch: ParsedPunch, mode: "names" | "numbers"): ClipEntry[] {
-  const entries: ClipEntry[] = [];
-
+function getPunchClipKey(punch: ParsedPunch, mode: "names" | "numbers"): string {
   if (mode === "numbers" && punch.type !== "defense") {
-    if (punch.target === "body") entries.push({ key: "body", isBodyPrefix: true });
-    const numWord = ["one", "two", "three", "four", "five", "six"][(punch.number as number) - 1];
-    if (numWord) entries.push({ key: numWord, isBodyPrefix: false });
-  } else {
-    if (punch.target === "body") entries.push({ key: "body", isBodyPrefix: true });
-    entries.push({ key: punch.name.toLowerCase(), isBodyPrefix: false });
+    const numWord = ["one", "two", "three", "four", "five", "six"][(punch.number as number) - 1] || String(punch.number);
+    return punch.target === "body" ? `body ${numWord}` : numWord;
   }
-
-  return entries;
+  return punch.target === "body" ? `body ${punch.name.toLowerCase()}` : punch.name.toLowerCase();
 }
 
 // ─── TTS fallback ───
@@ -186,14 +186,11 @@ export function speakCombo(
 
   cancelSpeech();
 
-  // Build the list of clip entries for this combo
-  const entries: ClipEntry[] = [];
-  for (const punch of combo.punches) {
-    entries.push(...getPunchClipEntries(punch, mode));
-  }
+  // Build the list of clip keys for this combo
+  const keys = combo.punches.map((p) => getPunchClipKey(p, mode));
 
   // Check if all clips are available
-  const allAvailable = entries.every((e) => PUNCH_AUDIO_MAP[e.key]);
+  const allAvailable = keys.every((key) => PUNCH_AUDIO_MAP[key]);
 
   if (!allAvailable) {
     // Fall back to TTS
@@ -214,23 +211,18 @@ export function speakCombo(
 
   // Play clips sequentially, chaining via onended
   clipPlaybackActive = true;
-  const PUNCH_GAP_MS = 200;
-  const BODY_PREFIX_GAP_MS = 30;
+  const GAP_MS = 150;
 
   function playNext(index: number) {
-    if (!clipPlaybackActive || index >= entries.length) return;
-    const entry = entries[index];
-    const src = PUNCH_AUDIO_MAP[entry.key];
+    if (!clipPlaybackActive || index >= keys.length) return;
+    const src = PUNCH_AUDIO_MAP[keys[index]];
     const audio = preloadClip(src);
     audio.currentTime = 0;
     audio.volume = 0.9;
 
     audio.onended = () => {
       if (!clipPlaybackActive) return;
-      // Use a short gap after body prefix, longer gap between punches
-      const nextEntry = entries[index + 1];
-      const gap = nextEntry?.isBodyPrefix ? PUNCH_GAP_MS : entry.isBodyPrefix ? BODY_PREFIX_GAP_MS : PUNCH_GAP_MS;
-      const t = setTimeout(() => playNext(index + 1), gap);
+      const t = setTimeout(() => playNext(index + 1), GAP_MS);
       clipTimeouts.push(t);
     };
     audio.onerror = () => playNext(index + 1);
