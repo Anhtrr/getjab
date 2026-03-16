@@ -31,7 +31,7 @@ export default function WorkoutDetailPage() {
 
   if (!workout) {
     return (
-      <div className="px-4 pt-8 pb-8 max-w-lg mx-auto text-center">
+      <div className="px-4 pt-8 pb-8 max-w-lg md:max-w-2xl mx-auto text-center">
         <p className="text-muted mb-4">Workout not found.</p>
         <Link href="/workouts" className="text-[#00e5ff] hover:underline">
           Back to workouts
@@ -55,7 +55,7 @@ export default function WorkoutDetailPage() {
   }
 
   return (
-    <div className="px-4 pt-8 pb-8 max-w-lg mx-auto">
+    <div className="px-4 pt-8 pb-8 max-w-lg md:max-w-2xl mx-auto">
       <Link
         href="/workouts"
         className="text-muted text-sm hover:text-foreground mb-4 inline-block"

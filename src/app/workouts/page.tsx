@@ -71,7 +71,7 @@ export default function WorkoutsPage() {
   });
 
   return (
-    <div className="px-4 pt-8 pb-8 max-w-lg mx-auto">
+    <div className="px-4 pt-8 pb-8 max-w-lg md:max-w-2xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Workouts</h1>
 
       <div className="mb-4">

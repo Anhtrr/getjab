@@ -62,7 +62,7 @@ export default function ActiveSessionBanner() {
   if (workoutState && !dismissed) {
     return (
       <div className="fixed bottom-16 left-0 right-0 z-40 px-3 animate-slide-in-bottom">
-        <div className="max-w-lg mx-auto card-glass rounded-2xl p-3 !border-accent/30 !shadow-[0_0_20px_rgba(0,229,255,0.15)]">
+        <div className="max-w-lg md:max-w-2xl mx-auto card-glass rounded-2xl p-3 !border-accent/30 !shadow-[0_0_20px_rgba(0,229,255,0.15)]">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-accent/15 flex items-center justify-center shrink-0">
               <Play className="w-4 h-4 text-accent" />

@@ -600,7 +600,7 @@ export default function WorkoutGoPage() {
 
   if (workoutComplete) {
     return (
-      <div className="px-4 pt-16 pb-8 max-w-lg mx-auto text-center">
+      <div className="px-4 pt-16 pb-8 max-w-lg md:max-w-2xl mx-auto text-center">
         {showRating && (
           <PostWorkoutRating
             onRate={handleRate}
@@ -702,14 +702,14 @@ export default function WorkoutGoPage() {
 
   if (state === "idle") {
     return (
-      <div className="px-4 pt-12 pb-8 max-w-lg mx-auto text-center">
+      <div className="px-4 pt-12 pb-8 max-w-lg md:max-w-2xl mx-auto text-center">
         <h1 className="text-2xl font-bold mb-2">{workout.title}</h1>
         <p className="text-muted mb-2">
           {workout.rounds.length} rounds &middot; {workout.durationMin} min
         </p>
         <p className="text-sm text-muted mb-6">Tap start when you&apos;re ready</p>
 
-        <div className="mb-8 max-w-xs mx-auto space-y-4">
+        <div className="mb-8 max-w-xs md:max-w-md mx-auto space-y-4">
           <CalloutPacingSelector
             settings={calloutSettings}
             onUpdate={updateCalloutSettings}
@@ -794,7 +794,7 @@ export default function WorkoutGoPage() {
           {roundsCompleted} rounds completed
         </p>
 
-        <div className="space-y-3 w-full max-w-xs">
+        <div className="space-y-3 w-full max-w-xs md:max-w-md">
           <button
             onClick={() => {
               audio.init();
@@ -960,12 +960,12 @@ export default function WorkoutGoPage() {
         </div>
 
         {/* Combo callout (running) or rest info or paused details */}
-        <div className="w-full max-w-lg">
+        <div className="w-full max-w-lg md:max-w-2xl">
           {!isResting ? (
             <>
               {/* Instructions & tips - only visible when paused */}
               {state === "paused" && (
-                <div className="max-w-lg mx-auto mb-4">
+                <div className="max-w-lg md:max-w-2xl mx-auto mb-4">
                   <h2 className="font-bold text-xl mb-2 text-center">{currentRound.title}</h2>
                   <p className="text-sm text-muted leading-relaxed text-center mb-4">
                     {currentRound.instructions}
@@ -1012,7 +1012,7 @@ export default function WorkoutGoPage() {
 
       {/* Compact controls */}
       <div className="px-4" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 0.5rem)" }}>
-        <div className="flex items-center justify-center gap-3 max-w-lg mx-auto">
+        <div className="flex items-center justify-center gap-3 max-w-lg md:max-w-2xl mx-auto">
           {state === "running" && (
             <button
               onClick={pauseWorkout}
@@ -1044,7 +1044,7 @@ export default function WorkoutGoPage() {
         </div>
 
         {/* Round progress bar */}
-        <div className="flex gap-0.5 mt-2 max-w-lg mx-auto">
+        <div className="flex gap-0.5 mt-2 max-w-lg md:max-w-2xl mx-auto">
           {workout.rounds.map((_, i) => (
             <div
               key={i}

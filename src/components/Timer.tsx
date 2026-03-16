@@ -379,7 +379,7 @@ export default function Timer() {
         {sessionSummary}
       </p>
 
-      <div className="px-4 max-w-lg mx-auto w-full">
+      <div className="px-4 max-w-lg md:max-w-2xl mx-auto w-full">
         <TimerControls
           state={timer.state}
           onStart={handleStart}

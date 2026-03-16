@@ -6,7 +6,7 @@ export const metadata = {
 
 export default function TimerPage() {
   return (
-    <div className="px-4 pt-4 pb-8 max-w-lg mx-auto">
+    <div className="px-4 pt-4 pb-8 max-w-lg md:max-w-2xl mx-auto">
       <Timer />
     </div>
   );

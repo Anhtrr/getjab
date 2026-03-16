@@ -24,7 +24,7 @@ const proFeatures = [
 
 export default function PricingPage() {
   return (
-    <div className="px-4 pt-8 pb-8 max-w-lg mx-auto">
+    <div className="px-4 pt-8 pb-8 max-w-lg md:max-w-2xl mx-auto">
       <h1 className="text-2xl font-bold text-center mb-2">
         Train Free. Forever.
       </h1>
