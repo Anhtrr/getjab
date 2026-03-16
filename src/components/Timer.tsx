@@ -354,7 +354,7 @@ export default function Timer() {
   }
 
   return (
-    <div className="flex flex-col gap-6 animate-fade-in-up pb-24">
+    <div className="flex flex-col gap-6 animate-fade-in-up pb-8">
       <h1 className="text-2xl font-bold text-center mb-2 animate-fade-in-up">
         Round Timer
       </h1>
@@ -379,16 +379,14 @@ export default function Timer() {
         {sessionSummary}
       </p>
 
-      <div className="fixed left-0 right-0 z-40 px-4 pb-3" style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 3.5rem)" }}>
-        <div className="max-w-lg md:max-w-2xl mx-auto">
-          <TimerControls
-            state={timer.state}
-            onStart={handleStart}
-            onPause={timer.pause}
-            onResume={() => { audio.init(); timer.resume(); }}
-            onReset={timer.reset}
-          />
-        </div>
+      <div className="px-4 max-w-lg md:max-w-2xl mx-auto w-full">
+        <TimerControls
+          state={timer.state}
+          onStart={handleStart}
+          onPause={timer.pause}
+          onResume={() => { audio.init(); timer.resume(); }}
+          onReset={timer.reset}
+        />
       </div>
     </div>
   );

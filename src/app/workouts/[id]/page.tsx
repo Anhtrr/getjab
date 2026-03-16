@@ -167,58 +167,6 @@ export default function WorkoutDetailPage() {
         )}
       </div>
 
-      {showSettings && (
-        <div className="mb-6 animate-fade-in-up">
-          <CalloutPacingSelector
-            settings={calloutSettings}
-            onUpdate={updateCalloutSettings}
-            extraSettings={
-              <>
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Get Ready</span>
-                  <div className="flex gap-1.5">
-                    {[{ value: 0, label: "Off" }, { value: 5, label: "5s" }, { value: 10, label: "10s" }, { value: 15, label: "15s" }].map((opt) => (
-                      <button
-                        key={opt.value}
-                        onClick={() => { setPrepTimeSec(opt.value); saveSetting("prepTimeSec", opt.value); }}
-                        className={`text-xs font-medium px-3 py-1.5 rounded-full transition-all active:scale-95 ${
-                          prepTimeSec === opt.value
-                            ? "bg-gradient-to-r from-[#00e5ff] to-[#0090ff] text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
-                            : "bg-surface border border-border text-muted hover:text-foreground hover:border-[#00e5ff]/20"
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {(Capacitor.isNativePlatform() || (typeof navigator !== "undefined" && "vibrate" in navigator)) && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Haptic</span>
-                    <div className="flex gap-1.5">
-                      {[{ value: false, label: "Off" }, { value: true, label: "On" }].map((opt) => (
-                        <button
-                          key={String(opt.value)}
-                          onClick={() => { setHapticEnabled(opt.value); saveSetting("hapticEnabled", opt.value); }}
-                          className={`text-xs font-medium px-3 py-1.5 rounded-full transition-all active:scale-95 ${
-                            hapticEnabled === opt.value
-                              ? "bg-gradient-to-r from-[#00e5ff] to-[#0090ff] text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
-                              : "bg-surface border border-border text-muted hover:text-foreground hover:border-[#00e5ff]/20"
-                          }`}
-                        >
-                          {opt.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </>
-            }
-          />
-        </div>
-      )}
-
       <div className="space-y-3 pb-24 stagger-children">
         {workout.rounds.map((round, i) => (
           <div
@@ -264,17 +212,77 @@ export default function WorkoutDetailPage() {
         <div className="max-w-lg md:max-w-2xl mx-auto flex gap-3">
           <WorkoutStartButton onClick={handleStart} />
           <button
-            onClick={() => setShowSettings(!showSettings)}
-            className={`shrink-0 w-14 rounded-full flex items-center justify-center transition-all ${
-              showSettings
-                ? "bg-accent text-black"
-                : "btn-secondary border border-border text-muted"
-            }`}
+            onClick={() => setShowSettings(true)}
+            className="shrink-0 w-14 rounded-full flex items-center justify-center transition-all btn-secondary border border-border text-muted"
           >
             <Settings2 className="w-5 h-5" />
           </button>
         </div>
       </div>
+
+      {showSettings && (
+        <div className="fixed inset-0 z-[200] flex items-end justify-center animate-modal-overlay">
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowSettings(false)} />
+          <div className="relative z-10 w-full max-w-lg md:max-w-2xl bg-surface rounded-t-3xl p-6 pb-10 animate-slide-in-bottom">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-bold">Workout Settings</h3>
+              <button
+                onClick={() => setShowSettings(false)}
+                className="text-muted hover:text-foreground transition-colors p-1"
+              >
+                <span className="text-xl leading-none">&times;</span>
+              </button>
+            </div>
+            <CalloutPacingSelector
+              settings={calloutSettings}
+              onUpdate={updateCalloutSettings}
+              extraSettings={
+                <>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Get Ready</span>
+                    <div className="flex gap-1.5">
+                      {[{ value: 0, label: "Off" }, { value: 5, label: "5s" }, { value: 10, label: "10s" }, { value: 15, label: "15s" }].map((opt) => (
+                        <button
+                          key={opt.value}
+                          onClick={() => { setPrepTimeSec(opt.value); saveSetting("prepTimeSec", opt.value); }}
+                          className={`text-xs font-medium px-3 py-1.5 rounded-full transition-all active:scale-95 ${
+                            prepTimeSec === opt.value
+                              ? "bg-gradient-to-r from-[#00e5ff] to-[#0090ff] text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
+                              : "bg-surface border border-border text-muted hover:text-foreground hover:border-[#00e5ff]/20"
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {(Capacitor.isNativePlatform() || (typeof navigator !== "undefined" && "vibrate" in navigator)) && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Haptic</span>
+                      <div className="flex gap-1.5">
+                        {[{ value: false, label: "Off" }, { value: true, label: "On" }].map((opt) => (
+                          <button
+                            key={String(opt.value)}
+                            onClick={() => { setHapticEnabled(opt.value); saveSetting("hapticEnabled", opt.value); }}
+                            className={`text-xs font-medium px-3 py-1.5 rounded-full transition-all active:scale-95 ${
+                              hapticEnabled === opt.value
+                                ? "bg-gradient-to-r from-[#00e5ff] to-[#0090ff] text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
+                                : "bg-surface border border-border text-muted hover:text-foreground hover:border-[#00e5ff]/20"
+                            }`}
+                          >
+                            {opt.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              }
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
