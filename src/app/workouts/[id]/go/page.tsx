@@ -713,47 +713,50 @@ export default function WorkoutGoPage() {
           <CalloutPacingSelector
             settings={calloutSettings}
             onUpdate={updateCalloutSettings}
+            extraSettings={
+              <>
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Get Ready</span>
+                  <div className="flex gap-1.5">
+                    {[{ value: 0, label: "Off" }, { value: 5, label: "5s" }, { value: 10, label: "10s" }, { value: 15, label: "15s" }].map((opt) => (
+                      <button
+                        key={opt.value}
+                        onClick={() => { setPrepTimeSec(opt.value); saveSetting("prepTimeSec", opt.value); }}
+                        className={`text-xs font-medium px-3 py-1.5 rounded-full transition-all active:scale-95 ${
+                          prepTimeSec === opt.value
+                            ? "bg-gradient-to-r from-[#00e5ff] to-[#0090ff] text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
+                            : "bg-surface border border-border text-muted hover:text-foreground hover:border-[#00e5ff]/20"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {(Capacitor.isNativePlatform() || (typeof navigator !== "undefined" && "vibrate" in navigator)) && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Haptic</span>
+                    <div className="flex gap-1.5">
+                      {[{ value: false, label: "Off" }, { value: true, label: "On" }].map((opt) => (
+                        <button
+                          key={String(opt.value)}
+                          onClick={() => { setHapticEnabled(opt.value); saveSetting("hapticEnabled", opt.value); }}
+                          className={`text-xs font-medium px-3 py-1.5 rounded-full transition-all active:scale-95 ${
+                            hapticEnabled === opt.value
+                              ? "bg-gradient-to-r from-[#00e5ff] to-[#0090ff] text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
+                              : "bg-surface border border-border text-muted hover:text-foreground hover:border-[#00e5ff]/20"
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            }
           />
-
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Get Ready</span>
-            <div className="flex gap-1.5">
-              {[{ value: 0, label: "Off" }, { value: 5, label: "5s" }, { value: 10, label: "10s" }, { value: 15, label: "15s" }].map((opt) => (
-                <button
-                  key={opt.value}
-                  onClick={() => { setPrepTimeSec(opt.value); saveSetting("prepTimeSec", opt.value); }}
-                  className={`text-xs font-medium px-3 py-1.5 rounded-full transition-all active:scale-95 ${
-                    prepTimeSec === opt.value
-                      ? "bg-gradient-to-r from-[#00e5ff] to-[#0090ff] text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
-                      : "bg-surface border border-border text-muted hover:text-foreground hover:border-[#00e5ff]/20"
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {(Capacitor.isNativePlatform() || (typeof navigator !== "undefined" && "vibrate" in navigator)) && (
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Haptic</span>
-              <div className="flex gap-1.5">
-                {[{ value: false, label: "Off" }, { value: true, label: "On" }].map((opt) => (
-                  <button
-                    key={String(opt.value)}
-                    onClick={() => { setHapticEnabled(opt.value); saveSetting("hapticEnabled", opt.value); }}
-                    className={`text-xs font-medium px-3 py-1.5 rounded-full transition-all active:scale-95 ${
-                      hapticEnabled === opt.value
-                        ? "bg-gradient-to-r from-[#00e5ff] to-[#0090ff] text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
-                        : "bg-surface border border-border text-muted hover:text-foreground hover:border-[#00e5ff]/20"
-                    }`}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
 
         <button

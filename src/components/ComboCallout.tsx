@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type {
   ParsedPunch,
   CalloutState,
@@ -7,7 +8,7 @@ import type {
   CalloutPacing,
 } from "@/lib/types";
 import { isAudioAvailable } from "@/lib/comboAudio";
-import { Volume2, VolumeX } from "lucide-react";
+import { Volume2, VolumeX, ChevronDown } from "lucide-react";
 
 // ─── Color system by punch type ───
 
@@ -205,14 +206,17 @@ const PACING_OPTIONS: { value: CalloutPacing; label: string; desc: string }[] = 
 export function CalloutPacingSelector({
   settings,
   onUpdate,
+  extraSettings,
 }: {
   settings: CalloutSettings;
   onUpdate: (partial: Partial<CalloutSettings>) => void;
+  extraSettings?: React.ReactNode;
 }) {
   const audioAvailable = isAudioAvailable();
+  const [showMore, setShowMore] = useState(false);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Pacing grid */}
       <div>
         <p className="text-xs text-muted uppercase tracking-wider mb-2 font-medium">
@@ -273,53 +277,69 @@ export function CalloutPacingSelector({
         </button>
       </div>
 
-      {/* Voice mode toggle - Names vs Numbers */}
-      {settings.audioEnabled && (
-        <div className="flex items-center justify-between">
-          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Voice Mode</span>
-          <div className="flex gap-1.5">
-            {([
-              { value: "names" as const, label: "Names", desc: "Jab, Cross, Hook" },
-              { value: "numbers" as const, label: "Numbers", desc: "One, Two, Three" },
-            ]).map((opt) => (
-              <button
-                key={opt.value}
-                onClick={() => onUpdate({ audioMode: opt.value })}
-                className={`text-xs font-medium px-3 py-1.5 rounded-full transition-all active:scale-95 ${
-                  settings.audioMode === opt.value
-                    ? "bg-gradient-to-r from-[#00e5ff] to-[#0090ff] text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
-                    : "bg-surface border border-border text-muted hover:text-foreground hover:border-[#00e5ff]/20"
-                }`}
-              >
-                {opt.label}
-              </button>
-            ))}
+      {/* More settings toggle */}
+      <button
+        onClick={() => setShowMore(!showMore)}
+        className="flex items-center justify-center gap-1 w-full py-1.5 text-xs text-muted hover:text-foreground transition-colors"
+      >
+        <span>{showMore ? "Less" : "More Settings"}</span>
+        <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showMore ? "rotate-180" : ""}`} />
+      </button>
+
+      {/* Collapsible settings */}
+      {showMore && (
+        <div className="space-y-3 animate-fade-in-up">
+          {/* Voice mode */}
+          {settings.audioEnabled && (
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Voice Mode</span>
+              <div className="flex gap-1.5">
+                {([
+                  { value: "names" as const, label: "Names" },
+                  { value: "numbers" as const, label: "Numbers" },
+                ]).map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => onUpdate({ audioMode: opt.value })}
+                    className={`text-xs font-medium px-3 py-1.5 rounded-full transition-all active:scale-95 ${
+                      settings.audioMode === opt.value
+                        ? "bg-gradient-to-r from-[#00e5ff] to-[#0090ff] text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
+                        : "bg-surface border border-border text-muted hover:text-foreground hover:border-[#00e5ff]/20"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Combo order */}
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Combo Order</span>
+            <div className="flex gap-1.5">
+              {([
+                { value: "sequential" as const, label: "In Order" },
+                { value: "random" as const, label: "Random" },
+              ]).map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => onUpdate({ comboOrder: opt.value })}
+                  className={`text-xs font-medium px-3 py-1.5 rounded-full transition-all active:scale-95 ${
+                    (settings.comboOrder ?? "random") === opt.value
+                      ? "bg-gradient-to-r from-[#00e5ff] to-[#0090ff] text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
+                      : "bg-surface border border-border text-muted hover:text-foreground hover:border-[#00e5ff]/20"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
           </div>
+
+          {extraSettings}
         </div>
       )}
-
-      {/* Combo order toggle */}
-      <div className="flex items-center justify-between">
-        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Combo Order</span>
-        <div className="flex gap-1.5">
-          {([
-            { value: "sequential" as const, label: "In Order" },
-            { value: "random" as const, label: "Random" },
-          ]).map((opt) => (
-            <button
-              key={opt.value}
-              onClick={() => onUpdate({ comboOrder: opt.value })}
-              className={`text-xs font-medium px-3 py-1.5 rounded-full transition-all active:scale-95 ${
-                (settings.comboOrder ?? "random") === opt.value
-                  ? "bg-gradient-to-r from-[#00e5ff] to-[#0090ff] text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
-                  : "bg-surface border border-border text-muted hover:text-foreground hover:border-[#00e5ff]/20"
-              }`}
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
