@@ -354,40 +354,44 @@ export default function Timer() {
   }
 
   return (
-    <div className="flex flex-col gap-6 animate-fade-in-up" style={{ minHeight: "calc(100dvh - env(safe-area-inset-top, 0px) - 5rem - 1rem)" }}>
-      <h1 className="text-2xl font-bold text-center mb-2 animate-fade-in-up">
-        Round Timer
-      </h1>
+    <>
+      <div className="flex flex-col gap-6 animate-fade-in-up pb-24">
+        <h1 className="text-2xl font-bold text-center mb-2 animate-fade-in-up">
+          Round Timer
+        </h1>
 
-      <TimerSettings
-        settings={timer.settings}
-        onChange={timer.setSettings}
-        disabled={isActive}
-      />
-
-      <TimerDisplay
-        secondsLeft={timer.secondsLeft}
-        state={timer.state}
-        currentRound={timer.currentRound}
-        totalRounds={timer.totalRounds}
-        warningAtSec={timer.settings.warningAtSec}
-        roundDurationSec={timer.settings.roundDurationSec}
-        restDurationSec={timer.settings.restDurationSec}
-      />
-
-      <p className="text-xs text-muted text-center tabular-nums">
-        {sessionSummary}
-      </p>
-
-      <div className="mt-auto pt-2">
-        <TimerControls
-          state={timer.state}
-          onStart={handleStart}
-          onPause={timer.pause}
-          onResume={() => { audio.init(); timer.resume(); }}
-          onReset={timer.reset}
+        <TimerSettings
+          settings={timer.settings}
+          onChange={timer.setSettings}
+          disabled={isActive}
         />
+
+        <TimerDisplay
+          secondsLeft={timer.secondsLeft}
+          state={timer.state}
+          currentRound={timer.currentRound}
+          totalRounds={timer.totalRounds}
+          warningAtSec={timer.settings.warningAtSec}
+          roundDurationSec={timer.settings.roundDurationSec}
+          restDurationSec={timer.settings.restDurationSec}
+        />
+
+        <p className="text-xs text-muted text-center tabular-nums">
+          {sessionSummary}
+        </p>
       </div>
-    </div>
+
+      <div className="fixed left-0 right-0 z-40 px-4 pb-3" style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 3.5rem)" }}>
+        <div className="max-w-lg md:max-w-2xl mx-auto">
+          <TimerControls
+            state={timer.state}
+            onStart={handleStart}
+            onPause={timer.pause}
+            onResume={() => { audio.init(); timer.resume(); }}
+            onReset={timer.reset}
+          />
+        </div>
+      </div>
+    </>
   );
 }
