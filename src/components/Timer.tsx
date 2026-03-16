@@ -354,34 +354,32 @@ export default function Timer() {
   }
 
   return (
-    <div className="flex flex-col animate-fade-in-up" style={{ minHeight: "calc(100vh - 8rem)" }}>
-      <div className="flex flex-col gap-6 flex-1">
-        <h1 className="text-2xl font-bold text-center mb-2 animate-fade-in-up">
-          Round Timer
-        </h1>
+    <div className="flex flex-col gap-6 animate-fade-in-up" style={{ minHeight: "calc(100dvh - env(safe-area-inset-top, 0px) - 5rem - 1rem)" }}>
+      <h1 className="text-2xl font-bold text-center mb-2 animate-fade-in-up">
+        Round Timer
+      </h1>
 
-        <TimerSettings
-          settings={timer.settings}
-          onChange={timer.setSettings}
-          disabled={isActive}
-        />
+      <TimerSettings
+        settings={timer.settings}
+        onChange={timer.setSettings}
+        disabled={isActive}
+      />
 
-        <TimerDisplay
-          secondsLeft={timer.secondsLeft}
-          state={timer.state}
-          currentRound={timer.currentRound}
-          totalRounds={timer.totalRounds}
-          warningAtSec={timer.settings.warningAtSec}
-          roundDurationSec={timer.settings.roundDurationSec}
-          restDurationSec={timer.settings.restDurationSec}
-        />
+      <TimerDisplay
+        secondsLeft={timer.secondsLeft}
+        state={timer.state}
+        currentRound={timer.currentRound}
+        totalRounds={timer.totalRounds}
+        warningAtSec={timer.settings.warningAtSec}
+        roundDurationSec={timer.settings.roundDurationSec}
+        restDurationSec={timer.settings.restDurationSec}
+      />
 
-        <p className="text-xs text-muted text-center tabular-nums">
-          {sessionSummary}
-        </p>
-      </div>
+      <p className="text-xs text-muted text-center tabular-nums">
+        {sessionSummary}
+      </p>
 
-      <div className="mt-auto pt-4 pb-2">
+      <div className="mt-auto pt-2">
         <TimerControls
           state={timer.state}
           onStart={handleStart}
