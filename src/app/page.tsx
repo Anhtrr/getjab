@@ -4,7 +4,8 @@ import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useProgress } from "@/hooks/useProgress";
 import { useGamification } from "@/hooks/useGamification";
-import { workouts } from "@/data/workouts";
+import { workouts, getWorkout } from "@/data/workouts";
+import { getPresets } from "@/lib/timerPresets";
 import ProgressCalendar from "@/components/ProgressCalendar";
 import DailyChallengeCard from "@/components/gamification/DailyChallengeCard";
 import StreakShieldDisplay from "@/components/gamification/StreakShieldDisplay";
@@ -91,14 +92,48 @@ export default function Home() {
   const weekLogs = logs.filter((log) => new Date(log.date) >= monday);
   const weekWorkouts = weekLogs.length;
 
-  // Suggested workout
-  const suggestedWorkout = useMemo(() => {
+  // Suggested workout - smart recommendation based on history
+  const { suggestedWorkout, suggestionLabel, trySomethingNew } = useMemo(() => {
+    // New user: suggest first workout
     if (logs.length === 0) {
-      return workouts.find((w) => w.id === "first-boxing-workout") || workouts[0];
+      const first = workouts.find((w) => w.id === "first-boxing-workout") || workouts[0];
+      return { suggestedWorkout: first, suggestionLabel: "Start Here", trySomethingNew: null };
     }
+
+    // Returning user: suggest most recently completed workout (they'll likely repeat it)
+    const sortedLogs = [...logs].sort((a, b) =>
+      new Date(b.completedAt || b.date).getTime() - new Date(a.completedAt || a.date).getTime()
+    );
+    const lastWorkoutId = sortedLogs[0]?.workoutId;
+    const lastWorkout = lastWorkoutId ? getWorkout(lastWorkoutId) : null;
+
+    // Find something new: a workout they haven't done or haven't done recently
     const completedIds = new Set(logs.map((l) => l.workoutId));
-    return workouts.find((w) => !completedIds.has(w.id)) || workouts[0];
+    const neverDone = workouts.find((w) => !completedIds.has(w.id) && w.isFree);
+    // Count how many times each workout was done
+    const workoutCounts: Record<string, number> = {};
+    for (const log of logs) workoutCounts[log.workoutId] = (workoutCounts[log.workoutId] || 0) + 1;
+    // Least done workout they've tried (for variety)
+    const leastDone = workouts
+      .filter((w) => completedIds.has(w.id) && w.id !== lastWorkoutId && w.isFree)
+      .sort((a, b) => (workoutCounts[a.id] || 0) - (workoutCounts[b.id] || 0))[0];
+
+    const tryNew = neverDone || leastDone || null;
+
+    if (lastWorkout) {
+      return { suggestedWorkout: lastWorkout, suggestionLabel: "Continue Training", trySomethingNew: tryNew };
+    }
+
+    // Fallback
+    return { suggestedWorkout: workouts[0], suggestionLabel: "Up Next", trySomethingNew: tryNew };
   }, [logs]);
+
+  // Last used timer preset
+  const lastPreset = useMemo(() => {
+    if (!mounted) return null;
+    const presets = getPresets();
+    return presets[0] || null;
+  }, [mounted]);
 
   // Recent activity
   const recentLogs = [...logs].reverse().slice(0, 3);
@@ -211,7 +246,7 @@ export default function Home() {
             style={{ animationDelay: nextDelay() }}
           >
             <h2 className="text-sm font-semibold tracking-wide uppercase text-muted mb-2">
-              Up Next
+              {suggestionLabel}
             </h2>
             <Link
               href={`/workouts/${suggestedWorkout.id}`}
@@ -244,12 +279,22 @@ export default function Home() {
                 </div>
               </div>
             </Link>
-            <Link
-              href="/workouts"
-              className="block text-center text-sm text-[#00e5ff] font-medium mt-3 py-1 hover:text-[#00c8ff] transition-colors"
-            >
-              Browse All Workouts
-            </Link>
+            <div className="flex items-center justify-center gap-4 mt-3">
+              {trySomethingNew && (
+                <Link
+                  href={`/workouts/${trySomethingNew.id}`}
+                  className="text-sm text-muted hover:text-foreground transition-colors"
+                >
+                  Try: {trySomethingNew.title}
+                </Link>
+              )}
+              <Link
+                href="/workouts"
+                className="text-sm text-[#00e5ff] font-medium hover:text-[#00c8ff] transition-colors"
+              >
+                Browse All
+              </Link>
+            </div>
           </div>
         )}
 
@@ -267,13 +312,14 @@ export default function Home() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-sm">
-                {isNewUser ? "Round Timer" : "Quick Timer"}
+                {isNewUser || !lastPreset ? "Round Timer" : lastPreset.name}
               </p>
-              {isNewUser && (
-                <p className="text-xs text-muted">
-                  Customizable round & rest intervals
-                </p>
-              )}
+              <p className="text-xs text-muted">
+                {isNewUser || !lastPreset
+                  ? "Customizable round & rest intervals"
+                  : `${lastPreset.settings.rounds} × ${Math.floor(lastPreset.settings.roundDurationSec / 60)}:${(lastPreset.settings.roundDurationSec % 60).toString().padStart(2, "0")} / ${Math.floor(lastPreset.settings.restDurationSec / 60)}:${(lastPreset.settings.restDurationSec % 60).toString().padStart(2, "0")} rest`
+                }
+              </p>
             </div>
             <ChevronRight className="w-4 h-4 text-muted shrink-0 group-hover:text-[#00e5ff] transition-colors" />
           </Link>
