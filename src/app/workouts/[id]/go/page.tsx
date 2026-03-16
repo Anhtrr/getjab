@@ -134,14 +134,12 @@ export default function WorkoutGoPage() {
   const [hasSavedState, setHasSavedState] = useState(false);
   const restoredRef = useRef(false);
   const autostartRef = useRef(false);
-  const audioPreInitRef = useRef(false);
 
-  // Check for autostart flag from detail page (audio already initialized there)
+  // Check for autostart flag from detail page
   useEffect(() => {
     if (typeof sessionStorage !== "undefined" && sessionStorage.getItem("jab_autostart")) {
       sessionStorage.removeItem("jab_autostart");
       autostartRef.current = true;
-      audioPreInitRef.current = true; // Audio was initialized on detail page button tap
     }
   }, []);
 
@@ -353,12 +351,8 @@ export default function WorkoutGoPage() {
 
   const startWorkout = useCallback(() => {
     if (!workout) return;
-    // Only init audio if not already done (detail page button does it on user gesture)
-    if (!audioPreInitRef.current) {
-      audio.init();
-      initComboAudio();
-    }
-    audioPreInitRef.current = false; // Reset for next time
+    audio.init();
+    initComboAudio();
     setCurrentRoundIndex(0);
     currentRoundIndexRef.current = 0;
     setIsResting(false);
@@ -404,19 +398,11 @@ export default function WorkoutGoPage() {
     }, 250);
   }, [workout, audio, beginRound1]);
 
-  // Auto-start if navigated from detail page with autostart flag
-  // If no flag and no saved state, redirect back to detail page (idle config page is removed)
+  // Redirect if no autostart flag and no saved state (user navigated directly to /go)
   useEffect(() => {
-    if (state !== "idle" || !workout || hasSavedState) return;
-
-    if (autostartRef.current) {
-      autostartRef.current = false;
-      startWorkout();
-    } else {
-      // No autostart flag and no saved state - redirect to detail page
-      router.replace(`/workouts/${workout.id}`);
-    }
-  }, [state, workout, hasSavedState, startWorkout, router]);
+    if (state !== "idle" || !workout || hasSavedState || autostartRef.current) return;
+    router.replace(`/workouts/${workout.id}`);
+  }, [state, workout, hasSavedState, router]);
 
   const handleRate = useCallback(
     (rating: 1 | 2 | 3 | 4) => {
@@ -721,7 +707,28 @@ export default function WorkoutGoPage() {
   }
 
   if (state === "idle") {
-    // Idle state redirects to detail page (handled by useEffect above)
+    // Show tap-to-start if coming from detail page (autostart flag)
+    if (autostartRef.current) {
+      return (
+        <div className="px-4 pt-12 pb-8 max-w-lg md:max-w-2xl mx-auto text-center">
+          <h1 className="text-2xl font-bold mb-2">{workout.title}</h1>
+          <p className="text-muted mb-6">
+            {workout.rounds.length} rounds &middot; {workout.durationMin} min
+          </p>
+          <button
+            onClick={() => {
+              autostartRef.current = false;
+              startWorkout();
+            }}
+            className="btn-primary text-xl w-full py-5 rounded-full animate-start-glow"
+          >
+            TAP TO START
+          </button>
+        </div>
+      );
+    }
+
+    // Otherwise redirect to detail page (handled by useEffect)
     return (
       <div className="px-4 pt-12 pb-8 max-w-lg md:max-w-2xl mx-auto text-center">
         <p className="text-muted">Loading workout...</p>

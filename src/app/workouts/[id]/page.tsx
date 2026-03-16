@@ -85,11 +85,9 @@ export default function WorkoutDetailPage() {
   }, []);
 
   const handleStart = useCallback(() => {
-    audio.init();
-    initComboAudio();
     sessionStorage.setItem("jab_autostart", "true");
     router.push(`/workouts/${id}/go`);
-  }, [audio, router, id]);
+  }, [router, id]);
 
   if (!workout) {
     return (
