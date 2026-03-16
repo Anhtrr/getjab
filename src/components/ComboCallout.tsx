@@ -279,14 +279,16 @@ export function CalloutPacingSelector({
         </button>
       </div>
 
-      {/* More settings toggle */}
-      <button
-        onClick={() => setShowMore(!showMore)}
-        className="flex items-center justify-center gap-1 w-full py-1.5 text-xs text-muted hover:text-foreground transition-colors"
-      >
-        <span>{showMore ? "Less" : "More Settings"}</span>
-        <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showMore ? "rotate-180" : ""}`} />
-      </button>
+      {/* More settings toggle - hidden when already expanded */}
+      {!defaultExpanded && (
+        <button
+          onClick={() => setShowMore(!showMore)}
+          className="flex items-center justify-center gap-1 w-full py-1.5 text-xs text-muted hover:text-foreground transition-colors"
+        >
+          <span>{showMore ? "Less" : "More Settings"}</span>
+          <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showMore ? "rotate-180" : ""}`} />
+        </button>
+      )}
 
       {/* Collapsible settings */}
       {showMore && (
