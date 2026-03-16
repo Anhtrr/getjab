@@ -55,21 +55,24 @@ function playClip(src: string): Promise<void> {
   });
 }
 
-function getPunchClipKeys(punch: ParsedPunch, mode: "names" | "numbers"): string[] {
-  const keys: string[] = [];
+interface ClipEntry {
+  key: string;
+  isBodyPrefix: boolean;
+}
+
+function getPunchClipEntries(punch: ParsedPunch, mode: "names" | "numbers"): ClipEntry[] {
+  const entries: ClipEntry[] = [];
 
   if (mode === "numbers" && punch.type !== "defense") {
-    // Body prefix
-    if (punch.target === "body") keys.push("body");
+    if (punch.target === "body") entries.push({ key: "body", isBodyPrefix: true });
     const numWord = ["one", "two", "three", "four", "five", "six"][(punch.number as number) - 1];
-    if (numWord) keys.push(numWord);
+    if (numWord) entries.push({ key: numWord, isBodyPrefix: false });
   } else {
-    // Body prefix
-    if (punch.target === "body") keys.push("body");
-    keys.push(punch.name.toLowerCase());
+    if (punch.target === "body") entries.push({ key: "body", isBodyPrefix: true });
+    entries.push({ key: punch.name.toLowerCase(), isBodyPrefix: false });
   }
 
-  return keys;
+  return entries;
 }
 
 // ─── TTS fallback ───
@@ -183,14 +186,14 @@ export function speakCombo(
 
   cancelSpeech();
 
-  // Build the list of clip keys for this combo
-  const allKeys: string[] = [];
+  // Build the list of clip entries for this combo
+  const entries: ClipEntry[] = [];
   for (const punch of combo.punches) {
-    allKeys.push(...getPunchClipKeys(punch, mode));
+    entries.push(...getPunchClipEntries(punch, mode));
   }
 
   // Check if all clips are available
-  const allAvailable = allKeys.every((key) => PUNCH_AUDIO_MAP[key]);
+  const allAvailable = entries.every((e) => PUNCH_AUDIO_MAP[e.key]);
 
   if (!allAvailable) {
     // Fall back to TTS
@@ -209,21 +212,32 @@ export function speakCombo(
     return;
   }
 
-  // Play clips sequentially with short gaps
+  // Play clips sequentially, chaining via onended
   clipPlaybackActive = true;
-  const GAP_MS = 80;
-  let delay = 0;
+  const PUNCH_GAP_MS = 200;
+  const BODY_PREFIX_GAP_MS = 30;
 
-  for (const key of allKeys) {
-    const src = PUNCH_AUDIO_MAP[key];
-    const t = setTimeout(() => {
+  function playNext(index: number) {
+    if (!clipPlaybackActive || index >= entries.length) return;
+    const entry = entries[index];
+    const src = PUNCH_AUDIO_MAP[entry.key];
+    const audio = preloadClip(src);
+    audio.currentTime = 0;
+    audio.volume = 0.9;
+
+    audio.onended = () => {
       if (!clipPlaybackActive) return;
-      playClip(src);
-    }, delay);
-    clipTimeouts.push(t);
-    // Estimate clip duration + gap (most clips are 200-400ms)
-    delay += 350 + GAP_MS;
+      // Use a short gap after body prefix, longer gap between punches
+      const nextEntry = entries[index + 1];
+      const gap = nextEntry?.isBodyPrefix ? PUNCH_GAP_MS : entry.isBodyPrefix ? BODY_PREFIX_GAP_MS : PUNCH_GAP_MS;
+      const t = setTimeout(() => playNext(index + 1), gap);
+      clipTimeouts.push(t);
+    };
+    audio.onerror = () => playNext(index + 1);
+    audio.play().catch(() => playNext(index + 1));
   }
+
+  playNext(0);
 }
 
 /** Speak round title using pre-recorded clips or TTS */
