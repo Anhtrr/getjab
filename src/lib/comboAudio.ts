@@ -247,22 +247,9 @@ export function speakCombo(
   playNext(0);
 }
 
-/** Speak round title using pre-recorded clips or TTS */
-export async function speakText(text: string): Promise<void> {
+/** Speak round title via TTS */
+export function speakText(text: string): void {
   cancelSpeech();
-
-  // Try to match a round type audio clip
-  const lower = text.toLowerCase();
-  for (const [keyword, src] of Object.entries(ROUND_AUDIO_MAP)) {
-    if (lower.includes(keyword)) {
-      clipPlaybackActive = true;
-      const buffer = await preloadClip(src);
-      if (buffer && clipPlaybackActive) playBuffer(buffer);
-      return;
-    }
-  }
-
-  // Fall back to TTS for unmatched round titles
   speakTTS(text, 1.1);
 }
 
