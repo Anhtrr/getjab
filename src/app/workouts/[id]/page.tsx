@@ -85,9 +85,14 @@ export default function WorkoutDetailPage() {
   }, []);
 
   const handleStart = useCallback(() => {
+    // Initialize audio during user gesture BEFORE navigation
+    audio.init();
+    initComboAudio();
+
     sessionStorage.setItem("jab_autostart", "true");
-    router.push(`/workouts/${id}/go`);
-  }, [router, id]);
+    // Small delay ensures AudioContext is fully resumed before navigation
+    setTimeout(() => router.push(`/workouts/${id}/go`), 50);
+  }, [audio, router, id]);
 
   if (!workout) {
     return (

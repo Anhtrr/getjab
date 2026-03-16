@@ -398,11 +398,17 @@ export default function WorkoutGoPage() {
     }, 250);
   }, [workout, audio, beginRound1]);
 
-  // Redirect if no autostart flag and no saved state (user navigated directly to /go)
+  // Auto-start if navigated from detail page, redirect otherwise
   useEffect(() => {
-    if (state !== "idle" || !workout || hasSavedState || autostartRef.current) return;
-    router.replace(`/workouts/${workout.id}`);
-  }, [state, workout, hasSavedState, router]);
+    if (state !== "idle" || !workout || hasSavedState) return;
+
+    if (autostartRef.current) {
+      autostartRef.current = false;
+      startWorkout();
+    } else {
+      router.replace(`/workouts/${workout.id}`);
+    }
+  }, [state, workout, hasSavedState, startWorkout, router]);
 
   const handleRate = useCallback(
     (rating: 1 | 2 | 3 | 4) => {
@@ -707,28 +713,7 @@ export default function WorkoutGoPage() {
   }
 
   if (state === "idle") {
-    // Show tap-to-start if coming from detail page (autostart flag)
-    if (autostartRef.current) {
-      return (
-        <div className="px-4 pt-12 pb-8 max-w-lg md:max-w-2xl mx-auto text-center">
-          <h1 className="text-2xl font-bold mb-2">{workout.title}</h1>
-          <p className="text-muted mb-6">
-            {workout.rounds.length} rounds &middot; {workout.durationMin} min
-          </p>
-          <button
-            onClick={() => {
-              autostartRef.current = false;
-              startWorkout();
-            }}
-            className="btn-primary text-xl w-full py-5 rounded-full animate-start-glow"
-          >
-            TAP TO START
-          </button>
-        </div>
-      );
-    }
-
-    // Otherwise redirect to detail page (handled by useEffect)
+    // Auto-start handled by useEffect above, show loading during transition
     return (
       <div className="px-4 pt-12 pb-8 max-w-lg md:max-w-2xl mx-auto text-center">
         <p className="text-muted">Loading workout...</p>
