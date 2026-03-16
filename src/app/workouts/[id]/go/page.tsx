@@ -142,6 +142,15 @@ export default function WorkoutGoPage() {
 
   const [hasSavedState, setHasSavedState] = useState(false);
   const restoredRef = useRef(false);
+  const autostartRef = useRef(false);
+
+  // Check for autostart flag from detail page
+  useEffect(() => {
+    if (typeof sessionStorage !== "undefined" && sessionStorage.getItem("jab_autostart")) {
+      sessionStorage.removeItem("jab_autostart");
+      autostartRef.current = true;
+    }
+  }, []);
 
   // Track the level before workout completes
   useEffect(() => {
@@ -397,6 +406,14 @@ export default function WorkoutGoPage() {
       }
     }, 250);
   }, [workout, audio, beginRound1]);
+
+  // Auto-start if navigated from detail page with autostart flag
+  useEffect(() => {
+    if (autostartRef.current && state === "idle" && workout && !hasSavedState) {
+      autostartRef.current = false;
+      startWorkout();
+    }
+  }, [state, workout, hasSavedState, startWorkout]);
 
   const handleRate = useCallback(
     (rating: 1 | 2 | 3 | 4) => {

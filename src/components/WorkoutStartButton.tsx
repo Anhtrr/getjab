@@ -1,18 +1,16 @@
-import Link from "next/link";
-
 interface WorkoutStartButtonProps {
-  workoutId: string;
+  onClick: () => void;
 }
 
 export default function WorkoutStartButton({
-  workoutId,
+  onClick,
 }: WorkoutStartButtonProps) {
   return (
-    <Link
-      href={`/workouts/${workoutId}/go`}
+    <button
+      onClick={onClick}
       className="block w-full text-center btn-primary text-lg py-4 rounded-full animate-start-glow"
     >
       Start Workout
-    </Link>
+    </button>
   );
 }
