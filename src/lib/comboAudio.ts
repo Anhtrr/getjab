@@ -1,4 +1,5 @@
 import type { ParsedCombo, ParsedPunch } from "./types";
+import { getAudioContext } from "./audio";
 
 // ─── Pre-recorded audio clip system ───
 
@@ -43,28 +44,44 @@ const ROUND_AUDIO_MAP: Record<string, string> = {
   "shadow": "/audio/shadow-boxing.mp3",
 };
 
-const audioCache = new Map<string, HTMLAudioElement>();
+const bufferCache = new Map<string, AudioBuffer>();
+const fetchPromises = new Map<string, Promise<AudioBuffer | null>>();
 let clipPlaybackActive = false;
 let clipTimeouts: ReturnType<typeof setTimeout>[] = [];
+let activeSource: AudioBufferSourceNode | null = null;
 
-function preloadClip(src: string): HTMLAudioElement {
-  const cached = audioCache.get(src);
-  if (cached) return cached;
-  const audio = new Audio(src);
-  audio.preload = "auto";
-  audioCache.set(src, audio);
-  return audio;
+async function preloadClip(src: string): Promise<AudioBuffer | null> {
+  if (bufferCache.has(src)) return bufferCache.get(src)!;
+  if (fetchPromises.has(src)) return fetchPromises.get(src)!;
+
+  const promise = (async () => {
+    try {
+      const response = await fetch(src);
+      const arrayBuffer = await response.arrayBuffer();
+      const ctx = getAudioContext();
+      const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+      bufferCache.set(src, audioBuffer);
+      return audioBuffer;
+    } catch {
+      return null;
+    }
+  })();
+
+  fetchPromises.set(src, promise);
+  return promise;
 }
 
-function playClip(src: string): Promise<void> {
-  return new Promise((resolve) => {
-    const audio = preloadClip(src);
-    audio.currentTime = 0;
-    audio.volume = 0.9;
-    audio.onended = () => resolve();
-    audio.onerror = () => resolve();
-    audio.play().catch(() => resolve());
-  });
+function playBuffer(buffer: AudioBuffer): { source: AudioBufferSourceNode; duration: number } {
+  const ctx = getAudioContext();
+  const source = ctx.createBufferSource();
+  const gain = ctx.createGain();
+  gain.gain.value = 0.9;
+  source.buffer = buffer;
+  source.connect(gain);
+  gain.connect(ctx.destination);
+  source.start();
+  activeSource = source;
+  return { source, duration: buffer.duration * 1000 };
 }
 
 function getPunchClipKey(punch: ParsedPunch, mode: "names" | "numbers"): string {
@@ -209,31 +226,29 @@ export function speakCombo(
     return;
   }
 
-  // Play clips sequentially, chaining via onended
+  // Play clips sequentially using AudioContext buffers
   clipPlaybackActive = true;
   const GAP_MS = 150;
 
-  function playNext(index: number) {
+  async function playNext(index: number) {
     if (!clipPlaybackActive || index >= keys.length) return;
     const src = PUNCH_AUDIO_MAP[keys[index]];
-    const audio = preloadClip(src);
-    audio.currentTime = 0;
-    audio.volume = 0.9;
+    const buffer = await preloadClip(src);
+    if (!buffer || !clipPlaybackActive) return;
 
-    audio.onended = () => {
+    const { source, duration } = playBuffer(buffer);
+    source.onended = () => {
       if (!clipPlaybackActive) return;
       const t = setTimeout(() => playNext(index + 1), GAP_MS);
       clipTimeouts.push(t);
     };
-    audio.onerror = () => playNext(index + 1);
-    audio.play().catch(() => playNext(index + 1));
   }
 
   playNext(0);
 }
 
 /** Speak round title using pre-recorded clips or TTS */
-export function speakText(text: string): void {
+export async function speakText(text: string): Promise<void> {
   cancelSpeech();
 
   // Try to match a round type audio clip
@@ -241,7 +256,8 @@ export function speakText(text: string): void {
   for (const [keyword, src] of Object.entries(ROUND_AUDIO_MAP)) {
     if (lower.includes(keyword)) {
       clipPlaybackActive = true;
-      playClip(src);
+      const buffer = await preloadClip(src);
+      if (buffer && clipPlaybackActive) playBuffer(buffer);
       return;
     }
   }
@@ -256,10 +272,10 @@ export function cancelSpeech(): void {
   for (const t of clipTimeouts) clearTimeout(t);
   clipTimeouts = [];
 
-  // Stop any currently playing clips
-  for (const audio of audioCache.values()) {
-    audio.pause();
-    audio.currentTime = 0;
+  // Stop any currently playing buffer source
+  if (activeSource) {
+    try { activeSource.stop(); } catch {}
+    activeSource = null;
   }
 
   if (typeof window !== "undefined" && window.speechSynthesis) {

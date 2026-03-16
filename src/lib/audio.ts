@@ -1,6 +1,6 @@
 let audioContext: AudioContext | null = null;
 
-function getAudioContext(): AudioContext {
+export function getAudioContext(): AudioContext {
   // iOS can close or interrupt the context after suspension - recreate if needed
   if (audioContext && (audioContext.state === "closed" || audioContext.state as string === "interrupted")) {
     try { audioContext.close(); } catch {}
