@@ -207,13 +207,15 @@ export function CalloutPacingSelector({
   settings,
   onUpdate,
   extraSettings,
+  defaultExpanded = false,
 }: {
   settings: CalloutSettings;
   onUpdate: (partial: Partial<CalloutSettings>) => void;
   extraSettings?: React.ReactNode;
+  defaultExpanded?: boolean;
 }) {
   const audioAvailable = isAudioAvailable();
-  const [showMore, setShowMore] = useState(false);
+  const [showMore, setShowMore] = useState(defaultExpanded);
 
   return (
     <div className="space-y-3">

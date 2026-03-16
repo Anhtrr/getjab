@@ -236,6 +236,7 @@ export default function WorkoutDetailPage() {
             <CalloutPacingSelector
               settings={calloutSettings}
               onUpdate={updateCalloutSettings}
+              defaultExpanded
               extraSettings={
                 <>
                   <div className="flex items-center justify-between">
