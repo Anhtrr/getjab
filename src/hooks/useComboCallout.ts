@@ -28,9 +28,12 @@ function loadSettings(): CalloutSettings {
   }
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) return JSON.parse(stored);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      return { pacing: "medium", audioEnabled: true, audioMode: "names", comboOrder: "random", ...parsed };
+    }
   } catch {}
-  return { pacing: "medium", audioEnabled: true, audioMode: "names" };
+  return { pacing: "medium", audioEnabled: true, audioMode: "names", comboOrder: "random" };
 }
 
 function saveSettings(settings: CalloutSettings): void {
