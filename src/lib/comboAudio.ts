@@ -1,7 +1,9 @@
 import type { ParsedCombo, ParsedPunch } from "./types";
+import { Capacitor } from "@capacitor/core";
 import { getAudioContext } from "./audio";
+import NativeAudioPlayer from "./nativeAudio";
 
-// ─── Pre-recorded audio clip system ───
+// ─── Audio clip path mapping ───
 
 const PUNCH_AUDIO_MAP: Record<string, string> = {
   // Names mode
@@ -37,20 +39,15 @@ const PUNCH_AUDIO_MAP: Record<string, string> = {
   "body six": "/audio/body-uppercut.mp3",
 };
 
-const ROUND_AUDIO_MAP: Record<string, string> = {
-  "burnout": "/audio/burnout-round.mp3",
-  "conditioning": "/audio/conditioning.mp3",
-  "cooldown": "/audio/cooldown.mp3",
-  "shadow": "/audio/shadow-boxing.mp3",
-};
+const isNative = typeof window !== "undefined" && Capacitor.isNativePlatform();
+
+// ─── Web AudioContext playback ───
 
 const bufferCache = new Map<string, AudioBuffer>();
 const fetchPromises = new Map<string, Promise<AudioBuffer | null>>();
-let clipPlaybackActive = false;
-let clipTimeouts: ReturnType<typeof setTimeout>[] = [];
 let activeSource: AudioBufferSourceNode | null = null;
 
-async function preloadClip(src: string): Promise<AudioBuffer | null> {
+async function preloadClipWeb(src: string): Promise<AudioBuffer | null> {
   if (bufferCache.has(src)) return bufferCache.get(src)!;
   if (fetchPromises.has(src)) return fetchPromises.get(src)!;
 
@@ -71,18 +68,48 @@ async function preloadClip(src: string): Promise<AudioBuffer | null> {
   return promise;
 }
 
-function playBuffer(buffer: AudioBuffer): { source: AudioBufferSourceNode; duration: number } {
+function playBufferWeb(buffer: AudioBuffer): { source: AudioBufferSourceNode } {
   const ctx = getAudioContext();
   const source = ctx.createBufferSource();
   const gain = ctx.createGain();
-  gain.gain.value = 1.5;
+  gain.gain.value = 3.0;
   source.buffer = buffer;
   source.connect(gain);
   gain.connect(ctx.destination);
   source.start();
   activeSource = source;
-  return { source, duration: buffer.duration * 1000 };
+  return { source };
 }
+
+// ─── Native AVAudioPlayer playback ───
+
+let nativePreloaded = false;
+
+async function preloadClipsNative(): Promise<void> {
+  if (nativePreloaded) return;
+  nativePreloaded = true;
+
+  // Collect unique paths
+  const allPaths = new Set<string>();
+  for (const path of Object.values(PUNCH_AUDIO_MAP)) allPaths.add(path);
+
+  // Preload each clip natively
+  for (const path of allPaths) {
+    const assetId = path.replace("/audio/", "").replace(".mp3", "");
+    try {
+      await NativeAudioPlayer.preload({ assetId, path: path.slice(1) }); // remove leading /
+    } catch {}
+  }
+}
+
+function getAssetId(src: string): string {
+  return src.replace("/audio/", "").replace(".mp3", "");
+}
+
+// ─── Shared state ───
+
+let clipPlaybackActive = false;
+let clipTimeouts: ReturnType<typeof setTimeout>[] = [];
 
 function getPunchClipKey(punch: ParsedPunch, mode: "names" | "numbers"): string {
   if (mode === "numbers" && punch.type !== "defense") {
@@ -159,15 +186,16 @@ export function stopTTSKeepAlive(): void {
 
 /** Initialize audio - call on user gesture */
 export function initComboAudio(): void {
-  // Preload all audio clips
-  for (const src of Object.values(PUNCH_AUDIO_MAP)) {
-    preloadClip(src);
-  }
-  for (const src of Object.values(ROUND_AUDIO_MAP)) {
-    preloadClip(src);
+  // Preload clips
+  if (isNative) {
+    preloadClipsNative();
+  } else {
+    for (const src of Object.values(PUNCH_AUDIO_MAP)) {
+      preloadClipWeb(src);
+    }
   }
 
-  // Also init TTS as fallback
+  // Init TTS as fallback / for round announcements
   if (typeof window !== "undefined" && window.speechSynthesis) {
     window.speechSynthesis.cancel();
     const unlock = new SpeechSynthesisUtterance("");
@@ -194,7 +222,7 @@ export function isAudioAvailable(): boolean {
   return typeof window !== "undefined" && (!!window.Audio || !!window.speechSynthesis);
 }
 
-/** Speak a combo using pre-recorded clips, fall back to TTS */
+/** Speak a combo using pre-recorded clips */
 export function speakCombo(
   combo: ParsedCombo,
   mode: "names" | "numbers" = "names",
@@ -203,10 +231,7 @@ export function speakCombo(
 
   cancelSpeech();
 
-  // Build the list of clip keys for this combo
   const keys = combo.punches.map((p) => getPunchClipKey(p, mode));
-
-  // Check if all clips are available
   const allAvailable = keys.every((key) => PUNCH_AUDIO_MAP[key]);
 
   if (!allAvailable) {
@@ -226,25 +251,44 @@ export function speakCombo(
     return;
   }
 
-  // Play clips sequentially using AudioContext buffers
   clipPlaybackActive = true;
   const GAP_MS = 80;
 
-  async function playNext(index: number) {
-    if (!clipPlaybackActive || index >= keys.length) return;
-    const src = PUNCH_AUDIO_MAP[keys[index]];
-    const buffer = await preloadClip(src);
-    if (!buffer || !clipPlaybackActive) return;
+  if (isNative) {
+    // Native: play through AVAudioPlayer (ducks background music)
+    async function playNextNative(index: number) {
+      if (!clipPlaybackActive || index >= keys.length) return;
+      const src = PUNCH_AUDIO_MAP[keys[index]];
+      const assetId = getAssetId(src);
 
-    const { source, duration } = playBuffer(buffer);
-    source.onended = () => {
+      try {
+        await NativeAudioPlayer.play({ assetId, volume: 1.0 });
+      } catch {}
+
       if (!clipPlaybackActive) return;
-      const t = setTimeout(() => playNext(index + 1), GAP_MS);
+      const t = setTimeout(() => playNextNative(index + 1), GAP_MS);
       clipTimeouts.push(t);
-    };
-  }
+    }
 
-  playNext(0);
+    playNextNative(0);
+  } else {
+    // Web: play through AudioContext
+    async function playNextWeb(index: number) {
+      if (!clipPlaybackActive || index >= keys.length) return;
+      const src = PUNCH_AUDIO_MAP[keys[index]];
+      const buffer = await preloadClipWeb(src);
+      if (!buffer || !clipPlaybackActive) return;
+
+      const { source } = playBufferWeb(buffer);
+      source.onended = () => {
+        if (!clipPlaybackActive) return;
+        const t = setTimeout(() => playNextWeb(index + 1), GAP_MS);
+        clipTimeouts.push(t);
+      };
+    }
+
+    playNextWeb(0);
+  }
 }
 
 /** Speak round title via TTS */
@@ -255,13 +299,17 @@ export function speakText(text: string): void {
 
 /** Cancel any current speech or clip playback */
 export function cancelSpeech(): void {
-  // Stop any currently playing buffer source FIRST to prevent onended from scheduling new timeouts
+  // Stop web AudioContext source
   if (activeSource) {
     try { activeSource.stop(); } catch {}
     activeSource = null;
   }
 
-  // Then set the flag and clear timeouts
+  // Stop native playback
+  if (isNative) {
+    try { NativeAudioPlayer.stopAll(); } catch {}
+  }
+
   clipPlaybackActive = false;
   for (const t of clipTimeouts) clearTimeout(t);
   clipTimeouts = [];
