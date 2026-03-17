@@ -14,7 +14,37 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
     ]
 
     private var players: [String: AVAudioPlayer] = [:]
-    private var completionHandlers: [String: (CAPPluginCall)] = [:]
+    private var completionCallIds: [String: String] = [:]
+    private var pendingCalls: [String: CAPPluginCall] = [:]
+
+    private func findAudioFile(_ path: String) -> URL? {
+        // Try the public directory (where Capacitor copies web assets)
+        if let resourceURL = Bundle.main.resourceURL {
+            let publicURL = resourceURL.appendingPathComponent("public").appendingPathComponent(path)
+            if FileManager.default.fileExists(atPath: publicURL.path) {
+                return publicURL
+            }
+        }
+
+        // Try direct bundle lookup by filename
+        let filename = (path as NSString).deletingPathExtension
+        let ext = (path as NSString).pathExtension
+        let dir = (path as NSString).deletingLastPathComponent
+
+        if let url = Bundle.main.url(forResource: (filename as NSString).lastPathComponent,
+                                      withExtension: ext,
+                                      subdirectory: "public/\(dir)") {
+            return url
+        }
+
+        // Try without subdirectory
+        if let url = Bundle.main.url(forResource: (filename as NSString).lastPathComponent,
+                                      withExtension: ext) {
+            return url
+        }
+
+        return nil
+    }
 
     @objc func preload(_ call: CAPPluginCall) {
         guard let assetId = call.getString("assetId"),
@@ -23,15 +53,7 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
             return
         }
 
-        // Look for file in the web assets directory
-        guard let webDir = Bundle.main.resourceURL?.appendingPathComponent("public") else {
-            call.reject("Cannot find public directory")
-            return
-        }
-
-        let fileURL = webDir.appendingPathComponent(path)
-
-        guard FileManager.default.fileExists(atPath: fileURL.path) else {
+        guard let fileURL = findAudioFile(path) else {
             call.reject("File not found: \(path)")
             return
         }
@@ -55,7 +77,8 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
         let volume = call.getFloat("volume") ?? 1.0
 
         guard let player = players[assetId] else {
-            call.reject("Asset not preloaded: \(assetId)")
+            // Asset not preloaded, resolve immediately so chain continues
+            call.resolve()
             return
         }
 
@@ -64,10 +87,14 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {}
 
+        // Store call for resolution when playback finishes
+        let callId = UUID().uuidString
+        pendingCalls[callId] = call
+        completionCallIds[assetId] = callId
+
         player.volume = volume
         player.currentTime = 0
         player.delegate = self
-        completionHandlers[assetId] = call
         player.play()
     }
 
@@ -79,8 +106,8 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
 
         if let player = players[assetId] {
             player.stop()
-            // Resolve any pending play call
-            if let pendingCall = completionHandlers.removeValue(forKey: assetId) {
+            if let callId = completionCallIds.removeValue(forKey: assetId),
+               let pendingCall = pendingCalls.removeValue(forKey: callId) {
                 pendingCall.resolve()
             }
         }
@@ -90,7 +117,8 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
     @objc func stopAll(_ call: CAPPluginCall) {
         for (id, player) in players {
             player.stop()
-            if let pendingCall = completionHandlers.removeValue(forKey: id) {
+            if let callId = completionCallIds.removeValue(forKey: id),
+               let pendingCall = pendingCalls.removeValue(forKey: callId) {
                 pendingCall.resolve()
             }
         }
@@ -100,8 +128,9 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
 
 extension NativeAudioPlayerPlugin: AVAudioPlayerDelegate {
     public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        for (id, p) in players where p === player {
-            if let pendingCall = completionHandlers.removeValue(forKey: id) {
+        for (assetId, p) in players where p === player {
+            if let callId = completionCallIds.removeValue(forKey: assetId),
+               let pendingCall = pendingCalls.removeValue(forKey: callId) {
                 pendingCall.resolve()
             }
             break

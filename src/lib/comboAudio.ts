@@ -84,6 +84,7 @@ function playBufferWeb(buffer: AudioBuffer): { source: AudioBufferSourceNode } {
 // ─── Native AVAudioPlayer playback ───
 
 let nativePreloaded = false;
+let nativeAvailable = false;
 
 async function preloadClipsNative(): Promise<void> {
   if (nativePreloaded) return;
@@ -93,12 +94,25 @@ async function preloadClipsNative(): Promise<void> {
   const allPaths = new Set<string>();
   for (const path of Object.values(PUNCH_AUDIO_MAP)) allPaths.add(path);
 
+  let successCount = 0;
+
   // Preload each clip natively
   for (const path of allPaths) {
     const assetId = path.replace("/audio/", "").replace(".mp3", "");
     try {
       await NativeAudioPlayer.preload({ assetId, path: path.slice(1) }); // remove leading /
+      successCount++;
     } catch {}
+  }
+
+  // Only use native playback if at least some clips loaded
+  nativeAvailable = successCount > 0;
+
+  // Also preload via web as fallback
+  if (!nativeAvailable) {
+    for (const src of Object.values(PUNCH_AUDIO_MAP)) {
+      preloadClipWeb(src);
+    }
   }
 }
 
@@ -254,7 +268,7 @@ export function speakCombo(
   clipPlaybackActive = true;
   const GAP_MS = 80;
 
-  if (isNative) {
+  if (isNative && nativeAvailable) {
     // Native: play through AVAudioPlayer (ducks background music)
     async function playNextNative(index: number) {
       if (!clipPlaybackActive || index >= keys.length) return;
