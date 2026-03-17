@@ -41,7 +41,7 @@ export default function ProgressPage() {
 
   if (!mounted || !gameState) {
     return (
-      <div className="px-4 pt-8 pb-8 max-w-lg md:max-w-2xl mx-auto">
+      <div className="px-4 pt-8 pb-8 max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto">
         <h1 className="text-2xl font-bold mb-6 animate-fade-in-up">Progress</h1>
         <div className="space-y-4">
           <div className="grid grid-cols-3 gap-3">
@@ -58,7 +58,7 @@ export default function ProgressPage() {
   }
 
   return (
-    <div className="px-4 pt-8 pb-8 max-w-lg md:max-w-2xl mx-auto">
+    <div className="px-4 pt-8 pb-8 max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-6 animate-fade-in-up">Progress</h1>
 
       <div className="space-y-6">

@@ -165,7 +165,7 @@ export default function Home() {
 
   if (!mounted) {
     return (
-      <div className="max-w-lg md:max-w-2xl mx-auto px-4 pt-8 pb-8">
+      <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4 pt-8 pb-8">
         <div className="mb-6">
           <h1 className="text-3xl font-black tracking-tight">
             <span className="bg-gradient-to-r from-[#00e5ff] to-[#0090ff] bg-clip-text text-transparent">
@@ -178,7 +178,7 @@ export default function Home() {
   }
 
   return (
-    <div className="max-w-lg md:max-w-2xl mx-auto px-4 pt-8 pb-8">
+    <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto px-4 pt-8 pb-8">
       {/* Header */}
       <div className="relative mb-8 animate-fade-in-up">
         <div className="absolute -top-12 left-0 w-32 h-32 bg-[#00e5ff]/8 rounded-full blur-3xl pointer-events-none" />

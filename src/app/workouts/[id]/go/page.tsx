@@ -612,7 +612,7 @@ export default function WorkoutGoPage() {
 
   if (workoutComplete) {
     return (
-      <div className="px-4 pt-16 pb-8 max-w-lg md:max-w-2xl mx-auto text-center">
+      <div className="px-4 pt-16 pb-8 max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto text-center">
         {showRating && (
           <PostWorkoutRating
             onRate={handleRate}
@@ -715,7 +715,7 @@ export default function WorkoutGoPage() {
   if (state === "idle") {
     // Auto-start handled by useEffect above, show loading during transition
     return (
-      <div className="px-4 pt-12 pb-8 max-w-lg md:max-w-2xl mx-auto text-center">
+      <div className="px-4 pt-12 pb-8 max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto text-center">
         <p className="text-muted">Loading workout...</p>
       </div>
     );
@@ -899,12 +899,12 @@ export default function WorkoutGoPage() {
         </div>
 
         {/* Combo callout (running) or rest info or paused details */}
-        <div className="w-full max-w-lg md:max-w-2xl">
+        <div className="w-full max-w-lg md:max-w-2xl lg:max-w-4xl">
           {!isResting ? (
             <>
               {/* Instructions & tips - only visible when paused */}
               {state === "paused" && (
-                <div className="max-w-lg md:max-w-2xl mx-auto mb-4">
+                <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto mb-4">
                   <h2 className="font-bold text-xl mb-2 text-center">{currentRound.title}</h2>
                   <p className="text-sm text-muted leading-relaxed text-center mb-4">
                     {currentRound.instructions}
@@ -951,7 +951,7 @@ export default function WorkoutGoPage() {
 
       {/* Compact controls */}
       <div className="px-4" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 0.5rem)" }}>
-        <div className="flex items-center justify-center gap-3 max-w-lg md:max-w-2xl mx-auto">
+        <div className="flex items-center justify-center gap-3 max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto">
           {state === "running" && (
             <button
               onClick={pauseWorkout}
@@ -983,7 +983,7 @@ export default function WorkoutGoPage() {
         </div>
 
         {/* Round progress bar */}
-        <div className="flex gap-0.5 mt-2 max-w-lg md:max-w-2xl mx-auto">
+        <div className="flex gap-0.5 mt-2 max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto">
           {workout.rounds.map((_, i) => (
             <div
               key={i}

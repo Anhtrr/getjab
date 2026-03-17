@@ -44,7 +44,7 @@ export default function PWAInstallPrompt() {
   if (!showPrompt) return null;
 
   return (
-    <div className="fixed bottom-20 left-4 right-4 z-40 max-w-lg md:max-w-2xl mx-auto">
+    <div className="fixed bottom-20 left-4 right-4 z-40 max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto">
       <div className="glass border border-white/5 rounded-2xl p-4 shadow-xl flex items-center gap-4 animate-slide-in-bottom">
         <div className="flex-1">
           <p className="font-bold text-sm">Install Jab</p>

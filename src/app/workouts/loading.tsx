@@ -1,6 +1,6 @@
 export default function WorkoutsLoading() {
   return (
-    <div className="px-4 pt-8 pb-8 max-w-lg md:max-w-2xl mx-auto">
+    <div className="px-4 pt-8 pb-8 max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto">
       <div className="h-8 w-32 bg-border/30 rounded-lg mb-6 animate-pulse" />
       <div className="space-y-3">
         {[0, 1, 2, 3].map((i) => (

@@ -91,7 +91,7 @@ export default function Navigation() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 glass border-t border-white/5 z-50" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }} aria-label="Main navigation">
-      <div className="max-w-lg md:max-w-2xl mx-auto flex justify-around items-center h-14 pt-1" role="tablist">
+      <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto flex justify-around items-center h-14 pt-1" role="tablist">
         {tabs.map((tab) => {
           const isActive =
             tab.href === "/"

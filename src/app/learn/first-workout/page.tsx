@@ -214,7 +214,7 @@ export default function FirstWorkoutPage() {
   }, [offsetX, isAnimating, isFirst, isLast, currentStep, goTo]);
 
   return (
-    <div className="px-4 pt-8 pb-8 max-w-lg md:max-w-2xl mx-auto overflow-hidden">
+    <div className="px-4 pt-8 pb-8 max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto overflow-hidden">
       <Link
         href="/"
         className="text-muted text-sm hover:text-foreground mb-4 inline-block"

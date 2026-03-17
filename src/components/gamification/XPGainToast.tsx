@@ -19,7 +19,7 @@ export default function XPGainToast({ breakdown, onDismiss }: XPGainToastProps) 
 
   return (
     <div
-      className="fixed bottom-20 left-4 right-4 z-40 max-w-lg md:max-w-2xl mx-auto animate-slide-in-bottom"
+      className="fixed bottom-20 left-4 right-4 z-40 max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto animate-slide-in-bottom"
     >
       <div className="card-glass rounded-2xl p-4 !border-accent/30 !shadow-[0_0_20px_rgba(0,229,255,0.15)]">
         <div className="flex items-center justify-between">

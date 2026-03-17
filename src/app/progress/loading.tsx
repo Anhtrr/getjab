@@ -1,6 +1,6 @@
 export default function ProgressLoading() {
   return (
-    <div className="px-4 pt-8 pb-8 max-w-lg md:max-w-2xl mx-auto">
+    <div className="px-4 pt-8 pb-8 max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto">
       <div className="h-8 w-28 bg-border/30 rounded-lg mb-6 animate-pulse" />
       <div className="space-y-4">
         {/* Level badge skeleton */}

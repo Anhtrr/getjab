@@ -41,7 +41,7 @@ const PUNCH_COLORS: Record<string, { text: string; border: string; bg: string; g
   },
 };
 
-// ─── Adaptive card sizing ───
+// ─── Adaptive card sizing (scales with viewport on tablets) ───
 
 interface CardSize {
   w: string;
@@ -51,10 +51,10 @@ interface CardSize {
 }
 
 function getCardSize(punchCount: number): CardSize {
-  if (punchCount <= 2) return { w: "w-[140px]", h: "h-[160px]", numText: "text-5xl", nameText: "text-sm" };
-  if (punchCount === 3) return { w: "w-[120px]", h: "h-[140px]", numText: "text-5xl", nameText: "text-xs" };
-  if (punchCount === 4) return { w: "w-[100px]", h: "h-[120px]", numText: "text-4xl", nameText: "text-xs" };
-  return { w: "w-[88px]", h: "h-[108px]", numText: "text-3xl", nameText: "text-[10px]" };
+  if (punchCount <= 2) return { w: "clamp(140px, 18vw, 220px)", h: "clamp(160px, 20vw, 240px)", numText: "text-5xl", nameText: "text-sm" };
+  if (punchCount === 3) return { w: "clamp(120px, 15vw, 200px)", h: "clamp(140px, 17vw, 220px)", numText: "text-5xl", nameText: "text-xs" };
+  if (punchCount === 4) return { w: "clamp(100px, 13vw, 180px)", h: "clamp(120px, 15vw, 200px)", numText: "text-4xl", nameText: "text-xs" };
+  return { w: "clamp(88px, 12vw, 160px)", h: "clamp(108px, 14vw, 180px)", numText: "text-3xl", nameText: "text-[10px]" };
 }
 
 // ─── Punch Card ───
@@ -77,11 +77,12 @@ function PunchCard({
     <div
       className={`
         flex flex-col items-center justify-center rounded-xl
-        ${size.w} ${size.h}
         ${isActive ? "animate-punch-slam" : "opacity-0 scale-75 translate-y-3"}
         ${phase === "holding" ? "animate-punch-breathe" : ""}
       `}
       style={{
+        width: size.w,
+        height: size.h,
         border: `3px solid ${isActive ? colors.border : "transparent"}`,
         background: isActive ? colors.bg : "transparent",
         boxShadow: isActive ? colors.glow : "none",
