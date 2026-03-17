@@ -1,6 +1,7 @@
 import { Capacitor } from "@capacitor/core";
 import { Share } from "@capacitor/share";
 import { Filesystem, Directory } from "@capacitor/filesystem";
+import NativeAudioPlayer from "./nativeAudio";
 import type { BoxingTitle } from "./gamification/types";
 
 export interface ShareCardData {
@@ -593,7 +594,7 @@ function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
 }
 
 async function shareOrDownload(file: File, _shareText: string, filename: string): Promise<void> {
-  // On native iOS, use Capacitor's native share
+  // On native iOS, share image directly via UIActivityViewController
   if (Capacitor.isNativePlatform()) {
     try {
       const reader = new FileReader();
@@ -606,23 +607,7 @@ async function shareOrDownload(file: File, _shareText: string, filename: string)
         reader.readAsDataURL(file);
       });
 
-      // Write to a timestamped path to avoid caching issues
-      const timestampedName = `jab-${Date.now()}.png`;
-      const result = await Filesystem.writeFile({
-        path: timestampedName,
-        data: base64,
-        directory: Directory.Cache,
-      });
-
-      // Get the full file:// URI for sharing
-      const uriResult = await Filesystem.getUri({
-        path: timestampedName,
-        directory: Directory.Cache,
-      });
-
-      await Share.share({
-        files: [uriResult.uri],
-      });
+      await NativeAudioPlayer.shareImage({ base64 });
       return;
     } catch (e) {
       if (e instanceof Error && (e.name === "AbortError" || e.message?.includes("User cancelled"))) return;

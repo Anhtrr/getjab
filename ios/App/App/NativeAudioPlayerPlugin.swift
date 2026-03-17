@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import AVFoundation
 import Capacitor
 
@@ -13,6 +14,7 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "stopAll", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "startDucking", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "stopDucking", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "shareImage", returnType: CAPPluginReturnPromise),
     ]
 
     private var players: [String: AVAudioPlayer] = [:]
@@ -147,6 +149,47 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
             }
         }
         call.resolve()
+    }
+
+    @objc func shareImage(_ call: CAPPluginCall) {
+        guard let base64 = call.getString("base64") else {
+            call.reject("Missing base64 data")
+            return
+        }
+
+        guard let imageData = Data(base64Encoded: base64),
+              let image = UIImage(data: imageData) else {
+            call.reject("Invalid image data")
+            return
+        }
+
+        DispatchQueue.main.async {
+            let activityVC = UIActivityViewController(
+                activityItems: [image],
+                applicationActivities: nil
+            )
+
+            // iPad requires sourceView
+            if let popover = activityVC.popoverPresentationController {
+                popover.sourceView = self.bridge?.viewController?.view
+                popover.sourceRect = CGRect(
+                    x: UIScreen.main.bounds.midX,
+                    y: UIScreen.main.bounds.midY,
+                    width: 0,
+                    height: 0
+                )
+            }
+
+            activityVC.completionWithItemsHandler = { _, completed, _, error in
+                if let error = error {
+                    call.reject(error.localizedDescription)
+                } else {
+                    call.resolve(["completed": completed])
+                }
+            }
+
+            self.bridge?.viewController?.present(activityVC, animated: true)
+        }
     }
 }
 

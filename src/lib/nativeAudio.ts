@@ -7,6 +7,7 @@ interface NativeAudioPlayerPlugin {
   stopAll(): Promise<void>;
   startDucking(): Promise<void>;
   stopDucking(): Promise<void>;
+  shareImage(options: { base64: string }): Promise<{ completed: boolean }>;
 }
 
 const NativeAudioPlayer = registerPlugin<NativeAudioPlayerPlugin>("NativeAudioPlayer");
