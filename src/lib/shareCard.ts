@@ -593,7 +593,7 @@ function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
 }
 
 async function shareOrDownload(file: File, _shareText: string, filename: string): Promise<void> {
-  // On native iOS, use Capacitor's native share for proper "Save Image" support
+  // On native iOS, use Capacitor's native share
   if (Capacitor.isNativePlatform()) {
     try {
       const reader = new FileReader();
@@ -606,21 +606,27 @@ async function shareOrDownload(file: File, _shareText: string, filename: string)
         reader.readAsDataURL(file);
       });
 
+      // Write to a timestamped path to avoid caching issues
+      const timestampedName = `jab-${Date.now()}.png`;
       const result = await Filesystem.writeFile({
-        path: filename,
+        path: timestampedName,
         data: base64,
         directory: Directory.Cache,
       });
 
+      // Get the full file:// URI for sharing
+      const uriResult = await Filesystem.getUri({
+        path: timestampedName,
+        directory: Directory.Cache,
+      });
+
       await Share.share({
-        title: 'Share Workout',
-        files: [result.uri],
+        files: [uriResult.uri],
       });
       return;
     } catch (e) {
       if (e instanceof Error && (e.name === "AbortError" || e.message?.includes("User cancelled"))) return;
-      console.error("Native share failed:", e);
-      return; // Don't fall through to web share on native
+      return;
     }
   }
 
