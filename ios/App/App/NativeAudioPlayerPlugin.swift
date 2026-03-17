@@ -64,8 +64,10 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
             let player = try AVAudioPlayer(contentsOf: fileURL)
             player.prepareToPlay()
             players[assetId] = player
+            NSLog("[JAB] preloaded '\(assetId)' from \(fileURL.path)")
             call.resolve()
         } catch {
+            NSLog("[JAB] preload FAILED '\(assetId)': \(error.localizedDescription)")
             call.reject("Failed to preload: \(error.localizedDescription)")
         }
     }
@@ -89,6 +91,9 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {}
 
+        let session = AVAudioSession.sharedInstance()
+        NSLog("[JAB] play '\(assetId)' - category: \(session.category.rawValue), options: \(session.categoryOptions.rawValue), isOtherAudioPlaying: \(session.isOtherAudioPlaying)")
+
         // Store call for resolution when playback finishes
         let callId = UUID().uuidString
         pendingCalls[callId] = call
@@ -98,6 +103,7 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
         player.currentTime = 0
         player.delegate = self
         player.play()
+        NSLog("[JAB] player.isPlaying: \(player.isPlaying), duration: \(player.duration)")
     }
 
     @objc func stop(_ call: CAPPluginCall) {
@@ -117,24 +123,33 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
     }
 
     @objc func startDucking(_ call: CAPPluginCall) {
+        let session = AVAudioSession.sharedInstance()
+        NSLog("[JAB] startDucking - current category: \(session.category.rawValue), options: \(session.categoryOptions.rawValue)")
         do {
-            try AVAudioSession.sharedInstance().setCategory(
+            try session.setCategory(
                 .playback,
                 options: [.mixWithOthers, .duckOthers]
             )
-            try AVAudioSession.sharedInstance().setActive(true)
-        } catch {}
+            try session.setActive(true)
+            NSLog("[JAB] startDucking SUCCESS - category: \(session.category.rawValue), options: \(session.categoryOptions.rawValue)")
+        } catch let error {
+            NSLog("[JAB] startDucking FAILED: \(error.localizedDescription)")
+        }
         call.resolve()
     }
 
     @objc func stopDucking(_ call: CAPPluginCall) {
+        let session = AVAudioSession.sharedInstance()
         do {
-            try AVAudioSession.sharedInstance().setCategory(
+            try session.setCategory(
                 .playback,
                 options: [.mixWithOthers]
             )
-            try AVAudioSession.sharedInstance().setActive(true)
-        } catch {}
+            try session.setActive(true)
+            NSLog("[JAB] stopDucking SUCCESS")
+        } catch let error {
+            NSLog("[JAB] stopDucking FAILED: \(error.localizedDescription)")
+        }
         call.resolve()
     }
 
