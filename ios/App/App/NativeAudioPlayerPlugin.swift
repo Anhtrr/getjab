@@ -82,8 +82,14 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
             return
         }
 
-        // Ensure audio session is active with ducking
+        // Re-assert audio session with ducking before every clip
+        // WKWebView may have overridden the session category
         do {
+            try AVAudioSession.sharedInstance().setCategory(
+                .playback,
+                mode: .voicePrompt,
+                options: [.mixWithOthers, .duckOthers]
+            )
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {}
 
