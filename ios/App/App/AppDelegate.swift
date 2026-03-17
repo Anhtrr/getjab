@@ -19,23 +19,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } catch {}
 
         DispatchQueue.main.async {
-            if let vc = self.window?.rootViewController as? CAPBridgeViewController,
-               let webView = vc.webView {
-                let bgColor = UIColor(red: 10/255, green: 10/255, blue: 10/255, alpha: 1) // #0a0a0a
+            if let vc = self.window?.rootViewController as? CAPBridgeViewController {
+                // Register local native audio plugin
+                vc.bridge?.registerPluginInstance(NativeAudioPlayerPlugin())
 
-                // Match the scroll bounce background to the app background
-                webView.scrollView.backgroundColor = bgColor
-                webView.backgroundColor = bgColor
-                webView.isOpaque = false
+                if let webView = vc.webView {
+                    let bgColor = UIColor(red: 10/255, green: 10/255, blue: 10/255, alpha: 1) // #0a0a0a
 
-                // Enable vertical bounce only
-                webView.scrollView.bounces = true
-                webView.scrollView.alwaysBounceVertical = true
-                webView.scrollView.alwaysBounceHorizontal = false
+                    // Match the scroll bounce background to the app background
+                    webView.scrollView.backgroundColor = bgColor
+                    webView.backgroundColor = bgColor
+                    webView.isOpaque = false
 
-                // Prevent horizontal scrolling entirely
-                webView.scrollView.showsHorizontalScrollIndicator = false
-                webView.scrollView.showsVerticalScrollIndicator = false
+                    // Enable vertical bounce only
+                    webView.scrollView.bounces = true
+                    webView.scrollView.alwaysBounceVertical = true
+                    webView.scrollView.alwaysBounceHorizontal = false
+
+                    // Prevent horizontal scrolling entirely
+                    webView.scrollView.showsHorizontalScrollIndicator = false
+                    webView.scrollView.showsVerticalScrollIndicator = false
+                }
             }
         }
         return true
