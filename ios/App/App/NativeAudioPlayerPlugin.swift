@@ -11,6 +11,8 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "play", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "stop", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "stopAll", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "startDucking", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "stopDucking", returnType: CAPPluginReturnPromise),
     ]
 
     private var players: [String: AVAudioPlayer] = [:]
@@ -82,12 +84,8 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
             return
         }
 
-        // Activate ducking just for this clip
+        // Ensure audio session is active
         do {
-            try AVAudioSession.sharedInstance().setCategory(
-                .playback,
-                options: [.mixWithOthers, .duckOthers]
-            )
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {}
 
@@ -118,6 +116,28 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
         call.resolve()
     }
 
+    @objc func startDucking(_ call: CAPPluginCall) {
+        do {
+            try AVAudioSession.sharedInstance().setCategory(
+                .playback,
+                options: [.mixWithOthers, .duckOthers]
+            )
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {}
+        call.resolve()
+    }
+
+    @objc func stopDucking(_ call: CAPPluginCall) {
+        do {
+            try AVAudioSession.sharedInstance().setCategory(
+                .playback,
+                options: [.mixWithOthers]
+            )
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {}
+        call.resolve()
+    }
+
     @objc func stopAll(_ call: CAPPluginCall) {
         for (id, player) in players {
             player.stop()
@@ -132,15 +152,6 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
 
 extension NativeAudioPlayerPlugin: AVAudioPlayerDelegate {
     public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        // Restore non-ducking audio session
-        do {
-            try AVAudioSession.sharedInstance().setCategory(
-                .playback,
-                options: [.mixWithOthers]
-            )
-            try AVAudioSession.sharedInstance().setActive(true)
-        } catch {}
-
         for (assetId, p) in players where p === player {
             if let callId = completionCallIds.removeValue(forKey: assetId),
                let pendingCall = pendingCalls.removeValue(forKey: callId) {

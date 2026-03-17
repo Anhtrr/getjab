@@ -270,8 +270,15 @@ export function speakCombo(
 
   if (isNative && nativeAvailable) {
     // Native: play through AVAudioPlayer (ducks background music)
+    // Start ducking before the combo, stop after all clips finish
+    NativeAudioPlayer.startDucking().catch(() => {});
+
     async function playNextNative(index: number) {
-      if (!clipPlaybackActive || index >= keys.length) return;
+      if (!clipPlaybackActive || index >= keys.length) {
+        // Combo finished or cancelled - stop ducking
+        NativeAudioPlayer.stopDucking().catch(() => {});
+        return;
+      }
       const src = PUNCH_AUDIO_MAP[keys[index]];
       const assetId = getAssetId(src);
 
@@ -279,7 +286,10 @@ export function speakCombo(
         await NativeAudioPlayer.play({ assetId, volume: 1.0 });
       } catch {}
 
-      if (!clipPlaybackActive) return;
+      if (!clipPlaybackActive) {
+        NativeAudioPlayer.stopDucking().catch(() => {});
+        return;
+      }
       const t = setTimeout(() => playNextNative(index + 1), GAP_MS);
       clipTimeouts.push(t);
     }
@@ -319,9 +329,10 @@ export function cancelSpeech(): void {
     activeSource = null;
   }
 
-  // Stop native playback
+  // Stop native playback and ducking
   if (isNative) {
     try { NativeAudioPlayer.stopAll(); } catch {}
+    try { NativeAudioPlayer.stopDucking(); } catch {}
   }
 
   clipPlaybackActive = false;

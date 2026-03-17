@@ -5,6 +5,8 @@ interface NativeAudioPlayerPlugin {
   play(options: { assetId: string; volume?: number }): Promise<void>;
   stop(options: { assetId: string }): Promise<void>;
   stopAll(): Promise<void>;
+  startDucking(): Promise<void>;
+  stopDucking(): Promise<void>;
 }
 
 const NativeAudioPlayer = registerPlugin<NativeAudioPlayerPlugin>("NativeAudioPlayer");
