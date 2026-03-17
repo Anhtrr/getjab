@@ -82,12 +82,10 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
             return
         }
 
-        // Re-assert audio session with ducking before every clip
-        // WKWebView may have overridden the session category
+        // Activate ducking just for this clip
         do {
             try AVAudioSession.sharedInstance().setCategory(
                 .playback,
-                mode: .voicePrompt,
                 options: [.mixWithOthers, .duckOthers]
             )
             try AVAudioSession.sharedInstance().setActive(true)
@@ -134,6 +132,15 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
 
 extension NativeAudioPlayerPlugin: AVAudioPlayerDelegate {
     public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        // Restore non-ducking audio session
+        do {
+            try AVAudioSession.sharedInstance().setCategory(
+                .playback,
+                options: [.mixWithOthers]
+            )
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {}
+
         for (assetId, p) in players where p === player {
             if let callId = completionCallIds.removeValue(forKey: assetId),
                let pendingCall = pendingCalls.removeValue(forKey: callId) {

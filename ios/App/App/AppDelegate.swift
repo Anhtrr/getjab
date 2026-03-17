@@ -8,12 +8,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Configure audio session to duck background music during voice callouts
+        // Set base audio session to mix with other audio (no ducking by default)
+        // Ducking is activated/deactivated per-clip in NativeAudioPlayerPlugin
         do {
             try AVAudioSession.sharedInstance().setCategory(
                 .playback,
-                mode: .voicePrompt,
-                options: [.mixWithOthers, .duckOthers]
+                options: [.mixWithOthers]
             )
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {}
