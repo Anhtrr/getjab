@@ -270,31 +270,39 @@ export function speakCombo(
 
   if (isNative && nativeAvailable) {
     // Native: play through AVAudioPlayer (ducks background music)
-    // Start ducking before the combo, stop after all clips finish
-    NativeAudioPlayer.startDucking().catch(() => {});
+    // Pause web audio keep-alive so WKWebView doesn't override our session
+    import("./audio").then(({ stopAudioKeepAlive, startAudioKeepAlive }) => {
+      stopAudioKeepAlive();
 
-    async function playNextNative(index: number) {
-      if (!clipPlaybackActive || index >= keys.length) {
-        // Combo finished or cancelled - stop ducking
-        NativeAudioPlayer.stopDucking().catch(() => {});
-        return;
+      // Start ducking and wait for iOS to apply it
+      NativeAudioPlayer.startDucking().catch(() => {});
+
+      async function playNextNative(index: number) {
+        if (!clipPlaybackActive || index >= keys.length) {
+          NativeAudioPlayer.stopDucking().catch(() => {});
+          startAudioKeepAlive();
+          return;
+        }
+        const src = PUNCH_AUDIO_MAP[keys[index]];
+        const assetId = getAssetId(src);
+
+        try {
+          await NativeAudioPlayer.play({ assetId, volume: 1.0 });
+        } catch {}
+
+        if (!clipPlaybackActive) {
+          NativeAudioPlayer.stopDucking().catch(() => {});
+          startAudioKeepAlive();
+          return;
+        }
+        const t = setTimeout(() => playNextNative(index + 1), GAP_MS);
+        clipTimeouts.push(t);
       }
-      const src = PUNCH_AUDIO_MAP[keys[index]];
-      const assetId = getAssetId(src);
 
-      try {
-        await NativeAudioPlayer.play({ assetId, volume: 1.0 });
-      } catch {}
-
-      if (!clipPlaybackActive) {
-        NativeAudioPlayer.stopDucking().catch(() => {});
-        return;
-      }
-      const t = setTimeout(() => playNextNative(index + 1), GAP_MS);
+      // Small delay to let iOS apply the ducking before first clip
+      const t = setTimeout(() => playNextNative(0), 50);
       clipTimeouts.push(t);
-    }
-
-    playNextNative(0);
+    });
   } else {
     // Web: play through AudioContext
     async function playNextWeb(index: number) {
