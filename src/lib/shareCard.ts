@@ -596,6 +596,7 @@ function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
 async function shareOrDownload(file: File, _shareText: string, filename: string): Promise<void> {
   // On native iOS, share image directly via UIActivityViewController
   if (Capacitor.isNativePlatform()) {
+    console.log("[JAB-SHARE] Native path - converting to base64...");
     try {
       const reader = new FileReader();
       const base64 = await new Promise<string>((resolve, reject) => {
@@ -607,9 +608,12 @@ async function shareOrDownload(file: File, _shareText: string, filename: string)
         reader.readAsDataURL(file);
       });
 
+      console.log("[JAB-SHARE] Base64 ready, length:", base64.length, "calling shareImage...");
       await NativeAudioPlayer.shareImage({ base64 });
+      console.log("[JAB-SHARE] shareImage completed");
       return;
     } catch (e) {
+      console.error("[JAB-SHARE] Native share error:", e);
       if (e instanceof Error && (e.name === "AbortError" || e.message?.includes("User cancelled"))) return;
       return;
     }

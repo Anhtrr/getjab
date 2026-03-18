@@ -169,15 +169,28 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
 
     @objc func shareImage(_ call: CAPPluginCall) {
         guard let base64 = call.getString("base64") else {
+            NSLog("[JAB-SHARE] Missing base64 data")
             call.reject("Missing base64 data")
             return
         }
 
-        guard let imageData = Data(base64Encoded: base64),
-              let image = UIImage(data: imageData) else {
+        NSLog("[JAB-SHARE] Received base64, length: \(base64.count)")
+
+        guard let imageData = Data(base64Encoded: base64) else {
+            NSLog("[JAB-SHARE] Failed to decode base64 to Data")
+            call.reject("Invalid base64 data")
+            return
+        }
+
+        NSLog("[JAB-SHARE] Data decoded, size: \(imageData.count) bytes")
+
+        guard let image = UIImage(data: imageData) else {
+            NSLog("[JAB-SHARE] Failed to create UIImage from data")
             call.reject("Invalid image data")
             return
         }
+
+        NSLog("[JAB-SHARE] UIImage created: \(image.size.width)x\(image.size.height)")
 
         DispatchQueue.main.async {
             let activityVC = UIActivityViewController(
@@ -196,7 +209,8 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
                 )
             }
 
-            activityVC.completionWithItemsHandler = { _, completed, _, error in
+            activityVC.completionWithItemsHandler = { activityType, completed, _, error in
+                NSLog("[JAB-SHARE] Activity completed: \(completed), type: \(String(describing: activityType)), error: \(String(describing: error))")
                 if let error = error {
                     call.reject(error.localizedDescription)
                 } else {
@@ -204,6 +218,7 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
                 }
             }
 
+            NSLog("[JAB-SHARE] Presenting UIActivityViewController")
             self.bridge?.viewController?.present(activityVC, animated: true)
         }
     }
