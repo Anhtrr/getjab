@@ -15,6 +15,8 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "startDucking", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "stopDucking", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "shareImage", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "keepAwake", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "allowSleep", returnType: CAPPluginReturnPromise),
     ]
 
     private var players: [String: AVAudioPlayer] = [:]
@@ -137,6 +139,20 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
             )
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {}
+        call.resolve()
+    }
+
+    @objc func keepAwake(_ call: CAPPluginCall) {
+        DispatchQueue.main.async {
+            UIApplication.shared.isIdleTimerDisabled = true
+        }
+        call.resolve()
+    }
+
+    @objc func allowSleep(_ call: CAPPluginCall) {
+        DispatchQueue.main.async {
+            UIApplication.shared.isIdleTimerDisabled = false
+        }
         call.resolve()
     }
 
