@@ -159,11 +159,6 @@ function ActiveCombo({
     >
       <div
         className="flex items-center justify-center gap-1.5 flex-wrap"
-        style={{
-          maxWidth: activeCombo.punches.length > 4
-            ? `${3 * 96 + 3 * 20}px`
-            : undefined,
-        }}
       >
         {activeCombo.punches.map((punch, i) => (
           <div key={i} className="flex items-center gap-1.5">
