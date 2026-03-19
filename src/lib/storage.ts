@@ -57,6 +57,12 @@ export function addWorkoutLog(log: WorkoutLog) {
   localStorage.setItem(LOGS_KEY, JSON.stringify(logs));
 }
 
+export function deleteWorkoutLog(completedAt: string) {
+  const logs = getWorkoutLogs();
+  const filtered = logs.filter((l) => l.completedAt !== completedAt);
+  localStorage.setItem(LOGS_KEY, JSON.stringify(filtered));
+}
+
 export function isSubscribed(): boolean {
   if (typeof window === "undefined") return false;
   try {

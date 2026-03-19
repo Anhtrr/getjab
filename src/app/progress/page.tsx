@@ -12,7 +12,11 @@ import AchievementGrid from "@/components/gamification/AchievementGrid";
 import PersonalRecordsList from "@/components/gamification/PersonalRecordsList";
 import DataManagement from "@/components/DataManagement";
 import WorkoutLogDetail from "@/components/WorkoutLogDetail";
+import SwipeableLogItem from "@/components/SwipeableLogItem";
 import { workouts } from "@/data/workouts";
+import { deleteWorkoutLog } from "@/lib/storage";
+import { notifyLogsChanged } from "@/hooks/useProgress";
+import { notifyGameStateChanged } from "@/hooks/useGamification";
 import Link from "next/link";
 import { Dumbbell, ChevronRight } from "lucide-react";
 import type { WorkoutLog } from "@/lib/types";
@@ -103,8 +107,17 @@ export default function ProgressPage() {
                   {recentLogs.map((log) => {
                     const workout = workouts.find((w) => w.id === log.workoutId);
                     return (
-                      <button
+                      <SwipeableLogItem
                         key={log.completedAt || `${log.workoutId}-${log.date}`}
+                        onDelete={() => {
+                          if (log.completedAt) {
+                            deleteWorkoutLog(log.completedAt);
+                            notifyLogsChanged();
+                            notifyGameStateChanged();
+                          }
+                        }}
+                      >
+                      <button
                         onClick={() => setSelectedLog(log)}
                         className="w-full text-left card-glass rounded-xl p-4 hover:border-[#00e5ff]/20 transition-colors"
                       >
@@ -142,6 +155,7 @@ export default function ProgressPage() {
                           </div>
                         </div>
                       </button>
+                      </SwipeableLogItem>
                     );
                   })}
                 </div>
