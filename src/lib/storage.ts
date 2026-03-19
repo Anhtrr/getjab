@@ -61,6 +61,8 @@ export function deleteWorkoutLog(completedAt: string) {
   const logs = getWorkoutLogs();
   const filtered = logs.filter((l) => l.completedAt !== completedAt);
   localStorage.setItem(LOGS_KEY, JSON.stringify(filtered));
+  // Clear saved PRs so they recompute from remaining logs
+  localStorage.removeItem("jab_personal_records");
 }
 
 export function isSubscribed(): boolean {
