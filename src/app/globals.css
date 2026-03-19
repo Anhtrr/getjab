@@ -338,6 +338,14 @@ body::before {
   animation: preset-glow 2.5s ease-in-out infinite;
 }
 
+@keyframes delete-glow {
+  0%, 100% { box-shadow: 0 0 12px rgba(239,68,68,0.3); }
+  50% { box-shadow: 0 0 28px rgba(239,68,68,0.6); }
+}
+.animate-delete-glow {
+  animation: delete-glow 2s ease-in-out infinite;
+}
+
 @keyframes start-glow {
   0%, 100% { box-shadow: 0 0 24px rgba(0,229,255,0.2), 0 0 60px rgba(0,229,255,0.08); }
   50% { box-shadow: 0 0 40px rgba(0,229,255,0.45), 0 0 80px rgba(0,229,255,0.15); }
