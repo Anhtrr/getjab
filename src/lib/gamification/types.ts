@@ -112,7 +112,9 @@ export type PRType =
   | "most_workouts_month"
   | "most_minutes_week"
   | "total_workouts"
-  | "total_minutes";
+  | "total_minutes"
+  | "most_punches"
+  | "highest_punches_per_min";
 
 export interface PersonalRecord {
   type: PRType;

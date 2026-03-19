@@ -309,6 +309,22 @@ export function checkPersonalRecords(
   const maxWeekMinutes = weekMinutes.size > 0 ? Math.max(...weekMinutes.values()) : 0;
   if (Number.isFinite(maxWeekMinutes)) checkPR("most_minutes_week", maxWeekMinutes);
 
+  // Most punches in a single workout
+  const punchLogs = logs.filter((l) => l.punchStats && l.punchStats.total > 0);
+  if (punchLogs.length > 0) {
+    const maxPunches = Math.max(...punchLogs.map((l) => l.punchStats!.total));
+    const maxPunchLog = punchLogs.find((l) => l.punchStats!.total === maxPunches);
+    if (Number.isFinite(maxPunches)) checkPR("most_punches", maxPunches, maxPunchLog?.workoutId);
+  }
+
+  // Highest punches per minute
+  const ppmLogs = logs.filter((l) => l.punchesPerMin && l.punchesPerMin > 0);
+  if (ppmLogs.length > 0) {
+    const maxPPM = Math.max(...ppmLogs.map((l) => l.punchesPerMin!));
+    const maxPPMLog = ppmLogs.find((l) => l.punchesPerMin === maxPPM);
+    if (Number.isFinite(maxPPM)) checkPR("highest_punches_per_min", maxPPM, maxPPMLog?.workoutId);
+  }
+
   // Total milestones
   checkPR("total_workouts", logs.length);
   checkPR("total_minutes", logs.reduce((s, l) => s + l.durationMin, 0));

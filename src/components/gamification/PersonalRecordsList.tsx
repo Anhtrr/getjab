@@ -16,6 +16,8 @@ const PR_LABELS: Record<string, { label: string; unit: string }> = {
   most_minutes_week: { label: "Best Week (Time)", unit: "min" },
   total_workouts: { label: "Total Workouts", unit: "" },
   total_minutes: { label: "Total Training", unit: "min" },
+  most_punches: { label: "Most Punches", unit: "punches" },
+  highest_punches_per_min: { label: "Best Intensity", unit: "punches/min" },
 };
 
 interface PersonalRecordsListProps {
