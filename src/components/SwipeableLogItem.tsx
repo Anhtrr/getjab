@@ -57,18 +57,24 @@ export default function SwipeableLogItem({ children, onDelete }: SwipeableLogIte
   return (
     <div className="relative overflow-hidden rounded-xl">
       {/* Delete background */}
-      <div className="absolute inset-0 bg-red-500/20 flex items-center justify-end pr-6 rounded-xl">
-        {showConfirm ? (
-          <button
-            onClick={handleDelete}
-            className="flex items-center gap-2 text-red-400 font-bold text-sm px-4 py-2 rounded-lg bg-red-500/20 active:bg-red-500/30"
-          >
-            <Trash2 className="w-4 h-4" />
-            Delete
-          </button>
-        ) : (
-          <Trash2 className="w-5 h-5 text-red-400" />
-        )}
+      <div className="absolute inset-0 flex items-center justify-end rounded-xl">
+        <div
+          className={`h-full flex items-center justify-center rounded-xl transition-all ${
+            showConfirm ? "w-[140px]" : "w-[80px]"
+          }`}
+        >
+          {showConfirm ? (
+            <button
+              onClick={handleDelete}
+              className="flex items-center gap-2 text-white font-bold text-sm px-5 py-3 rounded-xl bg-red-500 shadow-[0_0_16px_rgba(239,68,68,0.5)] animate-pulse"
+            >
+              <Trash2 className="w-4 h-4" />
+              Delete
+            </button>
+          ) : (
+            <Trash2 className="w-5 h-5 text-red-400" />
+          )}
+        </div>
       </div>
 
       {/* Swipeable content */}
