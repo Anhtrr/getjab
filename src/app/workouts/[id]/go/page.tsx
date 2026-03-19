@@ -424,6 +424,17 @@ export default function WorkoutGoPage() {
       setCompletedPunchStats(punchStats ?? null);
       setCompletedCalories(calories);
       // Compute XP breakdown first so we can store it in the log
+      // Read current pacing setting
+      let pacing: string | undefined;
+      try {
+        const raw = localStorage.getItem("jab_callout_settings");
+        if (raw) pacing = JSON.parse(raw).pacing;
+      } catch {}
+
+      const punchesPerMin = punchStats && durationMin > 0
+        ? Math.round(punchStats.total / durationMin)
+        : undefined;
+
       const tempLog = {
         workoutId: workout.id,
         workoutTitle: workout.title,
@@ -435,6 +446,8 @@ export default function WorkoutGoPage() {
         rating,
         punchStats,
         caloriesEstimate: calories,
+        pacing: pacing as "slow" | "medium" | "fast" | "progressive" | undefined,
+        punchesPerMin,
       };
       const xp = calculateXP(tempLog, workout.level, gameState?.streak.current ?? 0);
       setXpBreakdown(xp);
@@ -646,7 +659,7 @@ export default function WorkoutGoPage() {
 
         {/* Stats summary */}
         {rated && (
-          <div className="grid grid-cols-3 gap-3 mb-8 animate-fade-in-up">
+          <div className="grid grid-cols-3 gap-3 mb-4 animate-fade-in-up">
             <div className="card-glass rounded-xl p-3">
               <p className="text-xl font-bold text-accent">{completedDurationMin}<span className="text-sm font-normal text-muted"> min</span></p>
               <p className="text-[10px] uppercase tracking-wider text-muted mt-0.5">Duration</p>
@@ -661,6 +674,12 @@ export default function WorkoutGoPage() {
               <div className="card-glass rounded-xl p-3">
                 <p className="text-xl font-bold text-accent">~{completedCalories}</p>
                 <p className="text-[10px] uppercase tracking-wider text-muted mt-0.5">Calories</p>
+              </div>
+            )}
+            {completedPunchStats && completedPunchStats.total > 0 && completedDurationMin > 0 && (
+              <div className="card-glass rounded-xl p-3">
+                <p className="text-xl font-bold text-accent">{Math.round(completedPunchStats.total / completedDurationMin)}</p>
+                <p className="text-[10px] uppercase tracking-wider text-muted mt-0.5">Punches/Min</p>
               </div>
             )}
           </div>

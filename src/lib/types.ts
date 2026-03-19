@@ -52,6 +52,8 @@ export interface WorkoutLog {
   punchStats?: PunchStats;
   caloriesEstimate?: number;
   xpEarned?: number;
+  pacing?: CalloutPacing;
+  punchesPerMin?: number;
 }
 
 export interface TimerSettings {
