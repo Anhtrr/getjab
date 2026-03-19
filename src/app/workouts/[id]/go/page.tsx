@@ -502,6 +502,9 @@ export default function WorkoutGoPage() {
         date: new Date().toISOString().split("T")[0],
         displayName: name ?? undefined,
         punchesThrown: completedPunchStats?.total,
+        punchesPerMin: completedPunchStats && completedDurationMin > 0
+          ? Math.round(completedPunchStats.total / completedDurationMin)
+          : undefined,
         caloriesEstimate: completedCalories || undefined,
       });
     } catch {

@@ -93,6 +93,9 @@ export default function WorkoutLogDetail({ log, onClose }: Props) {
         date: log.date,
         displayName: name ?? undefined,
         punchesThrown: log.punchStats?.total,
+        punchesPerMin: log.punchesPerMin || (log.punchStats && log.durationMin > 0
+          ? Math.round(log.punchStats.total / log.durationMin)
+          : undefined),
         caloriesEstimate: calories,
         currentXP: gameState.level.currentXP,
         xpForNextLevel: gameState.level.xpForNextLevel,

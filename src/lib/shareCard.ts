@@ -16,9 +16,9 @@ export interface ShareCardData {
   date: string; // YYYY-MM-DD
   displayName?: string;
   punchesThrown?: number;
+  punchesPerMin?: number;
   caloriesEstimate?: number;
-  location?: string; // optional gym/location tag
-  // XP progression toward next level
+  location?: string;
   currentXP?: number;
   xpForNextLevel?: number;
   progressPercent?: number;
@@ -174,15 +174,16 @@ export async function generateShareCard(
     { label: "RING TIME", value: `${data.durationMin}m` },
   ];
 
+  // Row 2: prioritize intensity metrics that impress outsiders
   const row2: { label: string; value: string }[] = [];
+  if (data.punchesPerMin && data.punchesPerMin > 0) {
+    row2.push({ label: "INTENSITY", value: `${data.punchesPerMin}/min` });
+  }
   if (data.punchesThrown && data.punchesThrown > 0) {
     row2.push({ label: "THROWN", value: String(data.punchesThrown) });
   }
-  if (data.caloriesEstimate && data.caloriesEstimate > 0) {
+  if (row2.length < 2 && data.caloriesEstimate && data.caloriesEstimate > 0) {
     row2.push({ label: "BURNED", value: `~${data.caloriesEstimate}` });
-  }
-  if (row2.length < 2) {
-    row2.push({ label: "XP EARNED", value: `+${data.xpEarned}` });
   }
   if (row2.length < 2 && data.streakCurrent > 0) {
     row2.push({ label: "DAY STREAK", value: String(data.streakCurrent) });
@@ -272,8 +273,8 @@ export async function shareWorkoutCard(
   const file = new File([blob], "jab-workout.png", { type: "image/png" });
 
   const parts = [`${data.workoutTitle}`, `${data.roundsCompleted}/${data.totalRounds} rounds`];
+  if (data.punchesPerMin) parts.push(`${data.punchesPerMin} punches/min`);
   if (data.punchesThrown) parts.push(`${data.punchesThrown} punches thrown`);
-  if (data.caloriesEstimate) parts.push(`~${data.caloriesEstimate} cal burned`);
   parts.push(`Level ${data.level} ${data.title}`);
   const shareText = parts.join(" | ") + " | @getjabapp";
 
