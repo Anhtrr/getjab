@@ -431,8 +431,13 @@ export default function WorkoutGoPage() {
         if (raw) pacing = JSON.parse(raw).pacing;
       } catch {}
 
-      const punchesPerMin = punchStats && durationMin > 0
-        ? Math.round(punchStats.total / durationMin)
+      // Calculate punches per ACTIVE minute (excluding rest time)
+      const activeTimeSec = workout.rounds
+        .slice(0, roundsCompleted)
+        .reduce((sum, r) => sum + r.durationSec, 0);
+      const activeTimeMin = Math.max(1, Math.round(activeTimeSec / 60));
+      const punchesPerMin = punchStats && punchStats.total > 0
+        ? Math.round(punchStats.total / activeTimeMin)
         : undefined;
 
       const tempLog = {
@@ -502,9 +507,10 @@ export default function WorkoutGoPage() {
         date: new Date().toISOString().split("T")[0],
         displayName: name ?? undefined,
         punchesThrown: completedPunchStats?.total,
-        punchesPerMin: completedPunchStats && completedDurationMin > 0
-          ? Math.round(completedPunchStats.total / completedDurationMin)
-          : undefined,
+        punchesPerMin: completedPunchStats ? (() => {
+          const activeSec = workout.rounds.slice(0, roundsCompleted).reduce((s, r) => s + r.durationSec, 0);
+          return Math.round(completedPunchStats.total / Math.max(1, activeSec / 60));
+        })() : undefined,
         caloriesEstimate: completedCalories || undefined,
       });
     } catch {
@@ -679,9 +685,12 @@ export default function WorkoutGoPage() {
                 <p className="text-[10px] uppercase tracking-wider text-muted mt-0.5">Calories</p>
               </div>
             )}
-            {completedPunchStats && completedPunchStats.total > 0 && completedDurationMin > 0 && (
+            {completedPunchStats && completedPunchStats.total > 0 && workout && (
               <div className="card-glass rounded-xl p-3">
-                <p className="text-xl font-bold text-accent">{Math.round(completedPunchStats.total / completedDurationMin)}</p>
+                <p className="text-xl font-bold text-accent">{(() => {
+                  const activeSec = workout.rounds.slice(0, roundsCompleted).reduce((s, r) => s + r.durationSec, 0);
+                  return Math.round(completedPunchStats.total / Math.max(1, activeSec / 60));
+                })()}</p>
                 <p className="text-[10px] uppercase tracking-wider text-muted mt-0.5">Punches/Min</p>
               </div>
             )}
