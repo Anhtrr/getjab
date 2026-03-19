@@ -7,7 +7,7 @@ import StreakCounter from "@/components/StreakCounter";
 import StreakShieldDisplay from "@/components/gamification/StreakShieldDisplay";
 import LevelBadge from "@/components/gamification/LevelBadge";
 import DailyChallengeCard from "@/components/gamification/DailyChallengeCard";
-import TrainingHeatmap from "@/components/gamification/TrainingHeatmap";
+import ActivityGrid from "@/components/ActivityGrid";
 import AchievementGrid from "@/components/gamification/AchievementGrid";
 import PersonalRecordsList from "@/components/gamification/PersonalRecordsList";
 import DataManagement from "@/components/DataManagement";
@@ -25,7 +25,7 @@ const ratingLabels: Record<number, string> = {
 };
 
 export default function ProgressPage() {
-  const { logs, streak, totalWorkouts } = useProgress();
+  const { logs, streak, totalWorkouts, workoutDates, workoutMinutes } = useProgress();
   const { gameState } = useGamification();
   const [mounted, setMounted] = useState(false);
   const [selectedLog, setSelectedLog] = useState<WorkoutLog | null>(null);
@@ -165,9 +165,10 @@ export default function ProgressPage() {
             />
           </div>
 
-          {/* Training Heatmap */}
+          {/* Training Activity */}
           <div className="animate-fade-in-up" style={{ animationDelay: "300ms" }}>
-            <TrainingHeatmap days={gameState.heatmap} />
+            <h3 className="font-bold text-lg mb-3">Training Activity</h3>
+            <ActivityGrid workoutDates={workoutDates} workoutMinutes={workoutMinutes} />
           </div>
 
           {/* Achievement Badges */}

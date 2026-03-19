@@ -45,7 +45,7 @@ export function useProgress() {
   const logsJson = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   // Memoize everything derived from logs - no redundant localStorage reads
-  const { logs, streak, workoutDates, totalWorkouts } = useMemo(() => {
+  const { logs, streak, workoutDates, workoutMinutes, totalWorkouts } = useMemo(() => {
     const parsed: WorkoutLog[] = JSON.parse(logsJson);
 
     // Compute streak inline (instead of calling getStreak which re-reads localStorage)
@@ -74,16 +74,19 @@ export function useProgress() {
       longest = Math.max(longest, tempStreak, current);
     }
 
-    // Compute workout dates inline
+    // Compute workout dates and minutes inline
     const dates: Record<string, number> = {};
+    const minutes: Record<string, number> = {};
     for (const log of parsed) {
       dates[log.date] = (dates[log.date] || 0) + 1;
+      minutes[log.date] = (minutes[log.date] || 0) + (log.durationMin || 0);
     }
 
     return {
       logs: parsed,
       streak: { current, longest },
       workoutDates: dates,
+      workoutMinutes: minutes,
       totalWorkouts: parsed.length,
     };
   }, [logsJson]);
@@ -93,5 +96,5 @@ export function useProgress() {
     notify();
   }, []);
 
-  return { logs, streak, workoutDates, totalWorkouts, logWorkout };
+  return { logs, streak, workoutDates, workoutMinutes, totalWorkouts, logWorkout };
 }

@@ -6,7 +6,7 @@ import { useProgress } from "@/hooks/useProgress";
 import { useGamification } from "@/hooks/useGamification";
 import { workouts, getWorkout } from "@/data/workouts";
 import { getPresets } from "@/lib/timerPresets";
-import ProgressCalendar from "@/components/ProgressCalendar";
+import ActivityGrid from "@/components/ActivityGrid";
 import DailyChallengeCard from "@/components/gamification/DailyChallengeCard";
 import StreakShieldDisplay from "@/components/gamification/StreakShieldDisplay";
 import { BadgeIconContainer } from "@/components/gamification/BadgeIcon";
@@ -69,7 +69,7 @@ function getMondayOfWeek(date: Date): Date {
 }
 
 export default function Home() {
-  const { logs, streak, workoutDates, totalWorkouts } = useProgress();
+  const { logs, streak, workoutDates, workoutMinutes, totalWorkouts } = useProgress();
   const { gameState } = useGamification();
   const [mounted, setMounted] = useState(false);
   const [selectedLog, setSelectedLog] = useState<WorkoutLog | null>(null);
@@ -550,7 +550,7 @@ export default function Home() {
             className="animate-fade-in-up"
             style={{ animationDelay: nextDelay() }}
           >
-            <ProgressCalendar workoutDates={workoutDates} />
+            <ActivityGrid workoutDates={workoutDates} workoutMinutes={workoutMinutes} />
           </div>
         )}
 
