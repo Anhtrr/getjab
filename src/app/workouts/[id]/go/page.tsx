@@ -1043,7 +1043,7 @@ export default function WorkoutGoPage() {
           <div className="relative z-10 bg-surface border border-border rounded-2xl p-6 mx-6 max-w-sm w-full animate-modal-content">
             <h3 className="text-lg font-bold text-center mb-2">End workout?</h3>
             <p className="text-muted text-sm text-center mb-6">
-              You&apos;ve completed {roundsCompleted} of {workout.rounds.length} rounds. Your progress won&apos;t be saved.
+              You&apos;ve completed {roundsCompleted} of {workout.rounds.length} rounds.
             </p>
             <div className="space-y-3">
               <button
@@ -1055,6 +1055,29 @@ export default function WorkoutGoPage() {
               >
                 Keep Going
               </button>
+              {roundsCompleted > 0 && (
+                <button
+                  onClick={() => {
+                    clearTimer();
+                    cancelSpeech();
+                    stopTTSKeepAlive();
+                    stopAudioKeepAlive();
+                    clearWorkoutState();
+                    if (prepIntervalRef.current) clearInterval(prepIntervalRef.current);
+                    // Count punches from the current round if mid-round
+                    if (!isResting && currentRound.combos) {
+                      countRoundPunches(currentRound.combos);
+                    }
+                    setShowQuitConfirm(false);
+                    setState("complete");
+                    setWorkoutComplete(true);
+                    setShowRating(true);
+                  }}
+                  className="w-full btn-secondary border border-accent/30 text-accent font-medium py-3 rounded-full"
+                >
+                  End & Log ({roundsCompleted} rounds)
+                </button>
+              )}
               <button
                 onClick={() => {
                   clearTimer();
@@ -1065,9 +1088,9 @@ export default function WorkoutGoPage() {
                   if (prepIntervalRef.current) clearInterval(prepIntervalRef.current);
                   router.push(`/workouts/${workout.id}`);
                 }}
-                className="w-full btn-secondary border border-border text-muted font-medium py-3 rounded-full"
+                className="w-full text-muted text-sm font-medium py-3"
               >
-                Quit Workout
+                Quit Without Saving
               </button>
             </div>
           </div>
