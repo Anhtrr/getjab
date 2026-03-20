@@ -77,16 +77,32 @@ export default function Home() {
 
   // Suggested workout
   const { suggestedWorkout, suggestionLabel, trySomethingNew } = useMemo(() => {
-    if (logs.length === 0) {
+    if (!mounted || logs.length === 0) {
       const first = workouts.find((w) => w.id === "first-boxing-workout") || workouts[0];
       return { suggestedWorkout: first, suggestionLabel: "Start Here", trySomethingNew: null };
     }
 
+    // Find last completed workout - try multiple sources
     const sortedLogs = [...logs].sort((a, b) =>
       new Date(b.completedAt || b.date).getTime() - new Date(a.completedAt || a.date).getTime()
     );
-    const lastWorkoutId = sortedLogs[0]?.workoutId;
-    const lastWorkout = lastWorkoutId ? getWorkout(lastWorkoutId) : null;
+    const lastLog = sortedLogs[0];
+    const lastWorkoutId = lastLog?.workoutId;
+
+    // Try to resolve the workout object (works for both static and custom workouts)
+    let lastWorkout = lastWorkoutId ? getWorkout(lastWorkoutId) : null;
+
+    // If getWorkout fails (custom workout not in localStorage yet), try to find any
+    // workout the user has done that we CAN resolve
+    if (!lastWorkout) {
+      for (const log of sortedLogs) {
+        const resolved = getWorkout(log.workoutId);
+        if (resolved) {
+          lastWorkout = resolved;
+          break;
+        }
+      }
+    }
 
     const completedIds = new Set(logs.map((l) => l.workoutId));
     const neverDone = workouts.find((w) => !completedIds.has(w.id) && w.isFree);
@@ -102,8 +118,9 @@ export default function Home() {
       return { suggestedWorkout: lastWorkout, suggestionLabel: "Continue Training", trySomethingNew: tryNew };
     }
 
+    // Final fallback: suggest most popular free workout
     return { suggestedWorkout: workouts[0], suggestionLabel: "Up Next", trySomethingNew: tryNew };
-  }, [logs]);
+  }, [logs, mounted]);
 
   // Last used timer preset
   const lastPreset = useMemo(() => {
