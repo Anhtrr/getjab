@@ -211,7 +211,7 @@ export default function WorkoutDetailPage() {
         ))}
       </div>
 
-      <div className="fixed left-0 right-0 z-40 px-4 pb-3" style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 3.5rem)" }}>
+      <div className="fixed left-0 right-0 z-40 px-4 pb-3" style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 4.5rem)" }}>
         <div className="max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto flex gap-3">
           <WorkoutStartButton onClick={handleStart} />
           <button
