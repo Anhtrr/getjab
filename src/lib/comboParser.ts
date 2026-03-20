@@ -16,17 +16,9 @@ const DEFENSE_REGISTRY: Record<
   string,
   { name: string; shortName: string; hand: "lead" | "rear"; type: "defense" }
 > = {
-  // Simplified notation (no direction specified)
   Slip: { name: "Slip", shortName: "SLIP", hand: "lead", type: "defense" },
   Roll: { name: "Roll", shortName: "ROLL", hand: "lead", type: "defense" },
   Pull: { name: "Pull", shortName: "PULL", hand: "lead", type: "defense" },
-  // Legacy directional notation (backward compatibility)
-  SL: { name: "Slip Left", shortName: "SLIP", hand: "lead", type: "defense" },
-  SR: { name: "Slip Right", shortName: "SLIP", hand: "rear", type: "defense" },
-  RL: { name: "Roll Left", shortName: "ROLL", hand: "lead", type: "defense" },
-  RR: { name: "Roll Right", shortName: "ROLL", hand: "rear", type: "defense" },
-  PL: { name: "Parry Left", shortName: "PARRY", hand: "lead", type: "defense" },
-  PR: { name: "Parry Right", shortName: "PARRY", hand: "rear", type: "defense" },
 };
 
 /**
