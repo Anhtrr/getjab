@@ -507,6 +507,7 @@ export default function WorkoutGoPage() {
           const activeSec = workout.rounds.slice(0, roundsCompleted).reduce((s, r) => s + r.durationSec, 0);
           return Math.round(completedPunchStats.total / Math.max(1, activeSec / 60));
         })() : undefined,
+        punchBreakdown: completedPunchStats?.byType,
         caloriesEstimate: completedCalories || undefined,
       });
     } catch {

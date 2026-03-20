@@ -56,6 +56,7 @@ export default function PersonalRecordsList({ records, newPRs = [] }: PersonalRe
         previousValue: pr.previousValue,
         level: gameState.level.level,
         title: gameState.level.title,
+        streakCurrent: gameState.streak.current,
         displayName: name ?? undefined,
       });
     } catch {

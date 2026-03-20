@@ -94,10 +94,8 @@ export default function WorkoutLogDetail({ log, onClose }: Props) {
         displayName: name ?? undefined,
         punchesThrown: log.punchStats?.total,
         punchesPerMin: log.punchesPerMin,
+        punchBreakdown: log.punchStats?.byType,
         caloriesEstimate: calories,
-        currentXP: gameState.level.currentXP,
-        xpForNextLevel: gameState.level.xpForNextLevel,
-        progressPercent: gameState.level.progressPercent,
       });
     } catch {
       // User cancelled or share failed

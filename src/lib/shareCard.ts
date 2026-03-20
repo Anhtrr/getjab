@@ -17,11 +17,8 @@ export interface ShareCardData {
   displayName?: string;
   punchesThrown?: number;
   punchesPerMin?: number;
+  punchBreakdown?: Record<string, number>;
   caloriesEstimate?: number;
-  location?: string;
-  currentXP?: number;
-  xpForNextLevel?: number;
-  progressPercent?: number;
 }
 
 const CARD_W = 1080;
@@ -103,12 +100,6 @@ export async function generateShareCard(
   ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
   ctx.font = `400 22px ${FONT}`;
   ctx.fillText(formatDate(data.date), CARD_W / 2, 120);
-
-  if (data.location) {
-    ctx.fillStyle = "rgba(255, 255, 255, 0.25)";
-    ctx.font = `500 20px ${FONT}`;
-    ctx.fillText(`📍 ${data.location}`, CARD_W / 2, 150);
-  }
 
   // ─── Display Name (hero) ───
   let y = 260;
@@ -202,66 +193,23 @@ export async function generateShareCard(
   }
   y += (cardH + gap) * 2 + 40;
 
-  // ─── XP Progress group (below stat cards) ───
-  if (data.currentXP !== undefined && data.xpForNextLevel !== undefined) {
-    const barX = pad;
-    const barW = CARD_W - pad * 2;
-    const barH = 14;
-    const progress = Math.min(1, (data.progressPercent ?? 0) / 100);
+  // ─── Punch breakdown (below stat cards) ───
+  if (data.punchBreakdown && Object.keys(data.punchBreakdown).length > 0) {
+    const sortedPunches = Object.entries(data.punchBreakdown)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 6);
 
-    // Progress bar
-    drawRoundedRect(ctx, barX, y, barW, barH, barH / 2);
-    ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
-    ctx.fill();
-
-    if (progress > 0) {
-      const fillW = Math.max(barH, barW * progress);
-      drawRoundedRect(ctx, barX, y, fillW, barH, barH / 2);
-      const barGrad = ctx.createLinearGradient(barX, 0, barX + fillW, 0);
-      barGrad.addColorStop(0, "#00e5ff");
-      barGrad.addColorStop(1, "#0090ff");
-      ctx.fillStyle = barGrad;
-      ctx.fill();
-    }
-
-    // "718 / 1,200 XP to Level 4"
     ctx.fillStyle = "rgba(255, 255, 255, 0.35)";
-    ctx.font = `400 22px ${FONT}`;
-    ctx.fillText(
-      `${data.currentXP.toLocaleString()} / ${data.xpForNextLevel.toLocaleString()} XP to Level ${data.level + 1}`,
-      CARD_W / 2, y + barH + 30,
-    );
+    ctx.font = `500 22px ${FONT}`;
+    ctx.textAlign = "center";
+    const breakdownText = sortedPunches
+      .map(([type, count]) => `${count} ${type}${count !== 1 ? "s" : ""}`)
+      .join("  ·  ");
+    ctx.fillText(breakdownText, CARD_W / 2, y + 10);
   }
 
-  // ─── Bottom branding (safe zone: above story reply bar) ───
-  // Story overlays cover bottom ~150px, so our safe floor is ~CARD_H - 180
-  ctx.textAlign = "center";
-
-  // Streak (if active)
-  if (data.streakCurrent > 1) {
-    ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
-    ctx.font = `600 26px ${FONT}`;
-    ctx.fillText(`🔥 ${data.streakCurrent} day streak`, CARD_W / 2, CARD_H - 340);
-  }
-
-  // "FIGHTERS DON'T QUIT" - motivational tagline
-  ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-  ctx.font = `600 22px ${FONT}`;
-  ctx.letterSpacing = "5px";
-  ctx.fillText("FIGHTERS DON'T QUIT", CARD_W / 2 + 3, CARD_H - 270);
-  ctx.letterSpacing = "0px";
-
-  // "JAB" - large brand mark (the thing we want viewers to remember)
-  ctx.fillStyle = "#00e5ff";
-  ctx.font = `800 56px ${FONT}`;
-  ctx.letterSpacing = "12px";
-  ctx.fillText("JAB", CARD_W / 2 + 6, CARD_H - 200);
-  ctx.letterSpacing = "0px";
-
-  // @handle - what to search for
-  ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
-  ctx.font = `400 20px ${FONT}`;
-  ctx.fillText("@getjabapp", CARD_W / 2, CARD_H - 160);
+  // ─── Bottom branding ───
+  drawCardFooter(ctx, data.streakCurrent);
 
   return canvasToBlob(canvas);
 }
@@ -290,6 +238,7 @@ export interface PRShareCardData {
   previousValue?: number;
   level: number;
   title: BoxingTitle;
+  streakCurrent?: number;
   displayName?: string;
 }
 
@@ -362,7 +311,7 @@ export async function generatePRCard(
   drawLevelBadge(ctx, data.level, data.title, badgeY);
 
   // ─── Footer ───
-  drawCardFooter(ctx);
+  drawCardFooter(ctx, data.streakCurrent);
 
   return canvasToBlob(canvas);
 }
@@ -567,19 +516,34 @@ function drawLevelBadge(ctx: CanvasRenderingContext2D, level: number, title: Box
   ctx.fillText(title, circleX + circleR + 24, y + 14);
 }
 
-function drawCardFooter(ctx: CanvasRenderingContext2D) {
+function drawCardFooter(ctx: CanvasRenderingContext2D, streakCurrent?: number) {
   ctx.textAlign = "center";
-  ctx.fillStyle = "rgba(255, 255, 255, 0.35)";
-  ctx.font = `600 26px ${FONT}`;
-  ctx.letterSpacing = "4px";
-  ctx.fillText("FIGHTERS DON'T QUIT", CARD_W / 2 + 2, CARD_H - 130);
+
+  // Streak (if active)
+  if (streakCurrent && streakCurrent > 1) {
+    ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
+    ctx.font = `600 26px ${FONT}`;
+    ctx.fillText(`🔥 ${streakCurrent} day streak`, CARD_W / 2, CARD_H - 310);
+  }
+
+  // "FIGHTERS DON'T QUIT"
+  ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+  ctx.font = `600 22px ${FONT}`;
+  ctx.letterSpacing = "5px";
+  ctx.fillText("FIGHTERS DON'T QUIT", CARD_W / 2 + 3, CARD_H - 250);
   ctx.letterSpacing = "0px";
 
-  ctx.fillStyle = "rgba(0, 229, 255, 0.4)";
-  ctx.font = `600 24px ${FONT}`;
-  ctx.letterSpacing = "2px";
-  ctx.fillText("JAB", CARD_W / 2 + 1, CARD_H - 70);
+  // "JAB" - large brand mark
+  ctx.fillStyle = "#00e5ff";
+  ctx.font = `800 56px ${FONT}`;
+  ctx.letterSpacing = "12px";
+  ctx.fillText("JAB", CARD_W / 2 + 6, CARD_H - 180);
   ctx.letterSpacing = "0px";
+
+  // @handle
+  ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
+  ctx.font = `400 20px ${FONT}`;
+  ctx.fillText("@getjabapp", CARD_W / 2, CARD_H - 140);
 }
 
 function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
