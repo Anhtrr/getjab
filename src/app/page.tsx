@@ -6,12 +6,7 @@ import { useProgress } from "@/hooks/useProgress";
 import { useGamification } from "@/hooks/useGamification";
 import { workouts, getWorkout } from "@/data/workouts";
 import { getPresets } from "@/lib/timerPresets";
-import ActivityGrid from "@/components/ActivityGrid";
 import DailyChallengeCard from "@/components/gamification/DailyChallengeCard";
-import StreakShieldDisplay from "@/components/gamification/StreakShieldDisplay";
-import { BadgeIconContainer } from "@/components/gamification/BadgeIcon";
-import { BADGE_DEFINITIONS } from "@/lib/gamification/badges";
-import WorkoutLogDetail from "@/components/WorkoutLogDetail";
 import {
   Trophy,
   FileText,
@@ -19,17 +14,7 @@ import {
   Play,
   Timer as TimerIcon,
   Flame,
-  Zap,
-  Award,
 } from "lucide-react";
-import type { WorkoutLog } from "@/lib/types";
-
-const ratingLabels: Record<number, string> = {
-  1: "Easy",
-  2: "Just Right",
-  3: "Tough",
-  4: "Destroyed Me",
-};
 
 const levelColors: Record<string, string> = {
   beginner: "text-green-400 bg-green-400/10 border-green-400/20",
@@ -69,10 +54,9 @@ function getMondayOfWeek(date: Date): Date {
 }
 
 export default function Home() {
-  const { logs, streak, workoutDates, workoutMinutes, totalWorkouts } = useProgress();
+  const { logs, streak, totalWorkouts } = useProgress();
   const { gameState } = useGamification();
   const [mounted, setMounted] = useState(false);
-  const [selectedLog, setSelectedLog] = useState<WorkoutLog | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -89,31 +73,25 @@ export default function Home() {
   // This week stats
   const now = new Date();
   const monday = getMondayOfWeek(now);
-  const weekLogs = logs.filter((log) => new Date(log.date) >= monday);
-  const weekWorkouts = weekLogs.length;
+  const weekWorkouts = logs.filter((log) => new Date(log.date) >= monday).length;
 
-  // Suggested workout - smart recommendation based on history
+  // Suggested workout
   const { suggestedWorkout, suggestionLabel, trySomethingNew } = useMemo(() => {
-    // New user: suggest first workout
     if (logs.length === 0) {
       const first = workouts.find((w) => w.id === "first-boxing-workout") || workouts[0];
       return { suggestedWorkout: first, suggestionLabel: "Start Here", trySomethingNew: null };
     }
 
-    // Returning user: suggest most recently completed workout (they'll likely repeat it)
     const sortedLogs = [...logs].sort((a, b) =>
       new Date(b.completedAt || b.date).getTime() - new Date(a.completedAt || a.date).getTime()
     );
     const lastWorkoutId = sortedLogs[0]?.workoutId;
     const lastWorkout = lastWorkoutId ? getWorkout(lastWorkoutId) : null;
 
-    // Find something new: a workout they haven't done or haven't done recently
     const completedIds = new Set(logs.map((l) => l.workoutId));
     const neverDone = workouts.find((w) => !completedIds.has(w.id) && w.isFree);
-    // Count how many times each workout was done
     const workoutCounts: Record<string, number> = {};
     for (const log of logs) workoutCounts[log.workoutId] = (workoutCounts[log.workoutId] || 0) + 1;
-    // Least done workout they've tried (for variety)
     const leastDone = workouts
       .filter((w) => completedIds.has(w.id) && w.id !== lastWorkoutId && w.isFree)
       .sort((a, b) => (workoutCounts[a.id] || 0) - (workoutCounts[b.id] || 0))[0];
@@ -124,7 +102,6 @@ export default function Home() {
       return { suggestedWorkout: lastWorkout, suggestionLabel: "Continue Training", trySomethingNew: tryNew };
     }
 
-    // Fallback
     return { suggestedWorkout: workouts[0], suggestionLabel: "Up Next", trySomethingNew: tryNew };
   }, [logs]);
 
@@ -134,27 +111,6 @@ export default function Home() {
     const presets = getPresets();
     return presets[0] || null;
   }, [mounted]);
-
-  // Recent activity
-  const recentLogs = [...logs].reverse().slice(0, 3);
-
-  // Badge data
-  const earnedBadgeIds = useMemo(() => {
-    if (!gameState) return new Set<string>();
-    return new Set(gameState.badges.earned.map((b) => b.badgeId));
-  }, [gameState]);
-
-  const earnedBadges = useMemo(() => {
-    if (!gameState) return [];
-    return gameState.badges.earned
-      .sort(
-        (a, b) =>
-          new Date(b.earnedAt).getTime() - new Date(a.earnedAt).getTime(),
-      )
-      .slice(0, 5)
-      .map((eb) => BADGE_DEFINITIONS.find((bd) => bd.id === eb.badgeId))
-      .filter(Boolean);
-  }, [gameState]);
 
   // Animation delay counter
   let delayCounter = 0;
@@ -188,22 +144,14 @@ export default function Home() {
           </span>
         </h1>
         <p className="text-muted text-sm mt-1">
-          {getMotivationLine(
-            totalWorkouts,
-            streak.current,
-            streak.longest,
-            trainedToday,
-          )}
+          {getMotivationLine(totalWorkouts, streak.current, streak.longest, trainedToday)}
         </p>
       </div>
 
-      <div className="space-y-5">
+      <div className="space-y-4">
         {/* ─── NEW USER: Welcome Hero ─── */}
         {isNewUser && (
-          <div
-            className="animate-fade-in-up"
-            style={{ animationDelay: nextDelay() }}
-          >
+          <div className="animate-fade-in-up" style={{ animationDelay: nextDelay() }}>
             <div className="card-glass rounded-2xl overflow-hidden">
               <Link
                 href="/learn/first-workout"
@@ -214,9 +162,7 @@ export default function Home() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-bold text-sm">New to boxing?</p>
-                  <p className="text-xs text-muted mt-0.5">
-                    Start with the basics
-                  </p>
+                  <p className="text-xs text-muted mt-0.5">Start with the basics</p>
                 </div>
                 <ChevronRight className="w-4 h-4 text-muted shrink-0 group-hover:text-[#00e5ff] transition-colors" />
               </Link>
@@ -229,9 +175,7 @@ export default function Home() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-bold text-sm">Ready to train?</p>
-                  <p className="text-xs text-muted mt-0.5">
-                    Jump into your first workout
-                  </p>
+                  <p className="text-xs text-muted mt-0.5">Jump into your first workout</p>
                 </div>
                 <ChevronRight className="w-4 h-4 text-muted shrink-0 group-hover:text-[#00e5ff] transition-colors" />
               </Link>
@@ -241,10 +185,7 @@ export default function Home() {
 
         {/* ─── RETURNING USER: Suggested Workout ─── */}
         {!isNewUser && suggestedWorkout && (
-          <div
-            className="animate-fade-in-up"
-            style={{ animationDelay: nextDelay() }}
-          >
+          <div className="animate-fade-in-up" style={{ animationDelay: nextDelay() }}>
             <h2 className="text-sm font-semibold tracking-wide uppercase text-muted mb-2">
               {suggestionLabel}
             </h2>
@@ -262,17 +203,11 @@ export default function Home() {
                       {suggestedWorkout.title}
                     </h3>
                     <div className="flex items-center gap-2 mt-1.5">
-                      <span
-                        className={`text-xs font-medium px-2 py-0.5 rounded-full border ${levelColors[suggestedWorkout.level]}`}
-                      >
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${levelColors[suggestedWorkout.level]}`}>
                         {suggestedWorkout.level}
                       </span>
-                      <span className="text-xs text-muted">
-                        {suggestedWorkout.durationMin} min
-                      </span>
-                      <span className="text-xs text-muted">
-                        {suggestedWorkout.rounds.length} rounds
-                      </span>
+                      <span className="text-xs text-muted">{suggestedWorkout.durationMin} min</span>
+                      <span className="text-xs text-muted">{suggestedWorkout.rounds.length} rounds</span>
                     </div>
                   </div>
                   <ChevronRight className="w-5 h-5 text-muted shrink-0 group-hover:text-[#00e5ff] group-hover:translate-x-0.5 transition-all duration-200" />
@@ -299,10 +234,7 @@ export default function Home() {
         )}
 
         {/* ─── Quick Timer ─── */}
-        <div
-          className="animate-fade-in-up"
-          style={{ animationDelay: nextDelay() }}
-        >
+        <div className="animate-fade-in-up" style={{ animationDelay: nextDelay() }}>
           <Link
             href="/timer"
             className="group flex items-center gap-3 card-glass rounded-xl p-3 hover:border-[#00e5ff]/20 transition-all duration-200"
@@ -325,108 +257,48 @@ export default function Home() {
           </Link>
         </div>
 
-        {/* ─── RETURNING USER: Progress Snapshot ─── */}
-        {!isNewUser && gameState && (
-          <div
-            className="animate-fade-in-up"
-            style={{ animationDelay: nextDelay() }}
-          >
-            <div className="card-glass rounded-2xl p-5">
-              {/* Level + XP bar */}
-              <div className="flex items-center gap-4 mb-4">
-                <div
-                  className="w-14 h-14 rounded-full flex items-center justify-center shrink-0"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, rgba(0,229,255,0.15), rgba(0,144,255,0.15))",
-                    border: "2px solid rgba(0,229,255,0.4)",
-                    boxShadow: "0 0 12px rgba(0,229,255,0.15)",
-                  }}
-                >
-                  <span className="text-xl font-black text-accent">
-                    {gameState.level.level}
-                  </span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-muted uppercase tracking-wider font-medium">
-                    {gameState.level.title}
-                  </p>
-                  <div className="flex items-center gap-2 mt-1.5">
-                    <div className="flex-1 bg-border/50 rounded-full h-2 overflow-hidden">
-                      <div
-                        className="h-full rounded-full bg-gradient-to-r from-[#00e5ff] to-[#0090ff] transition-all duration-1000 ease-out"
-                        style={{
-                          width: `${gameState.level.progressPercent}%`,
-                        }}
-                      />
-                    </div>
-                    <span className="text-[10px] text-muted tabular-nums shrink-0">
-                      Lv.{gameState.level.level}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Stats row */}
-              <div className="flex items-center gap-4 pt-3 border-t border-border/30">
-                <div className="flex items-center gap-1.5">
-                  <Flame className="w-4 h-4 text-orange-400" />
-                  <span className="text-lg font-black">{streak.current}</span>
-                  <span className="text-xs text-muted">streak</span>
-                </div>
-                <div className="w-px h-5 bg-border/40" />
-                <div className="flex items-center gap-1.5">
-                  <Zap className="w-4 h-4 text-[#00e5ff]" />
-                  <span className="text-lg font-black">{weekWorkouts}</span>
-                  <span className="text-xs text-muted">this week</span>
-                </div>
-                <div className="w-px h-5 bg-border/40" />
-                <div className="flex items-center gap-1.5">
-                  <Award className="w-4 h-4 text-accent-secondary" />
-                  <span className="text-lg font-black">{totalWorkouts}</span>
-                  <span className="text-xs text-muted">total</span>
-                </div>
-              </div>
-
-              {/* Streak shields */}
-              {gameState.shields.shields > 0 && (
-                <div className="mt-3 pt-3 border-t border-border/30">
-                  <StreakShieldDisplay shields={gameState.shields} />
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Daily Challenge */}
+        {/* ─── Daily Challenge ─── */}
         {mounted && gameState && (
-          <div
-            className="animate-fade-in-up"
-            style={{ animationDelay: nextDelay() }}
-          >
+          <div className="animate-fade-in-up" style={{ animationDelay: nextDelay() }}>
             <DailyChallengeCard
               challenge={gameState.todayChallenge}
               progress={gameState.challengeProgress}
             />
-            {isNewUser && (
-              <p className="text-xs text-muted text-center mt-2">
-                Complete your first workout to earn XP
-              </p>
-            )}
           </div>
         )}
 
-        {/* ─── Learn Links (onboarding users only) ─── */}
+        {/* ─── Compact Stats Row ─── */}
+        {!isNewUser && (
+          <div className="animate-fade-in-up" style={{ animationDelay: nextDelay() }}>
+            <div className="flex items-center justify-between card-glass rounded-xl px-4 py-3">
+              <div className="flex items-center gap-1.5">
+                <Flame className="w-4 h-4 text-orange-400" />
+                <span className="text-sm font-bold">{streak.current}</span>
+                <span className="text-xs text-muted">day streak</span>
+              </div>
+              <div className="w-px h-4 bg-border/40" />
+              <div className="flex items-center gap-1.5">
+                <span className="text-sm font-bold">{weekWorkouts}</span>
+                <span className="text-xs text-muted">this week</span>
+              </div>
+              <div className="w-px h-4 bg-border/40" />
+              <Link
+                href="/progress"
+                className="text-xs text-[#00e5ff] font-medium hover:text-[#00c8ff] transition-colors"
+              >
+                View Progress
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {/* ─── Learn Links (onboarding only) ─── */}
         {isOnboarding && (
-          <div
-            className="space-y-3 animate-fade-in-up"
-            style={{ animationDelay: nextDelay() }}
-          >
-            {/* "New to Boxing?" - only for users with 1-2 workouts (new users have it in Welcome Hero) */}
+          <div className="space-y-3 animate-fade-in-up" style={{ animationDelay: nextDelay() }}>
             {!isNewUser && (
               <Link
                 href="/learn/first-workout"
-                className="group block card-glass rounded-2xl p-5 card-premium glow-ring hover:shadow-[0_0_24px_rgba(0,229,255,0.08)] transition-all duration-300"
+                className="group block card-glass rounded-2xl p-5 hover:border-[#00e5ff]/20 transition-all duration-300"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#00e5ff]/15 to-[#0090ff]/15 flex items-center justify-center">
@@ -434,16 +306,14 @@ export default function Home() {
                   </div>
                   <div>
                     <h3 className="font-bold">New to Boxing?</h3>
-                    <p className="text-sm text-muted">
-                      Start with our guided introduction
-                    </p>
+                    <p className="text-sm text-muted">Start with our guided introduction</p>
                   </div>
                 </div>
               </Link>
             )}
             <Link
               href="/learn/combos"
-              className="group block card-glass rounded-2xl p-5 card-premium glow-ring hover:shadow-[0_0_24px_rgba(0,229,255,0.08)] transition-all duration-300"
+              className="group block card-glass rounded-2xl p-5 hover:border-[#00e5ff]/20 transition-all duration-300"
             >
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#00e5ff]/15 to-[#0090ff]/15 flex items-center justify-center">
@@ -451,191 +321,13 @@ export default function Home() {
                 </div>
                 <div>
                   <h3 className="font-bold">Combo Reference</h3>
-                  <p className="text-sm text-muted">
-                    Learn the punch numbering system
-                  </p>
+                  <p className="text-sm text-muted">Learn the punch numbering system</p>
                 </div>
               </div>
             </Link>
           </div>
         )}
-
-        {/* ─── RETURNING USER: Recent Activity ─── */}
-        {!isNewUser && (
-          <div
-            className="animate-fade-in-up"
-            style={{ animationDelay: nextDelay() }}
-          >
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-semibold tracking-wide uppercase text-muted">
-                Recent Activity
-              </h2>
-              {recentLogs.length > 0 && (
-                <Link
-                  href="/progress"
-                  className="text-xs text-[#00e5ff] font-medium hover:text-[#00c8ff] transition-colors"
-                >
-                  View All
-                </Link>
-              )}
-            </div>
-            {recentLogs.length === 0 ? (
-              <div className="card-glass rounded-2xl p-6 text-center">
-                <p className="text-sm text-muted">
-                  Complete a workout to see your activity here.
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-2">
-                {recentLogs.map((log) => {
-                  const workout = workouts.find(
-                    (w) => w.id === log.workoutId,
-                  );
-                  return (
-                    <button
-                      key={log.completedAt || `${log.workoutId}-${log.date}`}
-                      onClick={() => setSelectedLog(log)}
-                      className="w-full text-left card-glass rounded-xl p-4 hover:border-[#00e5ff]/20 transition-all duration-200"
-                    >
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <p className="font-medium text-sm">
-                            {workout?.title ||
-                              log.workoutTitle ||
-                              log.workoutId}
-                          </p>
-                          <p className="text-xs text-muted mt-0.5">
-                            {new Date(
-                              log.completedAt || log.date,
-                            ).toLocaleDateString("en-US", {
-                              weekday: "short",
-                              month: "short",
-                              day: "numeric",
-                            })}
-                            {log.completedAt && (
-                              <span className="ml-1">
-                                {new Date(
-                                  log.completedAt,
-                                ).toLocaleTimeString("en-US", {
-                                  hour: "numeric",
-                                  minute: "2-digit",
-                                })}
-                              </span>
-                            )}
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="text-right">
-                            <p className="text-xs text-muted">
-                              {log.roundsCompleted}/{log.totalRounds} rounds
-                            </p>
-                            <p className="text-xs text-muted">
-                              {ratingLabels[log.rating]}
-                            </p>
-                          </div>
-                          <ChevronRight className="w-4 h-4 text-muted" />
-                        </div>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* ─── RETURNING USER: Activity Calendar ─── */}
-        {!isNewUser && (
-          <div
-            className="animate-fade-in-up"
-            style={{ animationDelay: nextDelay() }}
-          >
-            <ActivityGrid workoutDates={workoutDates} workoutMinutes={workoutMinutes} />
-          </div>
-        )}
-
-        {/* ─── Badge Teaser ─── */}
-        <div
-          className="animate-fade-in-up"
-          style={{ animationDelay: nextDelay() }}
-        >
-          {isNewUser ? (
-            <div className="card-glass rounded-2xl p-5">
-              <h2 className="text-sm font-semibold tracking-wide uppercase text-muted mb-3">
-                Badges to Earn
-              </h2>
-              <div className="flex gap-3">
-                {BADGE_DEFINITIONS.filter((b) =>
-                  [
-                    "first-blood",
-                    "streak-3",
-                    "30-min-club",
-                    "getting-started",
-                  ].includes(b.id),
-                ).map((badge) => (
-                  <div key={badge.id} className="flex-1 min-w-0 flex flex-col items-center text-center">
-                    <BadgeIconContainer
-                      icon={badge.icon}
-                      rarity={badge.rarity}
-                      earned={false}
-                      size="sm"
-                    />
-                    <p className="text-[9px] text-muted mt-1 leading-tight">
-                      {badge.name}
-                    </p>
-                  </div>
-                ))}
-              </div>
-              <Link
-                href="/progress"
-                className="block text-xs text-[#00e5ff] font-medium mt-3 hover:text-[#00c8ff] transition-colors"
-              >
-                Complete workouts to start earning →
-              </Link>
-            </div>
-          ) : earnedBadges.length > 0 ? (
-            <div className="card-glass rounded-2xl p-5">
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-sm font-semibold tracking-wide uppercase text-muted">
-                  Badges
-                </h2>
-                <Link
-                  href="/progress"
-                  className="text-xs text-[#00e5ff] font-medium hover:text-[#00c8ff] transition-colors"
-                >
-                  {earnedBadgeIds.size}/{BADGE_DEFINITIONS.length} View All
-                </Link>
-              </div>
-              <div className="flex gap-3">
-                {earnedBadges.map(
-                  (badge) =>
-                    badge && (
-                      <div key={badge.id} className="flex-1 min-w-0 flex flex-col items-center text-center">
-                        <BadgeIconContainer
-                          icon={badge.icon}
-                          rarity={badge.rarity}
-                          earned={true}
-                          size="sm"
-                        />
-                        <p className="text-[9px] text-muted mt-1 leading-tight">
-                          {badge.name}
-                        </p>
-                      </div>
-                    ),
-                )}
-              </div>
-            </div>
-          ) : null}
-        </div>
       </div>
-
-      {/* Workout detail sheet */}
-      {selectedLog && (
-        <WorkoutLogDetail
-          log={selectedLog}
-          onClose={() => setSelectedLog(null)}
-        />
-      )}
     </div>
   );
 }
