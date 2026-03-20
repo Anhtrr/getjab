@@ -74,6 +74,7 @@ export function useComboCallout(
   secondsLeft: number,
   roundDurationSec: number,
   isPaused: boolean,
+  onComboFired?: (combo: ParsedCombo) => void,
 ) {
   const [calloutState, setCalloutState] = useState<CalloutState>({
     activeCombo: null,
@@ -91,11 +92,17 @@ export function useComboCallout(
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const phaseRef = useRef<CalloutPhase>("idle");
   const settingsRef = useRef(settings);
+  const onComboFiredRef = useRef(onComboFired);
 
   // Keep settings ref in sync
   useEffect(() => {
     settingsRef.current = settings;
   }, [settings]);
+
+  // Keep callback ref in sync
+  useEffect(() => {
+    onComboFiredRef.current = onComboFired;
+  }, [onComboFired]);
 
   const clearAllTimeouts = useCallback(() => {
     timeoutsRef.current.forEach(clearTimeout);
@@ -153,6 +160,9 @@ export function useComboCallout(
     if (s.audioEnabled) {
       speakCombo(combo, s.audioMode);
     }
+
+    // Notify parent that a combo was called out (for punch counting)
+    onComboFiredRef.current?.(combo);
 
     // Wait for CSS stagger + slam animation to finish before holding
     const enterDone = (combo.punches.length - 1) * STAGGER_MS + SLAM_DURATION_MS;

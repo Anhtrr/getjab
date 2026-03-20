@@ -11,7 +11,7 @@ import { notifyLogsChanged } from "@/hooks/useProgress";
 import { initComboAudio, cancelSpeech, stopTTSKeepAlive, speakText } from "@/lib/comboAudio";
 import { stopAudioKeepAlive } from "@/lib/audio";
 import { vibrateRoundStart, vibrateRoundEnd, vibrateWarning } from "@/lib/haptics";
-import { parseRoundCombos } from "@/lib/comboParser";
+import type { ParsedCombo } from "@/lib/types";
 import { useGamification } from "@/hooks/useGamification";
 import { calculateXP } from "@/lib/gamification/engine";
 import PostWorkoutRating from "@/components/PostWorkoutRating";
@@ -208,6 +208,17 @@ export default function WorkoutGoPage() {
 
   useWakeLock(state === "running" || state === "paused" || isResting || state === "preparing");
 
+  // Count punches each time a combo is called out during the round
+  const handleComboFired = useCallback((combo: ParsedCombo) => {
+    const counts = punchCountRef.current;
+    for (const punch of combo.punches) {
+      if (punch.type === "defense") continue;
+      counts.total++;
+      const key = punch.shortName.toLowerCase();
+      counts.byType[key] = (counts.byType[key] || 0) + 1;
+    }
+  }, []);
+
   const currentRoundForCallout = workout?.rounds[currentRoundIndex];
   const isConditioning = currentRoundForCallout?.type === "conditioning";
   const { calloutState, hasCallableCombos } =
@@ -217,22 +228,8 @@ export default function WorkoutGoPage() {
       secondsLeft,
       currentRoundForCallout?.durationSec ?? 0,
       state === "paused" || isResting,
+      handleComboFired,
     );
-
-  // Count punches from a round's combos when the round completes
-  const countRoundPunches = useCallback((combos: string[] | undefined) => {
-    if (!combos || combos.length === 0) return;
-    const parsed = parseRoundCombos(combos);
-    const counts = punchCountRef.current;
-    for (const combo of parsed) {
-      for (const punch of combo.punches) {
-        if (punch.type === "defense") continue;
-        counts.total++;
-        const key = punch.shortName.toLowerCase();
-        counts.byType[key] = (counts.byType[key] || 0) + 1;
-      }
-    }
-  }, []);
 
   // Announce round title via TTS after bell
   const announceRound = useCallback((title: string) => {
@@ -283,7 +280,6 @@ export default function WorkoutGoPage() {
         const roundIdx = currentRoundIndexRef.current;
         const round = workout.rounds[roundIdx];
         setRoundsCompleted((p) => p + 1);
-        countRoundPunches(round.combos);
 
         if (roundIdx >= workout.rounds.length - 1) {
           setState("complete");
@@ -334,7 +330,7 @@ export default function WorkoutGoPage() {
       warningFiredRef.current = false;
       return;
     }
-  }, [workout, audio, clearTimer, countRoundPunches, announceRound]);
+  }, [workout, audio, clearTimer, announceRound]);
 
   const beginRound1 = useCallback(() => {
     if (!workout) return;
@@ -1064,10 +1060,6 @@ export default function WorkoutGoPage() {
                     stopAudioKeepAlive();
                     clearWorkoutState();
                     if (prepIntervalRef.current) clearInterval(prepIntervalRef.current);
-                    // Count punches from the current round if mid-round
-                    if (!isResting && currentRound.combos) {
-                      countRoundPunches(currentRound.combos);
-                    }
                     setShowQuitConfirm(false);
                     setState("complete");
                     setWorkoutComplete(true);
