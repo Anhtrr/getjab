@@ -11,7 +11,7 @@ export const workouts: Workout[] = [
       "Master the basics of boxing with proper form and technique. This workout introduces you to the core punches and movement patterns that form the foundation of all boxing training.",
     level: "beginner",
     goal: "general",
-    durationMin: 20,
+    durationMin: 24,
     equipment: [],
     isFree: true,
     rounds: [
@@ -121,7 +121,7 @@ export const workouts: Workout[] = [
       "Take your skills to the heavy bag. Learn to transfer power from your body to the bag while maintaining balance and form. Your first taste of real impact training.",
     level: "beginner",
     goal: "general",
-    durationMin: 30,
+    durationMin: 28,
     equipment: ["Heavy bag"],
     isFree: true,
     rounds: [
@@ -215,7 +215,7 @@ export const workouts: Workout[] = [
       "Shadow boxing is where champions are refined. Work on movement, timing, and visualization without the bag. This is your mental and technical laboratory.",
     level: "beginner",
     goal: "technique",
-    durationMin: 25,
+    durationMin: 24,
     equipment: [],
     isFree: true,
     rounds: [
@@ -308,7 +308,7 @@ export const workouts: Workout[] = [
       "Short, intense, and effective. This high-energy workout will get your heart pumping and burn calories fast. Perfect for when you're short on time but need to break a sweat.",
     level: "beginner",
     goal: "conditioning",
-    durationMin: 20,
+    durationMin: 17,
     equipment: [],
     isFree: true,
     rounds: [
@@ -397,7 +397,7 @@ export const workouts: Workout[] = [
       "Master the art of boxing through progressive combo building. Each round adds complexity, taking you from basic combinations to advanced 4-punch sequences with body work. Learn to punch in bunches and move like a boxer.",
     level: "intermediate",
     goal: "technique",
-    durationMin: 35,
+    durationMin: 28,
     equipment: ["Heavy bag"],
     isFree: true,
     rounds: [
@@ -528,7 +528,7 @@ export const workouts: Workout[] = [
       "Simulate the pace of a real fight. Rounds alternate between high-output offense and active recovery, teaching you to manage your energy across a full session. Build the cardio to go the distance.",
     level: "intermediate",
     goal: "conditioning",
-    durationMin: 35,
+    durationMin: 29,
     equipment: ["Heavy bag"],
     isFree: true,
     rounds: [
@@ -628,7 +628,7 @@ export const workouts: Workout[] = [
       "Learn to throw 3-5 punch combinations with flow and rhythm. This workout builds your ability to chain punches together naturally, mixing hooks, uppercuts, and body shots into smooth sequences.",
     level: "intermediate",
     goal: "general",
-    durationMin: 35,
+    durationMin: 30,
     equipment: ["Heavy bag"],
     isFree: true,
     rounds: [
@@ -747,7 +747,7 @@ export const workouts: Workout[] = [
       "Develop explosive hand speed and rapid-fire combinations. This workout focuses on speed over power, teaching you to throw fast, clean, multi-punch combinations that overwhelm opponents.",
     level: "intermediate",
     goal: "speed",
-    durationMin: 30,
+    durationMin: 24,
     equipment: ["Heavy bag"],
     isFree: true,
     rounds: [
@@ -858,7 +858,7 @@ export const workouts: Workout[] = [
       "Master the brutal art of body punching. Learn to attack downstairs with hooks, uppercuts, and crosses to the body. Break down your opponent's will with vicious body work.",
     level: "intermediate",
     goal: "power",
-    durationMin: 30,
+    durationMin: 24,
     equipment: ["Heavy bag"],
     isFree: true,
     rounds: [
@@ -948,7 +948,7 @@ export const workouts: Workout[] = [
       "A complete heavy bag session inspired by Cus D'Amato's peek-a-boo style. Progressive rounds build from singles to 6-punch combinations with body work, defense, and brutal conditioning burnouts. Head movement between combos, relentless pressure, explosive power.",
     level: "advanced",
     goal: "general",
-    durationMin: 43,
+    durationMin: 39,
     equipment: ["Heavy bag"],
     isFree: true,
     rounds: [
@@ -1112,7 +1112,7 @@ export const workouts: Workout[] = [
     title: "Kronk Gym Rounds",
     subtitle: "Emanuel Steward's legendary pressure fighting",
     description:
-      "Aggressive, high-output pressure fighting from the legendary Kronk Gym. Learn to apply non-stop pressure with power punches, body attack, and relentless combinations. This is Detroit heavy-handed boxing at its finest.",
+      "Aggressive, high-output pressure fighting from the legendary Kronk Gym. Non-stop pressure with power punches, body attack, and relentless combinations. This is Detroit heavy-handed boxing at its finest.",
     level: "advanced",
     goal: "power",
     durationMin: 40,
@@ -1131,41 +1131,33 @@ export const workouts: Workout[] = [
       {
         type: "bagwork",
         durationSec: 180,
-        restSec: 60,
+        restSec: 90,
         title: "Straight and Hard",
-        instructions:
-          "Straight shots with bad intentions. Every cross should move the bag.",
+        instructions: "Straight shots with bad intentions. Every cross should move the bag.",
         combos: [
           "1-2 (Jab-Cross)",
           "1-2-1-2 (Jab-Cross-Jab-Cross)",
           "1-1-2 (Double Jab-Cross)",
         ],
-        tips: [
-          "Every cross should move the bag off its chain",
-          "Step into your punches, use your legs",
-        ],
+        tips: ["Every cross should move the bag off its chain", "Step into your punches"],
       },
       {
         type: "bagwork",
         durationSec: 180,
-        restSec: 60,
+        restSec: 90,
         title: "Hook City",
-        instructions:
-          "Hooks and power. Turn your whole body into every punch.",
+        instructions: "Hooks and power. Turn your whole body into every punch.",
         combos: [
           "2-3 (Cross-Hook)",
           "1-2-3-4 (Jab-Cross-Hook-Rear Hook)",
           "3-2-3 (Hook-Cross-Hook)",
         ],
-        tips: [
-          "Short hooks, maximum rotation",
-          "Double up the hooks, don't single-shot",
-        ],
+        tips: ["Short hooks, maximum rotation", "Double up the hooks"],
       },
       {
         type: "bagwork",
         durationSec: 180,
-        restSec: 60,
+        restSec: 90,
         title: "Coming Up the Middle",
         instructions: "Uppercut combos. Split the guard, come up the middle.",
         combos: [
@@ -1173,15 +1165,12 @@ export const workouts: Workout[] = [
           "1-2-5-2-3 (Jab-Cross-Uppercut-Cross-Hook)",
           "5-2-3 (Uppercut-Cross-Hook)",
         ],
-        tips: [
-          "Uppercuts set up everything",
-          "Drive from your legs, not your arms",
-        ],
+        tips: ["Uppercuts set up everything", "Drive from your legs"],
       },
       {
         type: "bagwork",
         durationSec: 180,
-        restSec: 60,
+        restSec: 90,
         title: "Rip the Body",
         instructions: "Body attack. Break their will with body shots.",
         combos: [
@@ -1189,63 +1178,71 @@ export const workouts: Workout[] = [
           "1-2body-3 (Jab-Body Cross-Hook)",
           "3body-3-2-3 (Body Hook-Head Hook-Cross-Hook)",
         ],
-        tips: [
-          "The body shot opens up the head",
-          "Commit to the level change, don't half-ass it",
-        ],
+        tips: ["The body shot opens up the head", "Commit to the level change"],
       },
       {
         type: "bagwork",
         durationSec: 180,
-        restSec: 60,
-        title: "Non-Stop Pressure",
-        instructions:
-          "Long power combos. Don't give them a chance to breathe.",
+        restSec: 90,
+        title: "Kronk Power Combos",
+        instructions: "Long power combos with body-head transitions. Walk them down.",
         combos: [
           "1-2-3-2-3-2 (Jab-Cross-Hook-Cross-Hook-Cross)",
           "1-2-3body-3-2-3 (Jab-Cross-Body Hook-Head Hook-Cross-Hook)",
           "1-6-3-2-3-2 (Jab-Uppercut-Hook-Cross-Hook-Cross)",
         ],
-        tips: [
-          "Don't give them a chance to breathe",
-          "Punch in bunches, this is Kronk style",
+        tips: ["Don't give them a chance to breathe", "Punch in bunches, this is Kronk style"],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 90,
+        title: "Adapt and Attack",
+        instructions: "Throw, defend, counter. Kronk fighters don't just pressure, they adapt.",
+        combos: [
+          "1-2-3-Slip-2-3 (Jab-Cross-Hook-Slip-Cross-Hook)",
+          "Slip-3-2-3-2 (Slip-Hook-Cross-Hook-Cross)",
+          "1-2-Roll-6-3-2 (Jab-Cross-Roll-Uppercut-Hook-Cross)",
         ],
+        tips: ["Offense and defense are one thing", "Counter immediately after defense"],
       },
       {
         type: "bagwork",
         durationSec: 180,
         restSec: 60,
-        title: "Adapt and Attack",
-        instructions:
-          "Everything with defense. Throw, defend, counter. Complete fighting.",
+        title: "Championship Round",
+        instructions: "Last bag round. Everything you've got. Long combos, body work, head movement. Leave nothing.",
         combos: [
-          "1-2-3-Slip-2-3 (Jab-Cross-Hook-Slip-Cross-Hook)",
-          "Slip-3-2-3-2 (Slip-Hook-Cross-Hook-Cross)",
+          "1-2-3body-2-3-2 (Jab-Cross-Body Hook-Cross-Head Hook-Cross)",
+          "1-2-3-4-2-3 (Jab-Cross-Hook-Rear Hook-Cross-Hook)",
+          "Slip-2-3-2-3 (Slip-Cross-Hook-Cross-Hook)",
         ],
-        tips: [
-          "Offense and defense are one thing",
-          "Counter immediately after defense",
-        ],
+        tips: ["This is the round that separates fighters from pretenders", "Empty everything"],
       },
       {
         type: "conditioning",
-        durationSec: 180,
-        restSec: 60,
-        title: "Empty the Tank",
-        instructions:
-          "Non-stop power 4-punch combos. Every punch full power. This is where champions are made.",
+        durationSec: 90,
+        restSec: 20,
+        title: "Burnout: Power Combos",
+        instructions: "Non-stop 1-2-3-2. Every punch full power. Don't stop.",
         combos: ["1-2-3-2 (Jab-Cross-Hook-Cross)"],
-        tips: [
-          "This is where champions are made",
-          "Push through the burn, don't slow down",
-        ],
+        tips: ["This is where champions are made", "Push through the burn"],
+      },
+      {
+        type: "conditioning",
+        durationSec: 90,
+        restSec: 60,
+        title: "Burnout: Body Hooks",
+        instructions: "Alternating body hooks, non-stop. Stay low and rip.",
+        combos: ["3body-4body (Body Hook-Body Rear Hook)"],
+        tips: ["Stay low the entire round", "Last push, don't quit"],
       },
       {
         type: "cooldown",
         durationSec: 120,
         restSec: 0,
         title: "Cooldown",
-        instructions: "Easy movement, light shadow boxing. Let your body recover.",
+        instructions: "Easy movement, light shadow boxing. You survived Kronk.",
         tips: ["You earned this", "Stretch everything"],
       },
     ],
@@ -1255,10 +1252,10 @@ export const workouts: Workout[] = [
     title: "Mexican Style Bag Work",
     subtitle: "Relentless pressure and body attack",
     description:
-      "Canelo. Chavez. Barrera. Mexican boxing is built on relentless pressure, devastating body work, and never giving your opponent a moment to breathe. This workout pushes you with 5-6 punch power combos, constant level changes, and a double burnout finale.",
+      "Canelo. Chavez. Barrera. Mexican boxing is built on relentless pressure, devastating body work, head movement, and never giving your opponent a moment to breathe.",
     level: "advanced",
     goal: "power",
-    durationMin: 40,
+    durationMin: 41,
     equipment: ["Heavy bag"],
     isFree: true,
     rounds: [
@@ -1274,10 +1271,9 @@ export const workouts: Workout[] = [
       {
         type: "bagwork",
         durationSec: 180,
-        restSec: 60,
+        restSec: 90,
         title: "Pressure Straights",
-        instructions:
-          "Step forward with every combo. Close distance. Make them feel you.",
+        instructions: "Step forward with every combo. Close distance. Make them feel you.",
         combos: [
           "1-2-1-2 (Jab-Cross-Jab-Cross)",
           "1-1-2-3 (Double Jab-Cross-Hook)",
@@ -1288,7 +1284,7 @@ export const workouts: Workout[] = [
       {
         type: "bagwork",
         durationSec: 180,
-        restSec: 60,
+        restSec: 90,
         title: "Body Ripping",
         instructions: "Go to the body. Break them down. Body shots end fights.",
         combos: [
@@ -1302,27 +1298,35 @@ export const workouts: Workout[] = [
       {
         type: "bagwork",
         durationSec: 180,
-        restSec: 60,
+        restSec: 90,
+        title: "Canelo's Head Movement",
+        instructions: "Slip the jab, counter to the body. Roll under the hook, come up with power. This is what makes Mexican fighters elite.",
+        combos: [
+          "Slip-2-3body (Slip-Cross-Body Hook)",
+          "Roll-3-2-3body (Roll-Hook-Cross-Body Hook)",
+          "Slip-2-3body-3-2 (Slip-Cross-Body Hook-Head Hook-Cross)",
+        ],
+        tips: ["Defense sets up the body attack", "Canelo slips then goes to the body every time"],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 90,
         title: "Level Change Warfare",
-        instructions:
-          "Head, body, head. Keep switching levels. They can't guard what they can't predict.",
+        instructions: "Head, body, head. Keep switching levels. They can't guard what they can't predict.",
         combos: [
           "1-2-3body-3-2 (Jab-Cross-Body Hook-Head Hook-Cross)",
           "1-2-3body-2-3 (Jab-Cross-Body Hook-Cross-Head Hook)",
           "3body-3-2-3body (Body Hook-Head Hook-Cross-Body Hook)",
         ],
-        tips: [
-          "The level change is the weapon, the punches are the delivery",
-          "Fast down, fast up",
-        ],
+        tips: ["The level change is the weapon", "Fast down, fast up"],
       },
       {
         type: "bagwork",
         durationSec: 180,
-        restSec: 60,
+        restSec: 90,
         title: "Mexican Combinations",
-        instructions:
-          "Long power combos. Walk them down. Don't stop punching.",
+        instructions: "Long power combos. Walk them down. Don't stop punching.",
         combos: [
           "1-2-3-2-3-2 (Jab-Cross-Hook-Cross-Hook-Cross)",
           "1-6-3-2-3 (Jab-Uppercut-Hook-Cross-Hook)",
@@ -1333,37 +1337,44 @@ export const workouts: Workout[] = [
       {
         type: "bagwork",
         durationSec: 180,
+        restSec: 90,
+        title: "Pressure with Defense",
+        instructions: "Throw your combo, move your head, fire again. Canelo never throws without head movement after.",
+        combos: [
+          "1-2-3-Slip-2-3body (Jab-Cross-Hook-Slip-Cross-Body Hook)",
+          "1-2-3body-Roll-3-2 (Jab-Cross-Body Hook-Roll-Hook-Cross)",
+          "1-2-3-2-Slip-2 (Jab-Cross-Hook-Cross-Slip-Cross)",
+        ],
+        tips: ["Head movement between every combo", "The defense keeps you safe while you pressure"],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
         restSec: 60,
         title: "The Full Mexican",
-        instructions:
-          "Everything together. Long combos with body work mixed in. Break the bag.",
+        instructions: "Everything together. Long combos, body work, head movement. Break the bag.",
         combos: [
           "1-2-3body-2-3-2 (Jab-Cross-Body Hook-Cross-Head Hook-Cross)",
-          "1-2-5body-2-3-2 (Jab-Cross-Body Uppercut-Cross-Hook-Cross)",
+          "Slip-2-3body-3-2-3 (Slip-Cross-Body Hook-Head Hook-Cross-Hook)",
           "1-6-3body-3-2 (Jab-Uppercut-Body Hook-Head Hook-Cross)",
         ],
-        tips: [
-          "This is where you earn the Mexican style",
-          "Don't slow down on the body shots",
-        ],
+        tips: ["This is where you earn the Mexican style", "Don't slow down on the body shots"],
       },
       {
         type: "conditioning",
         durationSec: 90,
         restSec: 20,
         title: "Burnout: Jab-Cross",
-        instructions:
-          "Non-stop 1-2s. Short, fast, don't stop. Breathe through it.",
+        instructions: "Non-stop 1-2s. Short, fast, don't stop. Breathe through it.",
         combos: ["1-2 (Jab-Cross)"],
         tips: ["Short punches, don't overextend", "Your arms will burn, keep going"],
       },
       {
         type: "conditioning",
         durationSec: 90,
-        restSec: 60,
+        restSec: 90,
         title: "Burnout: Body Hooks",
-        instructions:
-          "Alternating body hooks, non-stop. Stay low and rip the body.",
+        instructions: "Alternating body hooks, non-stop. Stay low and rip the body.",
         combos: ["3body-4body (Body Hook-Body Rear Hook)"],
         tips: ["Stay low the entire round", "This is the hardest part, don't quit"],
       },
@@ -1382,10 +1393,10 @@ export const workouts: Workout[] = [
     title: "Philly Shell Rounds",
     subtitle: "Mayweather's defensive mastery",
     description:
-      "Make them miss. Make them pay. This advanced defensive workout teaches you to slip, roll, pull, and counter on the heavy bag with long counter combinations. Inspired by Floyd Mayweather and James Toney - the most frustrating fighters to face.",
+      "Make them miss. Make them pay. Slip, roll, pull, and counter on the heavy bag with long counter combinations. Inspired by Floyd Mayweather and James Toney.",
     level: "advanced",
     goal: "technique",
-    durationMin: 40,
+    durationMin: 38,
     equipment: ["Heavy bag"],
     isFree: true,
     rounds: [
@@ -1394,127 +1405,110 @@ export const workouts: Workout[] = [
         durationSec: 120,
         restSec: 60,
         title: "Rhythm and Movement",
-        instructions:
-          "Light jabs with head movement between every punch. Find your rhythm.",
+        instructions: "Light jabs with head movement between every punch. Find your rhythm.",
         combos: ["1 (Jab)", "1-2 (Jab-Cross)", "1-2-3 (Jab-Cross-Hook)"],
         tips: ["Move your head after every combo", "Stay loose and relaxed"],
       },
       {
         type: "bagwork",
         durationSec: 180,
-        restSec: 60,
+        restSec: 90,
         title: "Slip and Counter",
-        instructions:
-          "Slip the punch, fire back with a full counter combination.",
+        instructions: "Slip the punch, fire back with a full counter combination.",
         combos: [
           "Slip-2-3 (Slip-Cross-Hook)",
           "Slip-2-3-2 (Slip-Cross-Hook-Cross)",
           "Slip-3-2-3 (Slip-Hook-Cross-Hook)",
         ],
-        tips: [
-          "Slip with your whole body, not just your neck",
-          "The counter should be immediate",
-        ],
+        tips: ["Slip with your whole body, not just your neck", "The counter should be immediate"],
       },
       {
         type: "bagwork",
         durationSec: 180,
-        restSec: 60,
+        restSec: 90,
         title: "Roll and Punish",
-        instructions:
-          "Roll under the hook, come up throwing 3-4 punch counters.",
+        instructions: "Roll under the hook, come up throwing 3-4 punch counters.",
         combos: [
           "Roll-3-2-3 (Roll-Hook-Cross-Hook)",
           "Roll-6-3-2 (Roll-Uppercut-Hook-Cross)",
           "Roll-3-2-3-2 (Roll-Hook-Cross-Hook-Cross)",
         ],
-        tips: [
-          "Bend your knees, load your legs like a spring",
-          "Come up with everything",
-        ],
+        tips: ["Bend your knees, load your legs like a spring", "Come up with everything"],
       },
       {
         type: "bagwork",
         durationSec: 180,
-        restSec: 60,
+        restSec: 90,
         title: "The Pull Counter",
-        instructions:
-          "Mayweather's signature. Pull back, let it miss, fire the cross straight back.",
+        instructions: "Mayweather's signature. Pull back, let it miss, fire the cross straight back.",
         combos: [
           "Pull-2-3 (Pull-Cross-Hook)",
           "Pull-2-3-2 (Pull-Cross-Hook-Cross)",
           "Pull-2-3body-2 (Pull-Cross-Body Hook-Cross)",
         ],
-        tips: [
-          "Pull with your hips",
-          "The cross goes right back down the center line",
-          "Add a body shot to keep them guessing",
-        ],
+        tips: ["Pull with your hips", "The cross goes right back down the center line"],
       },
       {
         type: "bagwork",
         durationSec: 180,
-        restSec: 60,
+        restSec: 90,
+        title: "Body Counter Work",
+        instructions: "Defend, then attack the body. The defense opens up the body shot.",
+        combos: [
+          "Slip-2-3body-3 (Slip-Cross-Body Hook-Head Hook)",
+          "Roll-3body-3-2 (Roll-Body Hook-Head Hook-Cross)",
+          "Pull-2-3body-3-2 (Pull-Cross-Body Hook-Head Hook-Cross)",
+        ],
+        tips: ["Defense into body shots is Mayweather's hidden weapon", "Go low after every defensive move"],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 90,
         title: "Offense Into Defense Into Offense",
-        instructions:
-          "Throw a combo, defend the return, counter immediately. This is how real fights flow.",
+        instructions: "Throw a combo, defend the return, counter immediately. This is how real fights flow.",
         combos: [
           "1-2-Slip-2-3-2 (Jab-Cross-Slip-Cross-Hook-Cross)",
           "1-2-3-Roll-3-2 (Jab-Cross-Hook-Roll-Hook-Cross)",
           "1-2-Pull-2-3 (Jab-Cross-Pull-Cross-Hook)",
         ],
-        tips: [
-          "The fight doesn't stop after your combo",
-          "Defense is just the bridge between your offense",
-        ],
+        tips: ["The fight doesn't stop after your combo", "Defense is the bridge between your offense"],
       },
       {
         type: "bagwork",
         durationSec: 180,
-        restSec: 60,
+        restSec: 90,
         title: "Advanced Counter Combinations",
-        instructions:
-          "Long counter sequences. Make them pay for every punch they throw.",
+        instructions: "Long counter sequences. Make them pay for every punch they throw.",
         combos: [
           "Slip-2-3-2-3 (Slip-Cross-Hook-Cross-Hook)",
           "Roll-6-3-2-3 (Roll-Uppercut-Hook-Cross-Hook)",
           "Pull-2-3body-3-2 (Pull-Cross-Body Hook-Head Hook-Cross)",
         ],
-        tips: [
-          "5-punch counters separate good fighters from great ones",
-          "Stay balanced through the whole sequence",
-        ],
+        tips: ["5-punch counters separate good fighters from great ones", "Stay balanced through the whole sequence"],
       },
       {
         type: "bagwork",
         durationSec: 180,
         restSec: 60,
         title: "Full Philly Shell Flow",
-        instructions:
-          "Everything together. Slip, roll, pull, counter, body shots. The complete defensive fighter.",
+        instructions: "Everything together. Slip, roll, pull, counter, body shots. The complete defensive fighter.",
         combos: [
           "1-2-Slip-2-3body-3-2 (Jab-Cross-Slip-Cross-Body Hook-Head Hook-Cross)",
           "Slip-2-3-Roll-3-2 (Slip-Cross-Hook-Roll-Hook-Cross)",
           "Pull-2-3-2-3 (Pull-Cross-Hook-Cross-Hook)",
           "Roll-6-3-2-3-2 (Roll-Uppercut-Hook-Cross-Hook-Cross)",
         ],
-        tips: [
-          "This round is the test",
-          "Make them miss, make them pay, make them quit",
-        ],
+        tips: ["This round is the test", "Make them miss, make them pay, make them quit"],
       },
       {
         type: "conditioning",
         durationSec: 90,
         restSec: 60,
         title: "Counter Burnout",
-        instructions:
-          "Non-stop slip and counter. Slip, cross, hook. Repeat. Don't stop.",
+        instructions: "Non-stop slip and counter. Slip, cross, hook. Repeat. Don't stop.",
         combos: ["Slip-2-3 (Slip-Cross-Hook)"],
-        tips: [
-          "Keep your head moving even when tired",
-          "Speed and precision, not power",
-        ],
+        tips: ["Keep your head moving even when tired", "Speed and precision, not power"],
       },
       {
         type: "cooldown",
@@ -1535,7 +1529,7 @@ export const workouts: Workout[] = [
       "The highest level of boxing: make them miss and make them pay. This workshop teaches advanced defensive techniques, counter punching, and the art of hitting without getting hit. Pure boxing IQ.",
     level: "advanced",
     goal: "technique",
-    durationMin: 35,
+    durationMin: 28,
     equipment: [],
     isFree: true,
     rounds: [
@@ -1656,7 +1650,7 @@ export const workouts: Workout[] = [
       "The complete fighter's workout. Jump rope, heavy bag, shadow boxing, and conditioning. This is what professional boxers do in training camp. Put it all together and train like a pro.",
     level: "advanced",
     goal: "general",
-    durationMin: 50,
+    durationMin: 36,
     equipment: ["Heavy bag", "Jump rope"],
     isFree: true,
     rounds: [
