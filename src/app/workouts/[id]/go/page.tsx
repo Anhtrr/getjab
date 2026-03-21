@@ -244,6 +244,35 @@ export default function WorkoutGoPage() {
     }
   }, []);
 
+  // Estimate punch count for conditioning rounds (combo fires once, but user repeats it)
+  const estimateConditioningPunches = useCallback((round: { type: string; durationSec: number; combos?: string[] }) => {
+    if (round.type !== "conditioning" || !round.combos) return;
+
+    // Parse the combo to count punches (excluding defense)
+    const combo = round.combos[0]; // Conditioning rounds have 1 combo
+    if (!combo) return;
+
+    const punchMatch = combo.match(/\d+/g) || [];
+    const punchCount = punchMatch.length;
+
+    // Estimate: ~1 combo per second for conditioning rounds
+    const estimatedCombos = round.durationSec;
+    const estimatedPunches = estimatedCombos * punchCount;
+
+    // Add to the punch count (the initial callout already counted once)
+    const counts = punchCountRef.current;
+    counts.total += estimatedPunches - punchCount; // subtract the already-counted first callout
+
+    // Estimate by type (rough distribution)
+    for (const num of punchMatch) {
+      const punchNum = parseInt(num, 10);
+      if (punchNum >= 1 && punchNum <= 6) {
+        const type = ["jab", "cross", "hook", "hook", "upper", "upper"][punchNum - 1];
+        counts.byType[type] = (counts.byType[type] || 0) + (estimatedCombos - 1);
+      }
+    }
+  }, []);
+
   const tick = useCallback(() => {
     if (stateRef.current !== "running" || !workout) return;
 
@@ -281,6 +310,9 @@ export default function WorkoutGoPage() {
         const roundIdx = currentRoundIndexRef.current;
         const round = workout.rounds[roundIdx];
         setRoundsCompleted((p) => p + 1);
+
+        // Estimate punch count for conditioning rounds
+        estimateConditioningPunches(round);
 
         if (roundIdx >= workout.rounds.length - 1) {
           setState("complete");
@@ -331,7 +363,7 @@ export default function WorkoutGoPage() {
       warningFiredRef.current = false;
       return;
     }
-  }, [workout, audio, clearTimer, announceRound]);
+  }, [workout, audio, clearTimer, announceRound, estimateConditioningPunches]);
 
   const beginRound1 = useCallback(() => {
     if (!workout) return;
