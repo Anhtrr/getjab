@@ -220,10 +220,9 @@ export default function WorkoutGoPage() {
   }, []);
 
   const currentRoundForCallout = workout?.rounds[currentRoundIndex];
-  const isConditioning = currentRoundForCallout?.type === "conditioning";
   const { calloutState, hasCallableCombos } =
     useComboCallout(
-      isConditioning ? undefined : currentRoundForCallout?.combos,
+      currentRoundForCallout?.combos,
       state === "running" && !isResting,
       secondsLeft,
       currentRoundForCallout?.durationSec ?? 0,

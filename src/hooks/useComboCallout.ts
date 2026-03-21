@@ -54,13 +54,12 @@ function getInterval(pacing: CalloutPacing, punchCount: number, elapsedRatio: nu
 }
 
 function getHold(pacing: CalloutPacing, punchCount: number): number {
-  const base =
+  const basePerPunch =
     pacing === "progressive"
-      ? PACING_CONFIG.medium.hold
-      : PACING_CONFIG[pacing].hold;
-  // Extend hold for long combos (300ms per punch beyond 4)
-  const extra = Math.max(0, punchCount - 4) * 0.3;
-  return base + extra;
+      ? 0.5
+      : pacing === "slow" ? 0.7 : pacing === "medium" ? 0.5 : 0.4;
+  // Hold scales with punch count so cards stay visible until voice finishes
+  return 0.8 + basePerPunch * punchCount;
 }
 
 function getEndBuffer(pacing: CalloutPacing): number {
