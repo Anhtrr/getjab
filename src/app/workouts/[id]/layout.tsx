@@ -4,15 +4,17 @@ export function generateStaticParams() {
     { id: "beginner-bag-work" },
     { id: "shadow-boxing-fundamentals" },
     { id: "quick-cardio-boxing" },
-    { id: "power-punching" },
-    { id: "speed-precision" },
-    { id: "defensive-boxing" },
-    { id: "body-shot-specialist" },
-    { id: "advanced-combo-flow" },
+    { id: "sweet-science-rounds" },
     { id: "fight-conditioning" },
+    { id: "advanced-combo-flow" },
+    { id: "speed-precision" },
+    { id: "body-shot-specialist" },
+    { id: "anhs-heavy-bag" },
+    { id: "kronk-gym-rounds" },
+    { id: "power-punching" },
+    { id: "philly-shell-rounds" },
     { id: "counter-punching-workshop" },
     { id: "full-camp-round" },
-    { id: "anhs-heavy-bag" },
   ];
 }
 
