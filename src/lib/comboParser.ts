@@ -16,9 +16,9 @@ const DEFENSE_REGISTRY: Record<
   string,
   { name: string; shortName: string; hand: "lead" | "rear"; type: "defense" }
 > = {
-  Slip: { name: "Slip", shortName: "SLIP", hand: "lead", type: "defense" },
-  Roll: { name: "Roll", shortName: "ROLL", hand: "lead", type: "defense" },
-  Pull: { name: "Pull", shortName: "PULL", hand: "lead", type: "defense" },
+  SLIP: { name: "Slip", shortName: "SLIP", hand: "lead", type: "defense" },
+  ROLL: { name: "Roll", shortName: "ROLL", hand: "lead", type: "defense" },
+  PULL: { name: "Pull", shortName: "PULL", hand: "lead", type: "defense" },
 };
 
 /**

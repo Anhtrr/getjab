@@ -14,35 +14,24 @@ const levels = [
   { value: "advanced", label: "Advanced" },
 ];
 
-const goals = [
-  { value: "all", label: "All Goals" },
-  { value: "technique", label: "Technique" },
-  { value: "power", label: "Power" },
-  { value: "conditioning", label: "Conditioning" },
-  { value: "speed", label: "Speed" },
-  { value: "general", label: "General" },
-];
+const FILTER_KEY = "jab_workout_level_filter";
 
-const FILTER_KEY = "jab_workout_filters";
-
-function loadFilters(): { level: string; goal: string } {
+function loadFilter(): string {
   try {
     const raw = sessionStorage.getItem(FILTER_KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) return raw;
   } catch {}
-  return { level: "all", goal: "all" };
+  return "all";
 }
 
-function saveFilters(level: string, goal: string) {
+function saveFilter(level: string) {
   try {
-    sessionStorage.setItem(FILTER_KEY, JSON.stringify({ level, goal }));
+    sessionStorage.setItem(FILTER_KEY, level);
   } catch {}
 }
 
 export default function WorkoutsPage() {
-  const saved = loadFilters();
-  const [levelFilter, setLevelFilter] = useState(saved.level);
-  const [goalFilter, setGoalFilter] = useState(saved.goal);
+  const [levelFilter, setLevelFilter] = useState(loadFilter());
   const { logs } = useProgress();
 
   const completionMap = useMemo(() => {
@@ -61,12 +50,11 @@ export default function WorkoutsPage() {
   }, [logs]);
 
   useEffect(() => {
-    saveFilters(levelFilter, goalFilter);
-  }, [levelFilter, goalFilter]);
+    saveFilter(levelFilter);
+  }, [levelFilter]);
 
   const filtered = workouts.filter((w) => {
     if (levelFilter !== "all" && w.level !== levelFilter) return false;
-    if (goalFilter !== "all" && w.goal !== goalFilter) return false;
     return true;
   });
 
@@ -92,25 +80,7 @@ export default function WorkoutsPage() {
         </div>
       </div>
 
-      <div className="mb-6">
-        <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-2">
-          {goals.map((g) => (
-            <button
-              key={g.value}
-              onClick={() => setGoalFilter(g.value)}
-              className={`text-sm px-3 py-1.5 rounded-full whitespace-nowrap transition-colors ${
-                goalFilter === g.value
-                  ? "bg-gradient-to-r from-[#00e5ff] to-[#0090ff] text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
-                  : "bg-surface border border-border text-muted hover:text-foreground shadow-[0_2px_8px_rgba(0,0,0,0.3)] hover:border-[#00e5ff]/20"
-              }`}
-            >
-              {g.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="space-y-3 stagger-children">
+      <div className="space-y-3 stagger-children mt-6">
         {filtered.map((workout) => (
           <div key={workout.id} className="animate-fade-in-up">
             <WorkoutCard

@@ -267,7 +267,7 @@ export function speakCombo(
   }
 
   clipPlaybackActive = true;
-  const GAP_MS = 150;
+  const GAP_MS = 60;
 
   if (isNative && nativeAvailable) {
     // Native: play through AVAudioPlayer (ducks background music)
