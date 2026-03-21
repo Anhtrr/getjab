@@ -220,6 +220,7 @@ export default function WorkoutGoPage() {
   }, []);
 
   const currentRoundForCallout = workout?.rounds[currentRoundIndex];
+  const isConditioning = currentRoundForCallout?.type === "conditioning";
   const { calloutState, hasCallableCombos } =
     useComboCallout(
       currentRoundForCallout?.combos,
@@ -228,6 +229,7 @@ export default function WorkoutGoPage() {
       currentRoundForCallout?.durationSec ?? 0,
       state === "paused" || isResting,
       handleComboFired,
+      isConditioning,
     );
 
   // Announce round title via TTS after bell
@@ -911,7 +913,7 @@ export default function WorkoutGoPage() {
       </div>
 
       {/* Main content: timer + combos fill remaining space */}
-      <div className="flex-1 flex flex-col items-center justify-start pt-4 gap-2 px-4 overflow-hidden">
+      <div className="flex-1 flex flex-col items-center justify-start pt-8 gap-2 px-4 overflow-hidden">
         {/* Countdown (triple-tap to skip) */}
         <div className="relative flex-shrink-0" onClick={handleCountdownTap}>
           <div

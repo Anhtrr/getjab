@@ -51,10 +51,10 @@ interface CardSize {
 }
 
 function getCardSize(punchCount: number): CardSize {
-  if (punchCount <= 2) return { w: "clamp(160px, 20vw, 240px)", h: "clamp(180px, 22vw, 260px)", numText: "text-6xl", nameText: "text-base" };
-  if (punchCount === 3) return { w: "clamp(130px, 17vw, 210px)", h: "clamp(150px, 19vw, 230px)", numText: "text-5xl", nameText: "text-sm" };
-  if (punchCount === 4) return { w: "clamp(110px, 14vw, 190px)", h: "clamp(130px, 16vw, 210px)", numText: "text-4xl", nameText: "text-xs" };
-  return { w: "clamp(95px, 13vw, 170px)", h: "clamp(115px, 15vw, 190px)", numText: "text-3xl", nameText: "text-[10px]" };
+  if (punchCount <= 2) return { w: "clamp(160px, 22vw, 260px)", h: "clamp(190px, 24vh, 280px)", numText: "text-6xl", nameText: "text-base" };
+  if (punchCount === 3) return { w: "clamp(130px, 18vw, 220px)", h: "clamp(160px, 20vh, 250px)", numText: "text-5xl", nameText: "text-sm" };
+  if (punchCount === 4) return { w: "clamp(110px, 15vw, 200px)", h: "clamp(140px, 17vh, 220px)", numText: "text-4xl", nameText: "text-xs" };
+  return { w: "clamp(95px, 13vw, 180px)", h: "clamp(120px, 15vh, 200px)", numText: "text-3xl", nameText: "text-[10px]" };
 }
 
 // ─── Punch Card ───

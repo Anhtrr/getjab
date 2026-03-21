@@ -74,6 +74,7 @@ export function useComboCallout(
   roundDurationSec: number,
   isPaused: boolean,
   onComboFired?: (combo: ParsedCombo) => void,
+  isConditioning?: boolean,
 ) {
   const [calloutState, setCalloutState] = useState<CalloutState>({
     activeCombo: null,
@@ -88,6 +89,7 @@ export function useComboCallout(
   const callableCombosRef = useRef<ParsedCombo[]>([]);
   const rotationIndexRef = useRef(0);
   const nextCalloutAtRef = useRef(FIRST_CALLOUT_AT);
+  const conditioningFiredRef = useRef(false);
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const phaseRef = useRef<CalloutPhase>("idle");
   const settingsRef = useRef(settings);
@@ -132,6 +134,7 @@ export function useComboCallout(
     callableCombosRef.current = getCallableCombos(parsed);
     rotationIndexRef.current = 0;
     nextCalloutAtRef.current = FIRST_CALLOUT_AT;
+    conditioningFiredRef.current = false;
     resetToIdle();
     setCalloutState((prev) => ({
       ...prev,
@@ -143,7 +146,7 @@ export function useComboCallout(
 
   // Fire a callout: enter → hold → exit lifecycle
   // CSS animation-delay handles the per-punch stagger - no JS timeouts per punch
-  const fireCallout = useCallback((combo: ParsedCombo) => {
+  const fireCallout = useCallback((combo: ParsedCombo, persistent = false) => {
     clearAllTimeouts();
     const s = settingsRef.current;
 
@@ -165,7 +168,6 @@ export function useComboCallout(
 
     // Wait for CSS stagger + slam animation to finish before holding
     const enterDone = (combo.punches.length - 1) * STAGGER_MS + SLAM_DURATION_MS;
-    const holdDuration = getHold(s.pacing, combo.punches.length) * 1000;
 
     // Phase 2: HOLDING - all punches visible, subtle breathe animation
     const holdTimeout = setTimeout(() => {
@@ -176,6 +178,11 @@ export function useComboCallout(
       }));
     }, enterDone);
     timeoutsRef.current.push(holdTimeout);
+
+    // For conditioning rounds, keep cards visible permanently (no exit/idle)
+    if (persistent) return;
+
+    const holdDuration = getHold(s.pacing, combo.punches.length) * 1000;
 
     // Phase 3: EXITING - fade out
     const exitTimeout = setTimeout(() => {
@@ -206,6 +213,16 @@ export function useComboCallout(
     if (!isRunning || isPaused) return;
     const callable = callableCombosRef.current;
     if (callable.length === 0) return;
+
+    // Conditioning rounds: fire first combo once, keep cards visible
+    if (isConditioning && !conditioningFiredRef.current) {
+      conditioningFiredRef.current = true;
+      const combo = callable[0];
+      setCalloutState((prev) => ({ ...prev, comboIndex: 1 }));
+      fireCallout(combo, true);
+      return;
+    }
+    if (isConditioning) return; // Already fired, don't cycle
 
     const elapsed = roundDurationSec - secondsLeft;
     const s = settingsRef.current;
