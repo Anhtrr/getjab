@@ -2,15 +2,15 @@ import type { Workout } from "@/lib/types";
 import { getCustomWorkout } from "@/lib/customWorkouts";
 
 export const workouts: Workout[] = [
-  // === FREE WORKOUTS ===
+  // === BEGINNER LEVEL (4 workouts, all free) ===
   {
     id: "first-boxing-workout",
-    title: "Your First Boxing Workout",
-    subtitle: "Learn the basics",
+    title: "Boxing 101",
+    subtitle: "Learn the fundamentals",
     description:
-      "A guided introduction to boxing. Learn your stance, the jab, the cross, and put it all together in shadow boxing rounds.",
+      "Master the basics of boxing with proper form and technique. This workout introduces you to the core punches and movement patterns that form the foundation of all boxing training.",
     level: "beginner",
-    goal: "technique",
+    goal: "general",
     durationMin: 20,
     equipment: [],
     isFree: true,
@@ -115,10 +115,10 @@ export const workouts: Workout[] = [
   },
   {
     id: "beginner-bag-work",
-    title: "Beginner Bag Work",
-    subtitle: "Basic combos on the bag",
+    title: "First Rounds on the Bag",
+    subtitle: "Basic combos on the heavy bag",
     description:
-      "Your first heavy bag session. Learn to hit the bag with proper form using basic combinations.",
+      "Take your skills to the heavy bag. Learn to transfer power from your body to the bag while maintaining balance and form. Your first taste of real impact training.",
     level: "beginner",
     goal: "general",
     durationMin: 30,
@@ -209,10 +209,10 @@ export const workouts: Workout[] = [
   },
   {
     id: "shadow-boxing-fundamentals",
-    title: "Shadow Boxing Fundamentals",
-    subtitle: "Footwork + basic combos",
+    title: "Shadow Work",
+    subtitle: "Footwork and shadow boxing basics",
     description:
-      "Build your shadow boxing skills with a focus on footwork, defense, and clean combinations. No equipment needed.",
+      "Shadow boxing is where champions are refined. Work on movement, timing, and visualization without the bag. This is your mental and technical laboratory.",
     level: "beginner",
     goal: "technique",
     durationMin: 25,
@@ -302,10 +302,10 @@ export const workouts: Workout[] = [
   },
   {
     id: "quick-cardio-boxing",
-    title: "Quick Cardio Boxing",
-    subtitle: "Fast-paced fitness boxing",
+    title: "Cardio Blitz",
+    subtitle: "High energy boxing cardio",
     description:
-      "A high-energy boxing cardio session that'll get your heart pumping. No equipment needed - just you and your determination.",
+      "Short, intense, and effective. This high-energy workout will get your heart pumping and burn calories fast. Perfect for when you're short on time but need to break a sweat.",
     level: "beginner",
     goal: "conditioning",
     durationMin: 20,
@@ -388,163 +388,444 @@ export const workouts: Workout[] = [
     ],
   },
 
-  // === PAID WORKOUTS ===
+  // === INTERMEDIATE LEVEL (5 workouts) ===
   {
-    id: "power-punching",
-    title: "Power Punching",
-    subtitle: "Hooks, uppercuts & power combos",
+    id: "sweet-science-rounds",
+    title: "Sweet Science Rounds",
+    subtitle: "Progressive technique building on the bag",
     description:
-      "Develop devastating power in all your punches. This workout focuses on proper mechanics for maximum impact on the heavy bag.",
+      "Master the art of boxing through progressive combo building. Each round adds complexity, taking you from basic combinations to advanced 4-punch sequences with body work. Learn to punch in bunches and move like a boxer.",
     level: "intermediate",
-    goal: "power",
+    goal: "technique",
     durationMin: 35,
     equipment: ["Heavy bag"],
-    isFree: false,
+    isFree: true,
     rounds: [
       {
         type: "warmup",
-        durationSec: 180,
+        durationSec: 120,
         restSec: 60,
-        title: "Shadow Boxing Warm Up",
-        instructions: "Light shadow boxing. All punches. Focus on rotation and footwork.",
-        tips: ["Loosen up your hips", "Warm up your shoulders with arm circles"],
-      },
-      {
-        type: "bagwork",
-        durationSec: 180,
-        restSec: 60,
-        title: "Power Jab-Cross",
-        instructions:
-          "Heavy 1-2s on the bag. Sit down on every punch. Full hip rotation on the cross.",
-        combos: ["1-2 (Power Jab-Cross)"],
-        tips: ["Drive off your back foot", "Exhale sharply on impact"],
-      },
-      {
-        type: "bagwork",
-        durationSec: 180,
-        restSec: 60,
-        title: "Lead Hook",
-        instructions:
-          "Practice the lead hook on the bag. Pivot your lead foot, rotate your torso. Short and tight.",
-        combos: ["3 (Lead Hook)", "1-2-3 (Jab-Cross-Hook)"],
+        title: "Light Warmup",
+        instructions: "Light jabs and movement. Get loose, find your rhythm.",
+        combos: ["1 (Jab)", "1-1 (Double Jab)"],
         tips: [
-          "Elbow stays at 90 degrees",
-          "Turn your whole body, not just your arm",
+          "Stay light on your feet",
+          "Don't overextend yet, just warm up",
         ],
       },
       {
         type: "bagwork",
         durationSec: 180,
         restSec: 60,
-        title: "Rear Uppercut",
+        title: "The 1-2 Foundation",
         instructions:
-          "Practice the rear uppercut. Dip slightly, drive upward from your legs. Short range punch.",
-        combos: ["6 (Rear Uppercut)", "1-2-6 (Jab-Cross-Uppercut)"],
-        tips: ["Bend your knees before the uppercut", "Palm faces you on the uppercut"],
+          "The jab-cross and its variations. This is the foundation of all boxing offense.",
+        combos: [
+          "1-2 (Jab-Cross)",
+          "1-1-2 (Double Jab-Cross)",
+          "2-1 (Cross-Jab)",
+        ],
+        tips: [
+          "Rotate your hips on the cross",
+          "Bring your hands back to guard after every punch",
+        ],
       },
       {
         type: "bagwork",
         durationSec: 180,
         restSec: 60,
-        title: "Power Combos",
-        instructions:
-          "Big combinations with power on every shot. Take your time between combos - quality over quantity.",
-        combos: ["1-2-3-2 (Jab-Cross-Hook-Cross)", "1-6-3-2 (Jab-Uppercut-Hook-Cross)"],
-        tips: ["Each punch should have bad intentions", "Reset fully between combos"],
+        title: "Adding the Hook",
+        instructions: "Introduce the lead hook into your combinations.",
+        combos: [
+          "1-2-3 (Jab-Cross-Hook)",
+          "2-3 (Cross-Hook)",
+          "3-2 (Hook-Cross)",
+        ],
+        tips: [
+          "Turn your whole body into the hook",
+          "Keep a tight arc, don't swing wide",
+        ],
       },
       {
         type: "bagwork",
         durationSec: 180,
         restSec: 60,
-        title: "Body Shots",
+        title: "4-Punch Combos",
+        instructions: "Extend your combinations. Learn to punch in bunches.",
+        combos: [
+          "1-2-3-2 (Jab-Cross-Hook-Cross)",
+          "1-2-5-2 (Jab-Cross-Uppercut-Cross)",
+        ],
+        tips: [
+          "Stay balanced through all 4 punches",
+          "The last punch should be the hardest",
+        ],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 60,
+        title: "Body Work",
         instructions:
-          "All punches to the body. Bend your knees to get low. Hooks and uppercuts to the body area of the bag.",
-        combos: ["3-body (Body Hook)", "6-body (Body Uppercut)"],
-        tips: ["Level change with your legs, not your back", "Dig into the bag"],
+          "Go downstairs. Learn to attack the body without losing balance.",
+        combos: [
+          "1-2-3body (Jab-Cross-Body Hook)",
+          "1-2-3body-2 (Jab-Cross-Body Hook-Cross)",
+        ],
+        tips: [
+          "Bend your knees to go low, don't lean",
+          "Come back up with authority",
+        ],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 60,
+        title: "Mix Everything",
+        instructions:
+          "Combine head shots, body shots, and movement. This is where it all comes together.",
+        combos: [
+          "1-2-3-2 (Jab-Cross-Hook-Cross)",
+          "1-2-3body-2 (Jab-Cross-Body Hook-Cross)",
+          "2-3-2 (Cross-Hook-Cross)",
+        ],
+        tips: [
+          "Punch in bunches then reset",
+          "Move your feet between combos",
+        ],
+      },
+      {
+        type: "conditioning",
+        durationSec: 120,
+        restSec: 60,
+        title: "Non-Stop 1-2s",
+        instructions:
+          "Non-stop jab-cross for 2 minutes. Short, fast punches. This is your conditioning test.",
+        combos: ["1-2 (Jab-Cross)"],
+        tips: [
+          "Don't overextend, keep it short",
+          "Breathe on every punch",
+        ],
+      },
+      {
+        type: "cooldown",
+        durationSec: 120,
+        restSec: 0,
+        title: "Cooldown",
+        instructions: "Light movement, easy jabs. Cool down and recover.",
+        tips: [
+          "Let your heart rate come down",
+          "Shake out your arms",
+        ],
+      },
+    ],
+  },
+  {
+    id: "fight-conditioning",
+    title: "Championship Rounds",
+    subtitle: "Fight simulation conditioning",
+    description:
+      "Simulate the pace of a real fight. Rounds alternate between high-output offense and active recovery, teaching you to manage your energy across a full session. Build the cardio to go the distance.",
+    level: "intermediate",
+    goal: "conditioning",
+    durationMin: 35,
+    equipment: ["Heavy bag"],
+    isFree: true,
+    rounds: [
+      {
+        type: "warmup",
+        durationSec: 180,
+        restSec: 30,
+        title: "Shadow Boxing Warm Up",
+        instructions:
+          "Light shadow boxing. All punches. Focus on rhythm and breathing.",
+        tips: ["Stay loose", "Find your breathing pattern"],
+      },
+      {
+        type: "conditioning",
+        durationSec: 180,
+        restSec: 60,
+        title: "Round 1: High Pace",
+        instructions:
+          "High output bag work. Throw 3-punch combos non-stop. Fight pace.",
+        combos: ["1-2-3 (Jab-Cross-Hook)", "1-1-2 (Double Jab-Cross)"],
+        tips: ["Push the pace", "Constant output"],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 60,
+        title: "Round 2: Active Recovery",
+        instructions:
+          "Moderate pace. Move around the bag, work on technique. Recover while staying active.",
+        combos: ["1-2 (Jab-Cross)", "2-3 (Cross-Hook)"],
+        tips: ["Control your breathing", "Stay technical"],
+      },
+      {
+        type: "conditioning",
+        durationSec: 180,
+        restSec: 60,
+        title: "Round 3: Power Combos",
+        instructions:
+          "4-punch power combinations. Every punch with bad intentions.",
+        combos: ["1-2-3-2 (Jab-Cross-Hook-Cross)", "1-2-5-2 (Jab-Cross-Uppercut-Cross)"],
+        tips: ["Maximum effort", "Rest between combos if needed"],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 60,
+        title: "Round 4: Movement",
+        instructions:
+          "Circle the bag. Work angles. Lower intensity but constant movement.",
+        combos: ["1-2-3 (Jab-Cross-Hook)"],
+        tips: ["Work your footwork", "Stay in rhythm"],
+      },
+      {
+        type: "conditioning",
+        durationSec: 180,
+        restSec: 60,
+        title: "Round 5: Body Attack",
+        instructions:
+          "Mix head and body shots. High pace. Change levels constantly.",
+        combos: [
+          "1-2-3body-2 (Jab-Cross-Body Hook-Cross)",
+          "3body-3-2 (Body Hook-Head Hook-Cross)",
+        ],
+        tips: ["Fast level changes", "Don't slow down on body shots"],
       },
       {
         type: "conditioning",
         durationSec: 180,
         restSec: 30,
-        title: "Power Finisher",
+        title: "Round 6: Championship Round",
         instructions:
-          "Last round! Throw your hardest combos. Leave everything on the bag.",
+          "Final push. Everything you have left. This is where fights are won.",
         combos: [
           "1-2-3-2 (Jab-Cross-Hook-Cross)",
-          "1-2-5-2 (Jab-Cross-Uppercut-Cross)",
+          "1-2-3body-3-2 (Jab-Cross-Body Hook-Head Hook-Cross)",
         ],
-        tips: ["Final push - give it everything!", "Stay controlled even when tired"],
+        tips: [
+          "Leave it all in this round",
+          "Champions are made in the last round",
+        ],
       },
       {
         type: "cooldown",
         durationSec: 120,
         restSec: 0,
         title: "Cool Down",
-        instructions: "Light shadow boxing, then stretch. Focus on shoulders, hips, and wrists.",
-        tips: ["Shake out your hands", "Hydrate and recover"],
+        instructions: "Walk it off. Deep breathing. Stretch everything.",
+        tips: ["You went the distance", "Hydrate and recover"],
+      },
+    ],
+  },
+  {
+    id: "advanced-combo-flow",
+    title: "Combination Punching",
+    subtitle: "Link your punches together",
+    description:
+      "Learn to throw 3-5 punch combinations with flow and rhythm. This workout builds your ability to chain punches together naturally, mixing hooks, uppercuts, and body shots into smooth sequences.",
+    level: "intermediate",
+    goal: "general",
+    durationMin: 35,
+    equipment: ["Heavy bag"],
+    isFree: true,
+    rounds: [
+      {
+        type: "warmup",
+        durationSec: 180,
+        restSec: 60,
+        title: "Technical Warm Up",
+        instructions:
+          "Shadow boxing with 2-3 punch combos. Focus on smooth transitions between punches.",
+        tips: ["Flow between punches", "Emphasize rotation"],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 60,
+        title: "3-Punch Foundations",
+        instructions:
+          "Build your foundation with classic 3-punch combos. Find your rhythm.",
+        combos: [
+          "1-2-3 (Jab-Cross-Hook)",
+          "1-1-2 (Jab-Jab-Cross)",
+          "2-3-2 (Cross-Hook-Cross)",
+        ],
+        tips: ["Each punch sets up the next", "Stay balanced"],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 60,
+        title: "4-Punch Sequences",
+        instructions:
+          "Extend to 4 punches. Learn to maintain form and power through longer combos.",
+        combos: [
+          "1-2-3-2 (Jab-Cross-Hook-Cross)",
+          "1-2-5-2 (Jab-Cross-Uppercut-Cross)",
+          "1-1-2-3 (Jab-Jab-Cross-Hook)",
+        ],
+        tips: ["Don't sacrifice form for length", "Breathe through the combo"],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 60,
+        title: "Mixing Levels",
+        instructions:
+          "Add body work into your 4-punch combos. Head-body combinations.",
+        combos: [
+          "1-2-3body-2 (Jab-Cross-Body Hook-Cross)",
+          "1-2-3body-3 (Jab-Cross-Body Hook-Head Hook)",
+        ],
+        tips: [
+          "Smooth level changes",
+          "The body shot opens up the head",
+        ],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 60,
+        title: "5-Punch Flow",
+        instructions:
+          "Long combinations. Punch in bunches. This is where you learn offensive pressure.",
+        combos: [
+          "1-2-3-2-3 (Jab-Cross-Hook-Cross-Hook)",
+          "1-2-3body-3-2 (Jab-Cross-Body Hook-Head Hook-Cross)",
+          "1-6-3-2-3 (Jab-Uppercut-Hook-Cross-Hook)",
+        ],
+        tips: [
+          "Each punch flows into the next",
+          "Stay balanced through all 5",
+        ],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 60,
+        title: "Creative Combinations",
+        instructions:
+          "Mix all your combos. Start with different punches. Vary your combinations.",
+        combos: [
+          "1-2-3-2 (Jab-Cross-Hook-Cross)",
+          "2-3-2-3 (Cross-Hook-Cross-Hook)",
+          "1-6-3-2 (Jab-Uppercut-Hook-Cross)",
+        ],
+        tips: [
+          "Don't be predictable",
+          "End every combo with a strong shot",
+        ],
+      },
+      {
+        type: "conditioning",
+        durationSec: 180,
+        restSec: 30,
+        title: "Rapid Fire Combos",
+        instructions:
+          "Non-stop combinations. Pick any combo and keep them flowing. Don't stop punching.",
+        tips: ["This is cardio and technique combined", "Push through the fatigue"],
+      },
+      {
+        type: "cooldown",
+        durationSec: 120,
+        restSec: 0,
+        title: "Cool Down",
+        instructions:
+          "Light shadow boxing and full body stretch.",
+        tips: ["Replay the combos slowly in your mind", "Stretch everything"],
       },
     ],
   },
   {
     id: "speed-precision",
-    title: "Speed & Precision",
-    subtitle: "Fast combos & accuracy drills",
+    title: "Speed Kills",
+    subtitle: "Fast hands win fights",
     description:
-      "Sharpen your hand speed and accuracy. Quick combinations with emphasis on clean technique at high speed.",
+      "Develop explosive hand speed and rapid-fire combinations. This workout focuses on speed over power, teaching you to throw fast, clean, multi-punch combinations that overwhelm opponents.",
     level: "intermediate",
     goal: "speed",
     durationMin: 30,
     equipment: ["Heavy bag"],
-    isFree: false,
+    isFree: true,
     rounds: [
       {
         type: "warmup",
-        durationSec: 180,
-        restSec: 30,
-        title: "Speed Warm Up",
-        instructions:
-          "Fast shadow boxing. Quick jabs, fast feet. Build up your speed gradually.",
-        tips: ["Stay light on your feet", "Relax your shoulders"],
+        durationSec: 120,
+        restSec: 60,
+        title: "Fast Jabs",
+        instructions: "Speed warmup. Fast jabs only. Light and quick.",
+        combos: ["1 (Jab)", "1-1 (Double Jab)", "1-1-1 (Triple Jab)"],
+        tips: [
+          "Speed, not power",
+          "Snap it back fast as you throw it",
+        ],
       },
       {
         type: "bagwork",
         durationSec: 180,
-        restSec: 45,
-        title: "Speed Jabs",
+        restSec: 60,
+        title: "Speed Doubles",
         instructions:
-          "Rapid-fire jabs on the bag. Focus on snap and retraction. The fastest jab is the one that comes back quickest.",
-        combos: ["1-1-1 (Triple Jab)"],
-        tips: ["Speed is relaxation", "Snap the punch back to your chin"],
+          "2-punch speed combos. Both punches should sound like one hit.",
+        combos: [
+          "1-2 (Jab-Cross)",
+          "3-2 (Hook-Cross)",
+          "5-2 (Uppercut-Cross)",
+        ],
+        tips: [
+          "Both punches should sound like one hit",
+          "Speed comes from relaxation",
+        ],
       },
       {
         type: "bagwork",
         durationSec: 180,
-        restSec: 45,
-        title: "Fast 1-2s",
-        instructions:
-          "Quick 1-2 combos. Touch and go. Throw the combo and immediately reset. Repeat.",
-        combos: ["1-2 (Fast Jab-Cross)"],
-        tips: ["Think 'touch' not 'hit'", "Stay balanced at speed"],
+        restSec: 60,
+        title: "Speed Triples",
+        instructions: "3-punch speed combos. Quick hands, quick reset.",
+        combos: [
+          "1-2-3 (Jab-Cross-Hook)",
+          "1-1-2 (Double Jab-Cross)",
+          "2-3-2 (Cross-Hook-Cross)",
+        ],
+        tips: [
+          "Fast hands, fast reset",
+          "Don't telegraph your punches",
+        ],
       },
       {
         type: "bagwork",
         durationSec: 180,
-        restSec: 45,
-        title: "3-Punch Speed Combos",
-        instructions:
-          "Fast 3-punch combinations. Let the punches flow together. Hands stay near your face between combos.",
-        combos: ["1-2-3 (Jab-Cross-Hook)", "1-2-1 (Jab-Cross-Jab)"],
-        tips: ["Chain the punches - no pauses", "Pop pop pop rhythm"],
+        restSec: 60,
+        title: "Speed 4-Punch",
+        instructions: "4 punches at max speed. All 4 should blur together.",
+        combos: [
+          "1-2-3-2 (Jab-Cross-Hook-Cross)",
+          "1-2-1-2 (Jab-Cross-Jab-Cross)",
+        ],
+        tips: [
+          "All 4 punches should blur together",
+          "Stay light on your feet",
+        ],
       },
       {
         type: "bagwork",
         durationSec: 180,
-        restSec: 45,
-        title: "Speed Bursts",
+        restSec: 60,
+        title: "Speed 5-Punch",
         instructions:
-          "30 seconds moderate pace, 30 seconds MAX SPEED. Alternate. Fast hands, fast feet.",
-        combos: ["1-2 (Jab-Cross)", "1-1-2 (Double Jab-Cross)"],
-        tips: ["Explode on the fast intervals", "Recover during moderate pace"],
+          "5-punch speed combinations. Don't slow down on the last punches.",
+        combos: [
+          "1-2-3-2-3 (Jab-Cross-Hook-Cross-Hook)",
+          "1-1-2-3-2 (Double Jab-Cross-Hook-Cross)",
+        ],
+        tips: [
+          "Don't slow down on the 4th and 5th punch",
+          "Breathe between combos",
+        ],
       },
       {
         type: "conditioning",
@@ -552,131 +833,34 @@ export const workouts: Workout[] = [
         restSec: 30,
         title: "Speed Challenge",
         instructions:
-          "How many clean 1-2s can you throw in 2 minutes? Count them. Every punch must be crisp.",
+          "How many clean 1-2s can you throw in 2 minutes? Every punch must be crisp. This is your test.",
         combos: ["1-2 (Jab-Cross)"],
-        tips: ["Quality at speed - don't get sloppy", "This is your test - give it everything"],
+        tips: [
+          "Quality at speed, not sloppy",
+          "This is your benchmark",
+        ],
       },
       {
         type: "cooldown",
         durationSec: 120,
         restSec: 0,
-        title: "Cool Down",
-        instructions:
-          "Slow shadow boxing, then stretch. Focus on wrist and shoulder mobility.",
-        tips: ["Roll your wrists", "Deep breathing"],
-      },
-    ],
-  },
-  {
-    id: "defensive-boxing",
-    title: "Defensive Boxing",
-    subtitle: "Slips, rolls & counter-punching",
-    description:
-      "The best offense is a good defense. Learn to slip, roll, and counter-punch. Pure shadow boxing - no equipment needed.",
-    level: "intermediate",
-    goal: "technique",
-    durationMin: 30,
-    equipment: [],
-    isFree: false,
-    rounds: [
-      {
-        type: "warmup",
-        durationSec: 180,
-        restSec: 30,
-        title: "Warm Up & Movement",
-        instructions:
-          "Light shadow boxing with emphasis on head movement. Slip left, slip right, roll under. Get your body moving.",
-        tips: ["Bend at the knees and waist to slip", "Keep your eyes forward"],
-      },
-      {
-        type: "technique",
-        durationSec: 180,
-        restSec: 30,
-        title: "Slipping Drill",
-        instructions:
-          "Practice slipping: imagine a jab coming, slip your head to the outside. Alternate sides. Slip left, reset, slip right, reset.",
-        tips: [
-          "Slip by bending at the waist",
-          "Move your head just enough to avoid the punch",
-          "Keep your hands up while slipping",
-        ],
-      },
-      {
-        type: "technique",
-        durationSec: 180,
-        restSec: 30,
-        title: "Rolling Under",
-        instructions:
-          "Practice the roll (bob and weave): bend your knees, dip under an imaginary hook, come up on the other side.",
-        tips: [
-          "U-shape motion with your body",
-          "Drive back up with your legs",
-          "Stay compact",
-        ],
-      },
-      {
-        type: "technique",
-        durationSec: 180,
-        restSec: 45,
-        title: "Slip & Counter",
-        instructions:
-          "Slip the imaginary jab, then immediately counter with your cross. Slip outside, throw the 2.",
-        combos: ["Slip - 2 (Slip-Counter Cross)"],
-        tips: [
-          "Counter while your opponent is extended",
-          "The slip creates the angle for the counter",
-        ],
-      },
-      {
-        type: "bagwork",
-        durationSec: 180,
-        restSec: 45,
-        title: "Defensive Combos",
-        instructions:
-          "Throw a combo, then immediately defend. 1-2, slip-slip. 1-2-3, roll under. Offense to defense flow.",
-        combos: [
-          "1-2, Slip-Slip",
-          "1-2-3, Roll",
-          "1-2, Roll, 3-2 (Counter combo)",
-        ],
-        tips: ["Defense should be automatic after attacking", "Don't admire your work - move!"],
-      },
-      {
-        type: "bagwork",
-        durationSec: 180,
-        restSec: 45,
-        title: "Counter-Punching Flow",
-        instructions:
-          "Slip, roll, and counter in flowing combinations. Imagine an aggressive opponent - make them miss and make them pay.",
-        combos: [
-          "Slip - 2-3 (Counter Cross-Hook)",
-          "Roll - 3-2 (Hook-Cross counter)",
-          "Slip - 6-3-2 (Uppercut-Hook-Cross)",
-        ],
-        tips: ["Stay calm and let them come to you", "Counter with authority"],
-      },
-      {
-        type: "cooldown",
-        durationSec: 120,
-        restSec: 0,
-        title: "Cool Down",
-        instructions:
-          "Light movement and stretching. Focus on your neck, shoulders, and lower back.",
-        tips: ["Gently stretch your neck", "Great defensive work today!"],
+        title: "Cooldown",
+        instructions: "Easy shadow boxing. Let your arms recover.",
+        tips: ["Shake out your hands", "Deep breathing"],
       },
     ],
   },
   {
     id: "body-shot-specialist",
-    title: "Body Shot Specialist",
-    subtitle: "Body targeting techniques",
+    title: "Body Snatcher",
+    subtitle: "Rip the body, kill the head",
     description:
-      "Master the art of body punching. Learn to dig hooks and uppercuts to the body on the heavy bag.",
+      "Master the brutal art of body punching. Learn to attack downstairs with hooks, uppercuts, and crosses to the body. Break down your opponent's will with vicious body work.",
     level: "intermediate",
-    goal: "technique",
+    goal: "power",
     durationMin: 30,
     equipment: ["Heavy bag"],
-    isFree: false,
+    isFree: true,
     rounds: [
       {
         type: "warmup",
@@ -694,7 +878,7 @@ export const workouts: Workout[] = [
         title: "Body Jab",
         instructions:
           "Jab to the body: bend your knees to get low, keep your rear hand up protecting your head. Straight punch to the midsection.",
-        combos: ["1-body (Body Jab)"],
+        combos: ["1body (Body Jab)"],
         tips: ["Level change with your legs", "Keep your head off the center line"],
       },
       {
@@ -704,7 +888,7 @@ export const workouts: Workout[] = [
         title: "Head-Body Combo",
         instructions:
           "Jab to the head, cross to the body. Change levels between punches.",
-        combos: ["1-head, 2-body (Jab Head, Cross Body)"],
+        combos: ["1-2body (Jab-Body Cross)"],
         tips: ["The head shot sets up the body shot", "Disguise your body attack"],
       },
       {
@@ -714,7 +898,7 @@ export const workouts: Workout[] = [
         title: "Body Hook",
         instructions:
           "Lead hook to the body. Get low, dig the hook in with a tight arm. Pivot and drive through.",
-        combos: ["1-2, 3-body (Jab-Cross, Body Hook)"],
+        combos: ["1-2-3body (Jab-Cross-Body Hook)"],
         tips: ["Compact hook - don't swing wide", "Dig in and rip"],
       },
       {
@@ -725,8 +909,8 @@ export const workouts: Workout[] = [
         instructions:
           "Go low then high. Body hook followed by a head hook. Make them drop their hands, then go upstairs.",
         combos: [
-          "3-body, 3-head (Body Hook, Head Hook)",
-          "1-2, 3-body, 3-head",
+          "3body-3 (Body Hook-Head Hook)",
+          "1-2-3body-3 (Jab-Cross-Body Hook-Head Hook)",
         ],
         tips: ["The level change makes this deadly", "Head follows the body shot immediately"],
       },
@@ -738,8 +922,8 @@ export const workouts: Workout[] = [
         instructions:
           "Mix head and body shots freely. Jab high, hook low, cross high, uppercut low. Keep your opponent guessing.",
         combos: [
-          "1-2, 3-body, 2-head",
-          "1-body, 6-body, 3-head",
+          "1-2-3body-2 (Jab-Cross-Body Hook-Cross)",
+          "1-5body-6-3 (Jab-Body Uppercut-Rear Uppercut-Hook)",
         ],
         tips: ["Constant level changes", "Your opponent can't block everywhere"],
       },
@@ -754,218 +938,606 @@ export const workouts: Workout[] = [
       },
     ],
   },
+
+  // === ADVANCED LEVEL (6 workouts) ===
   {
-    id: "advanced-combo-flow",
-    title: "Advanced Combo Flow",
-    subtitle: "Complex 6-8 punch combos",
+    id: "anhs-heavy-bag",
+    title: "Peek-a-Boo Bag Session",
+    subtitle: "Mike Tyson-inspired progressive heavy bag work",
     description:
-      "Long, flowing combinations that build hand speed, coordination, and fight IQ. For experienced boxers ready to level up their offense.",
+      "A complete heavy bag session inspired by Cus D'Amato's peek-a-boo style. Progressive rounds build from singles to 6-punch combinations with body work, defense, and brutal conditioning burnouts. Head movement between combos, relentless pressure, explosive power.",
     level: "advanced",
     goal: "general",
+    durationMin: 43,
+    equipment: ["Heavy bag"],
+    isFree: true,
+    rounds: [
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 90,
+        title: "Straight Shots",
+        instructions: "Singles only. Work on clean, crisp punches.",
+        combos: ["1 (Jab)", "2 (Cross)"],
+        tips: [
+          "Pop the jab, fast out fast back",
+          "Sit down on the cross, drive from the back foot",
+        ],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 90,
+        title: "Inside Weapons",
+        instructions: "Hooks and uppercuts. Get comfortable on the inside.",
+        combos: [
+          "3 (Lead Hook)",
+          "6 (Rear Uppercut)",
+          "3-4 (Lead Hook-Rear Hook)",
+          "5-6 (Lead Uppercut-Rear Uppercut)",
+        ],
+        tips: [
+          "Short tight hooks, no winding up",
+          "Uppercuts drive up from the legs",
+        ],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 90,
+        title: "Building Combos",
+        instructions: "3-punch combinations. Start building your offense.",
+        combos: [
+          "1-2-3 (Jab-Cross-Hook)",
+          "1-6-3 (Jab-Uppercut-Hook)",
+          "2-3-2 (Cross-Hook-Cross)",
+        ],
+        tips: [
+          "Every combo starts with proper setup",
+          "Snap the last punch",
+        ],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 90,
+        title: "Level Changes",
+        instructions:
+          "Attack head and body. Learn to change levels without telegraphing.",
+        combos: [
+          "1-2-3body (Jab-Cross-Body Hook)",
+          "3body-3-2 (Body Hook-Head Hook-Cross)",
+          "1-2-5body-2 (Jab-Cross-Body Uppercut-Cross)",
+        ],
+        tips: [
+          "Bend your knees to go low, don't lean",
+          "Go down then come back up with power",
+        ],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 90,
+        title: "Offense and Defense",
+        instructions: "Integrate defense into your offense. Throw, slip, counter.",
+        combos: [
+          "1-2-Slip-2-3 (Jab-Cross-Slip-Cross-Hook)",
+          "1-2-3-Roll-3-2 (Jab-Cross-Hook-Roll-Hook-Cross)",
+        ],
+        tips: [
+          "Move your head after every combo",
+          "The counter should be sharp and immediate",
+        ],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 90,
+        title: "Long Combinations",
+        instructions: "5-punch combos. Punch in bunches, overwhelm the opponent.",
+        combos: [
+          "1-2-3-2-3 (Jab-Cross-Hook-Cross-Hook)",
+          "1-2-3body-3-2 (Jab-Cross-Body Hook-Head Hook-Cross)",
+          "1-6-3-2-3 (Jab-Uppercut-Hook-Cross-Hook)",
+        ],
+        tips: [
+          "Punch in bunches, don't single-shot",
+          "Stay balanced through all 5 punches",
+        ],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 90,
+        title: "Championship Round",
+        instructions:
+          "Everything. 5-6 punch combinations. This is where champions are made.",
+        combos: [
+          "1-2-3-2-3-2 (Jab-Cross-Hook-Cross-Hook-Cross)",
+          "1-1-2-6-3-2 (Jab-Jab-Cross-Uppercut-Hook-Cross)",
+          "1-2-3body-2-3-2 (Jab-Cross-Body Hook-Cross-Head Hook-Cross)",
+        ],
+        tips: [
+          "Don't slow down, maintain intensity",
+          "Every punch counts",
+        ],
+      },
+      {
+        type: "conditioning",
+        durationSec: 90,
+        restSec: 20,
+        title: "Burnout: Straights",
+        instructions:
+          "Non-stop 1-2s for 90 seconds. Your arms will burn. Keep going.",
+        combos: ["1-2 (Jab-Cross)"],
+        tips: [
+          "Short punches, don't overextend",
+          "This is mental, push through",
+        ],
+      },
+      {
+        type: "conditioning",
+        durationSec: 90,
+        restSec: 90,
+        title: "Burnout: Body",
+        instructions:
+          "Non-stop alternating body hooks. This is the hardest round. Don't quit.",
+        combos: ["3body-4body (Body Hook-Body Rear Hook)"],
+        tips: [
+          "Stay low, bend your knees",
+          "This separates the tough from the weak",
+        ],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 0,
+        title: "Victory Lap",
+        instructions:
+          "You made it. Clean technique to finish. End the last 30 seconds with everything you have left.",
+        combos: [
+          "1-2-3 (Jab-Cross-Hook)",
+          "1-2-3-2 (Jab-Cross-Hook-Cross)",
+          "1-2-5-2-3 (Jab-Cross-Uppercut-Cross-Hook)",
+        ],
+        tips: [
+          "Clean technique even when tired",
+          "Finish strong, this is your victory lap",
+        ],
+      },
+    ],
+  },
+  {
+    id: "kronk-gym-rounds",
+    title: "Kronk Gym Rounds",
+    subtitle: "Emanuel Steward's legendary pressure fighting",
+    description:
+      "Aggressive, high-output pressure fighting from the legendary Kronk Gym. Learn to apply non-stop pressure with power punches, body attack, and relentless combinations. This is Detroit heavy-handed boxing at its finest.",
+    level: "advanced",
+    goal: "power",
     durationMin: 40,
     equipment: ["Heavy bag"],
-    isFree: false,
+    isFree: true,
     rounds: [
       {
         type: "warmup",
-        durationSec: 180,
+        durationSec: 120,
         restSec: 60,
-        title: "Technical Warm Up",
-        instructions:
-          "Shadow boxing with 3-4 punch combos. All punches. Focus on smooth transitions between punches.",
-        tips: ["Flow between punches", "Emphasize rotation"],
+        title: "Warm Up Your Weapons",
+        instructions: "Power jab warmup. Get your shoulders ready for heavy work.",
+        combos: ["1-1 (Double Jab)", "1-2 (Jab-Cross)"],
+        tips: ["Start controlled, we're building to power"],
       },
       {
         type: "bagwork",
         durationSec: 180,
         restSec: 60,
-        title: "6-Punch Combo 1",
+        title: "Straight and Hard",
         instructions:
-          "Jab-Cross-Hook-Cross-Hook-Cross. The classic long combo. Build speed gradually.",
-        combos: ["1-2-3-2-3-2 (Jab-Cross-Hook-Cross-Hook-Cross)"],
-        tips: ["Start slow, build speed", "Don't sacrifice form for speed"],
-      },
-      {
-        type: "bagwork",
-        durationSec: 180,
-        restSec: 60,
-        title: "6-Punch Combo 2",
-        instructions:
-          "Jab-Jab-Cross-Uppercut-Hook-Cross. Mix punch types for variety.",
-        combos: ["1-1-2-6-3-2 (Jab-Jab-Cross-Uppercut-Hook-Cross)"],
-        tips: ["The uppercut creates the opening for the hook", "Flow don't force"],
-      },
-      {
-        type: "bagwork",
-        durationSec: 180,
-        restSec: 60,
-        title: "8-Punch Flow",
-        instructions:
-          "Double jab-Cross-Lead Hook-Cross-Lead Uppercut-Cross-Lead Hook-Cross. The ultimate flow combo.",
-        combos: ["1-1-2-3-2-5-2-3 (Full 8-punch combination)"],
+          "Straight shots with bad intentions. Every cross should move the bag.",
+        combos: [
+          "1-2 (Jab-Cross)",
+          "1-2-1-2 (Jab-Cross-Jab-Cross)",
+          "1-1-2 (Double Jab-Cross)",
+        ],
         tips: [
-          "Break it into pairs: 1-1, 2-3, 2-5, 2-3",
-          "Each punch sets up the next",
+          "Every cross should move the bag off its chain",
+          "Step into your punches, use your legs",
         ],
       },
       {
         type: "bagwork",
         durationSec: 180,
         restSec: 60,
-        title: "Body-Head Flows",
+        title: "Hook City",
         instructions:
-          "Long combos mixing levels: Jab-Cross-Body Hook-Head Hook-Cross-Body Uppercut-Head Hook.",
-        combos: ["1-2-3body-3head-2-6body-3head"],
+          "Hooks and power. Turn your whole body into every punch.",
+        combos: [
+          "2-3 (Cross-Hook)",
+          "1-2-3-4 (Jab-Cross-Hook-Rear Hook)",
+          "3-2-3 (Hook-Cross-Hook)",
+        ],
         tips: [
-          "Smooth level changes",
-          "The body shots slow them down, the head shots finish",
+          "Short hooks, maximum rotation",
+          "Double up the hooks, don't single-shot",
         ],
       },
       {
         type: "bagwork",
         durationSec: 180,
         restSec: 60,
-        title: "Creative Combos",
-        instructions:
-          "Build your own 6-8 punch combos. Start each combo differently. Mix all punch types and levels.",
+        title: "Coming Up the Middle",
+        instructions: "Uppercut combos. Split the guard, come up the middle.",
+        combos: [
+          "1-6-3-2 (Jab-Uppercut-Hook-Cross)",
+          "1-2-5-2-3 (Jab-Cross-Uppercut-Cross-Hook)",
+          "5-2-3 (Uppercut-Cross-Hook)",
+        ],
         tips: [
-          "Start combos with different punches",
-          "End every combo with a strong shot",
-          "Move after each combo",
+          "Uppercuts set up everything",
+          "Drive from your legs, not your arms",
+        ],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 60,
+        title: "Rip the Body",
+        instructions: "Body attack. Break their will with body shots.",
+        combos: [
+          "1-2-3body-2 (Jab-Cross-Body Hook-Cross)",
+          "1-2body-3 (Jab-Body Cross-Hook)",
+          "3body-3-2-3 (Body Hook-Head Hook-Cross-Hook)",
+        ],
+        tips: [
+          "The body shot opens up the head",
+          "Commit to the level change, don't half-ass it",
+        ],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 60,
+        title: "Non-Stop Pressure",
+        instructions:
+          "Long power combos. Don't give them a chance to breathe.",
+        combos: [
+          "1-2-3-2-3-2 (Jab-Cross-Hook-Cross-Hook-Cross)",
+          "1-2-3body-3-2-3 (Jab-Cross-Body Hook-Head Hook-Cross-Hook)",
+          "1-6-3-2-3-2 (Jab-Uppercut-Hook-Cross-Hook-Cross)",
+        ],
+        tips: [
+          "Don't give them a chance to breathe",
+          "Punch in bunches, this is Kronk style",
+        ],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 60,
+        title: "Adapt and Attack",
+        instructions:
+          "Everything with defense. Throw, defend, counter. Complete fighting.",
+        combos: [
+          "1-2-3-Slip-2-3 (Jab-Cross-Hook-Slip-Cross-Hook)",
+          "Slip-3-2-3-2 (Slip-Hook-Cross-Hook-Cross)",
+        ],
+        tips: [
+          "Offense and defense are one thing",
+          "Counter immediately after defense",
         ],
       },
       {
         type: "conditioning",
         durationSec: 180,
-        restSec: 30,
-        title: "Rapid Fire Round",
+        restSec: 60,
+        title: "Empty the Tank",
         instructions:
-          "Non-stop long combos. Pick any combination and keep them flowing. Don't stop punching.",
-        tips: ["This is cardio and technique combined", "Push through the fatigue"],
+          "Non-stop power 4-punch combos. Every punch full power. This is where champions are made.",
+        combos: ["1-2-3-2 (Jab-Cross-Hook-Cross)"],
+        tips: [
+          "This is where champions are made",
+          "Push through the burn, don't slow down",
+        ],
       },
       {
         type: "cooldown",
         durationSec: 120,
         restSec: 0,
-        title: "Cool Down",
-        instructions:
-          "Active recovery with light shadow boxing and full body stretch.",
-        tips: ["Replay the combos slowly in your mind", "Stretch everything"],
+        title: "Cooldown",
+        instructions: "Easy movement, light shadow boxing. Let your body recover.",
+        tips: ["You earned this", "Stretch everything"],
       },
     ],
   },
   {
-    id: "fight-conditioning",
-    title: "Fight Conditioning",
-    subtitle: "High-intensity training",
+    id: "power-punching",
+    title: "Mexican Style Bag Work",
+    subtitle: "Relentless pressure and body attack",
     description:
-      "A brutal conditioning session that simulates fight-pace intensity. Not for the faint of heart. Build the cardio of a fighter.",
+      "Canelo. Chavez. Barrera. Mexican boxing is built on relentless pressure, devastating body work, and never giving your opponent a moment to breathe. This workout pushes you with 5-6 punch power combos, constant level changes, and a double burnout finale.",
     level: "advanced",
-    goal: "conditioning",
-    durationMin: 45,
-    equipment: ["Heavy bag", "Jump rope"],
-    isFree: false,
+    goal: "power",
+    durationMin: 40,
+    equipment: ["Heavy bag"],
+    isFree: true,
     rounds: [
       {
         type: "warmup",
-        durationSec: 180,
-        restSec: 30,
-        title: "Jump Rope Warm Up",
-        instructions:
-          "3 minutes of jump rope. Start with basic bounce, mix in double-unders and high knees.",
-        tips: ["Stay on the balls of your feet", "Wrists, not arms"],
+        durationSec: 120,
+        restSec: 60,
+        title: "Heavy Hands Warmup",
+        instructions: "Get loose. We're going heavy today.",
+        combos: ["1-2 (Jab-Cross)", "1-2-3 (Jab-Cross-Hook)"],
+        tips: ["Rotate your hips on every punch", "Find your range"],
       },
       {
-        type: "conditioning",
+        type: "bagwork",
         durationSec: 180,
-        restSec: 30,
-        title: "Bag Intervals",
+        restSec: 60,
+        title: "Pressure Straights",
         instructions:
-          "20 seconds all-out on the bag, 10 seconds rest. Repeat for 3 minutes. Max effort punches.",
-        combos: ["All punches - max speed"],
-        tips: ["TRUE max effort on work intervals", "Active recovery in rest"],
+          "Step forward with every combo. Close distance. Make them feel you.",
+        combos: [
+          "1-2-1-2 (Jab-Cross-Jab-Cross)",
+          "1-1-2-3 (Double Jab-Cross-Hook)",
+          "1-2-3-2 (Jab-Cross-Hook-Cross)",
+        ],
+        tips: ["Step in with the jab, don't reach", "Every cross should move the bag"],
       },
       {
-        type: "conditioning",
+        type: "bagwork",
         durationSec: 180,
-        restSec: 30,
-        title: "Jump Rope Round 2",
-        instructions:
-          "3 minutes. Every 30 seconds, do 10 high knees. Push the pace.",
-        tips: ["Don't trip on the transitions", "Keep a steady rhythm"],
+        restSec: 60,
+        title: "Body Ripping",
+        instructions: "Go to the body. Break them down. Body shots end fights.",
+        combos: [
+          "1-2-3body (Jab-Cross-Body Hook)",
+          "3body-3-2 (Body Hook-Head Hook-Cross)",
+          "1-2-5body-2 (Jab-Cross-Body Uppercut-Cross)",
+          "6body-3 (Body Rear Uppercut-Head Hook)",
+        ],
+        tips: ["Bend your knees, don't lean", "Every body shot should dig in"],
       },
       {
-        type: "conditioning",
+        type: "bagwork",
         durationSec: 180,
-        restSec: 30,
-        title: "Heavy Bag Power Round",
+        restSec: 60,
+        title: "Level Change Warfare",
         instructions:
-          "Hardest shots you can throw for 3 minutes. Every punch should shake the bag. Take 3-5 seconds between combos.",
-        combos: ["1-2-3-2 Power combos", "3-body, 3-head"],
-        tips: ["SIT DOWN on every punch", "Breathe out forcefully"],
-      },
-      {
-        type: "conditioning",
-        durationSec: 180,
-        restSec: 30,
-        title: "Bodyweight Burnout",
-        instructions:
-          "10 push-ups, 10 squats, 10 burpees. Then fast shadow boxing until the round ends. Repeat if time allows.",
-        tips: ["Modify push-ups if needed", "Keep moving - no standing still"],
-      },
-      {
-        type: "conditioning",
-        durationSec: 180,
-        restSec: 30,
-        title: "Speed Bag Simulation",
-        instructions:
-          "Non-stop straight punches on the heavy bag. Light, fast, continuous. Don't stop your hands.",
-        tips: ["Think speed, not power", "This is pure cardio"],
-      },
-      {
-        type: "conditioning",
-        durationSec: 180,
-        restSec: 30,
-        title: "Combo Sprints",
-        instructions:
-          "Throw a 4-punch combo, then immediately throw 20 fast jabs. Reset. Repeat.",
-        combos: ["1-2-3-2, then 20 fast jabs"],
-        tips: ["The jabs are the sprint portion", "Don't slow down on the jabs"],
-      },
-      {
-        type: "conditioning",
-        durationSec: 180,
-        restSec: 30,
-        title: "Championship Round",
-        instructions:
-          "Last round! 3 minutes all-out. Everything you've got. Combos, power shots, speed - empty the tank.",
+          "Head, body, head. Keep switching levels. They can't guard what they can't predict.",
+        combos: [
+          "1-2-3body-3-2 (Jab-Cross-Body Hook-Head Hook-Cross)",
+          "1-2-3body-2-3 (Jab-Cross-Body Hook-Cross-Head Hook)",
+          "3body-3-2-3body (Body Hook-Head Hook-Cross-Body Hook)",
+        ],
         tips: [
-          "This is where champions are made",
-          "You can do ANYTHING for 3 minutes",
+          "The level change is the weapon, the punches are the delivery",
+          "Fast down, fast up",
+        ],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 60,
+        title: "Mexican Combinations",
+        instructions:
+          "Long power combos. Walk them down. Don't stop punching.",
+        combos: [
+          "1-2-3-2-3-2 (Jab-Cross-Hook-Cross-Hook-Cross)",
+          "1-6-3-2-3 (Jab-Uppercut-Hook-Cross-Hook)",
+          "1-2-3-4-2 (Jab-Cross-Hook-Rear Hook-Cross)",
+        ],
+        tips: ["Every punch should have bad intentions", "Pressure. Pressure. Pressure."],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 60,
+        title: "The Full Mexican",
+        instructions:
+          "Everything together. Long combos with body work mixed in. Break the bag.",
+        combos: [
+          "1-2-3body-2-3-2 (Jab-Cross-Body Hook-Cross-Head Hook-Cross)",
+          "1-2-5body-2-3-2 (Jab-Cross-Body Uppercut-Cross-Hook-Cross)",
+          "1-6-3body-3-2 (Jab-Uppercut-Body Hook-Head Hook-Cross)",
+        ],
+        tips: [
+          "This is where you earn the Mexican style",
+          "Don't slow down on the body shots",
+        ],
+      },
+      {
+        type: "conditioning",
+        durationSec: 90,
+        restSec: 20,
+        title: "Burnout: Jab-Cross",
+        instructions:
+          "Non-stop 1-2s. Short, fast, don't stop. Breathe through it.",
+        combos: ["1-2 (Jab-Cross)"],
+        tips: ["Short punches, don't overextend", "Your arms will burn, keep going"],
+      },
+      {
+        type: "conditioning",
+        durationSec: 90,
+        restSec: 60,
+        title: "Burnout: Body Hooks",
+        instructions:
+          "Alternating body hooks, non-stop. Stay low and rip the body.",
+        combos: ["3body-4body (Body Hook-Body Rear Hook)"],
+        tips: ["Stay low the entire round", "This is the hardest part, don't quit"],
+      },
+      {
+        type: "cooldown",
+        durationSec: 120,
+        restSec: 0,
+        title: "Cooldown",
+        instructions: "Light shadow boxing. You earned this rest.",
+        tips: ["Breathe deeply", "Stretch your core"],
+      },
+    ],
+  },
+  {
+    id: "philly-shell-rounds",
+    title: "Philly Shell Rounds",
+    subtitle: "Mayweather's defensive mastery",
+    description:
+      "Make them miss. Make them pay. This advanced defensive workout teaches you to slip, roll, pull, and counter on the heavy bag with long counter combinations. Inspired by Floyd Mayweather and James Toney - the most frustrating fighters to face.",
+    level: "advanced",
+    goal: "technique",
+    durationMin: 40,
+    equipment: ["Heavy bag"],
+    isFree: true,
+    rounds: [
+      {
+        type: "warmup",
+        durationSec: 120,
+        restSec: 60,
+        title: "Rhythm and Movement",
+        instructions:
+          "Light jabs with head movement between every punch. Find your rhythm.",
+        combos: ["1 (Jab)", "1-2 (Jab-Cross)", "1-2-3 (Jab-Cross-Hook)"],
+        tips: ["Move your head after every combo", "Stay loose and relaxed"],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 60,
+        title: "Slip and Counter",
+        instructions:
+          "Slip the punch, fire back with a full counter combination.",
+        combos: [
+          "Slip-2-3 (Slip-Cross-Hook)",
+          "Slip-2-3-2 (Slip-Cross-Hook-Cross)",
+          "Slip-3-2-3 (Slip-Hook-Cross-Hook)",
+        ],
+        tips: [
+          "Slip with your whole body, not just your neck",
+          "The counter should be immediate",
+        ],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 60,
+        title: "Roll and Punish",
+        instructions:
+          "Roll under the hook, come up throwing 3-4 punch counters.",
+        combos: [
+          "Roll-3-2-3 (Roll-Hook-Cross-Hook)",
+          "Roll-6-3-2 (Roll-Uppercut-Hook-Cross)",
+          "Roll-3-2-3-2 (Roll-Hook-Cross-Hook-Cross)",
+        ],
+        tips: [
+          "Bend your knees, load your legs like a spring",
+          "Come up with everything",
+        ],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 60,
+        title: "The Pull Counter",
+        instructions:
+          "Mayweather's signature. Pull back, let it miss, fire the cross straight back.",
+        combos: [
+          "Pull-2-3 (Pull-Cross-Hook)",
+          "Pull-2-3-2 (Pull-Cross-Hook-Cross)",
+          "Pull-2-3body-2 (Pull-Cross-Body Hook-Cross)",
+        ],
+        tips: [
+          "Pull with your hips",
+          "The cross goes right back down the center line",
+          "Add a body shot to keep them guessing",
+        ],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 60,
+        title: "Offense Into Defense Into Offense",
+        instructions:
+          "Throw a combo, defend the return, counter immediately. This is how real fights flow.",
+        combos: [
+          "1-2-Slip-2-3-2 (Jab-Cross-Slip-Cross-Hook-Cross)",
+          "1-2-3-Roll-3-2 (Jab-Cross-Hook-Roll-Hook-Cross)",
+          "1-2-Pull-2-3 (Jab-Cross-Pull-Cross-Hook)",
+        ],
+        tips: [
+          "The fight doesn't stop after your combo",
+          "Defense is just the bridge between your offense",
+        ],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 60,
+        title: "Advanced Counter Combinations",
+        instructions:
+          "Long counter sequences. Make them pay for every punch they throw.",
+        combos: [
+          "Slip-2-3-2-3 (Slip-Cross-Hook-Cross-Hook)",
+          "Roll-6-3-2-3 (Roll-Uppercut-Hook-Cross-Hook)",
+          "Pull-2-3body-3-2 (Pull-Cross-Body Hook-Head Hook-Cross)",
+        ],
+        tips: [
+          "5-punch counters separate good fighters from great ones",
+          "Stay balanced through the whole sequence",
+        ],
+      },
+      {
+        type: "bagwork",
+        durationSec: 180,
+        restSec: 60,
+        title: "Full Philly Shell Flow",
+        instructions:
+          "Everything together. Slip, roll, pull, counter, body shots. The complete defensive fighter.",
+        combos: [
+          "1-2-Slip-2-3body-3-2 (Jab-Cross-Slip-Cross-Body Hook-Head Hook-Cross)",
+          "Slip-2-3-Roll-3-2 (Slip-Cross-Hook-Roll-Hook-Cross)",
+          "Pull-2-3-2-3 (Pull-Cross-Hook-Cross-Hook)",
+          "Roll-6-3-2-3-2 (Roll-Uppercut-Hook-Cross-Hook-Cross)",
+        ],
+        tips: [
+          "This round is the test",
+          "Make them miss, make them pay, make them quit",
+        ],
+      },
+      {
+        type: "conditioning",
+        durationSec: 90,
+        restSec: 60,
+        title: "Counter Burnout",
+        instructions:
+          "Non-stop slip and counter. Slip, cross, hook. Repeat. Don't stop.",
+        combos: ["Slip-2-3 (Slip-Cross-Hook)"],
+        tips: [
+          "Keep your head moving even when tired",
+          "Speed and precision, not power",
         ],
       },
       {
         type: "cooldown",
-        durationSec: 180,
+        durationSec: 120,
         restSec: 0,
-        title: "Cool Down",
+        title: "Cooldown",
         instructions:
-          "Walk it out. Deep breathing. Full body stretch - hold each stretch for 30 seconds.",
-        tips: ["You earned this rest", "Hydrate immediately"],
+          "Easy shadow boxing with head movement. Float like a butterfly.",
+        tips: ["Deep breathing", "You just learned defensive mastery"],
       },
     ],
   },
   {
     id: "counter-punching-workshop",
-    title: "Counter-Punching Workshop",
-    subtitle: "Defensive counters mastery",
+    title: "Hit and Don't Get Hit",
+    subtitle: "Master defensive boxing and counters",
     description:
-      "Advanced defensive techniques and counter-punching combinations. Learn to make your opponent pay for every punch they throw.",
+      "The highest level of boxing: make them miss and make them pay. This workshop teaches advanced defensive techniques, counter punching, and the art of hitting without getting hit. Pure boxing IQ.",
     level: "advanced",
     goal: "technique",
     durationMin: 35,
     equipment: [],
-    isFree: false,
+    isFree: true,
     rounds: [
       {
         type: "warmup",
@@ -983,7 +1555,7 @@ export const workouts: Workout[] = [
         title: "Pull Counter",
         instructions:
           "Imagine a jab coming. Pull your head straight back (just out of range), then immediately counter with your cross.",
-        combos: ["Pull-back, 2 (Pull Counter Cross)"],
+        combos: ["Pull-2 (Pull Counter Cross)"],
         tips: [
           "Minimal pull - just enough to miss",
           "Counter IMMEDIATELY - timing is everything",
@@ -997,8 +1569,8 @@ export const workouts: Workout[] = [
         instructions:
           "Slip outside the jab (head moves to your right if orthodox), then counter with a sharp cross.",
         combos: [
-          "Slip outside - 2 (Cross counter)",
-          "Slip outside - 2-3 (Cross-Hook counter)",
+          "Slip-2 (Cross counter)",
+          "Slip-2-3 (Cross-Hook counter)",
         ],
         tips: [
           "The slip loads your rear hand",
@@ -1013,8 +1585,8 @@ export const workouts: Workout[] = [
         instructions:
           "Roll under the imaginary hook, come up with your own hook. The roll loads your legs for a powerful counter.",
         combos: [
-          "Roll - 3 (Lead Hook counter)",
-          "Roll - 3-2 (Hook-Cross counter)",
+          "Roll-3 (Lead Hook counter)",
+          "Roll-3-2 (Hook-Cross counter)",
         ],
         tips: [
           "The roll gives you a huge mechanical advantage",
@@ -1029,8 +1601,8 @@ export const workouts: Workout[] = [
         instructions:
           "Practice catching the jab in your rear glove, then immediately countering. Catch - fire back.",
         combos: [
-          "Catch - 2-3 (Cross-Hook)",
-          "Catch - 2-3-2 (Cross-Hook-Cross)",
+          "Catch-2-3 (Cross-Hook)",
+          "Catch-2-3-2 (Cross-Hook-Cross)",
         ],
         tips: [
           "The catch is a subtle move - don't reach for it",
@@ -1045,9 +1617,9 @@ export const workouts: Workout[] = [
         instructions:
           "Chain defensive moves with counter combinations. Visualize incoming punches and respond with authority.",
         combos: [
-          "Slip - 2-3-2 (Counter combo)",
-          "Roll - 3-2-3 (Hook-Cross-Hook)",
-          "Pull - 2-3-2 (Cross-Hook-Cross)",
+          "Slip-2-3-2 (Counter combo)",
+          "Roll-3-2-3 (Hook-Cross-Hook)",
+          "Pull-2-3-2 (Cross-Hook-Cross)",
         ],
         tips: [
           "Let your defense flow right into offense",
@@ -1078,15 +1650,15 @@ export const workouts: Workout[] = [
   },
   {
     id: "full-camp-round",
-    title: "Full Camp Round",
-    subtitle: "Complete training session",
+    title: "Camp Mode",
+    subtitle: "Complete training camp simulation",
     description:
-      "A comprehensive training session that covers everything: warm up, technique, bag work, conditioning, and cool down. The ultimate boxing workout.",
+      "The complete fighter's workout. Jump rope, heavy bag, shadow boxing, and conditioning. This is what professional boxers do in training camp. Put it all together and train like a pro.",
     level: "advanced",
     goal: "general",
     durationMin: 50,
     equipment: ["Heavy bag", "Jump rope"],
-    isFree: false,
+    isFree: true,
     rounds: [
       {
         type: "warmup",
@@ -1192,165 +1764,6 @@ export const workouts: Workout[] = [
         tips: [
           "Hold each stretch 20-30 seconds",
           "Champion-level session complete",
-        ],
-      },
-    ],
-  },
-  // === CUSTOM: ANH'S HEAVY BAG SESSION ===
-  {
-    id: "anhs-heavy-bag",
-    title: "Anh's Heavy Bag Session",
-    subtitle: "10 rounds · progressive combos",
-    description:
-      "Full heavy bag session: build from singles to complex combos, with a double burnout finisher. 3-minute rounds, 90-second rest.",
-    level: "advanced",
-    goal: "general",
-    durationMin: 43,
-    equipment: ["Heavy bag"],
-    isFree: true,
-    rounds: [
-      // Round 1: Singles only - jabs and crosses
-      {
-        type: "bagwork",
-        durationSec: 180,
-        restSec: 90,
-        title: "Singles: Jab & Cross",
-        instructions:
-          "Single shots only. Focus on snapping the jab and sitting down on the cross. Every punch returns to guard.",
-        combos: ["1 (Jab)", "2 (Cross)"],
-        tips: [
-          "Pop the jab. Fast out, fast back",
-          "Rotate your hips fully on the cross",
-          "Move your feet between shots",
-        ],
-      },
-      // Round 2: Power hooks & uppercuts - max 2-punch combos
-      {
-        type: "bagwork",
-        durationSec: 180,
-        restSec: 90,
-        title: "Power Hooks & Uppercuts",
-        instructions:
-          "Hooks and uppercuts only. Throw singles or doubles max. Sit down on every shot. This is a power round.",
-        combos: ["3 (Lead Hook)", "4 (Rear Hook)", "5 (Lead Uppercut)", "6 (Rear Uppercut)", "3-4 (Hook-Hook)", "5-6 (Uppercut-Uppercut)"],
-        tips: [
-          "Turn your whole body into the hook",
-          "Short, tight arc. Don't wind up",
-          "Uppercuts drive upward from the legs",
-        ],
-      },
-      // Round 3: Freeform - 3-punch combos
-      {
-        type: "bagwork",
-        durationSec: 180,
-        restSec: 90,
-        title: "Building Combos",
-        instructions:
-          "Start linking punches. 3-punch combos mixing straights and hooks. Find your rhythm on the bag.",
-        combos: ["1-2-3 (Jab-Cross-Hook)", "1-1-2 (Jab-Jab-Cross)", "2-3-2 (Cross-Hook-Cross)"],
-        tips: [
-          "Every combo starts with a jab or a feint",
-          "Snap the last punch. Don't let it die",
-        ],
-      },
-      // Round 4: Freeform - adding body work
-      {
-        type: "bagwork",
-        durationSec: 180,
-        restSec: 90,
-        title: "Head & Body",
-        instructions:
-          "Mix levels. Go upstairs and downstairs. Dig to the body then come back up top.",
-        combos: ["1-2-3body (Jab-Cross-Body Hook)", "1-2body-3 (Jab-Body Cross-Hook)", "1-2-5body-2 (Jab-Cross-Body Uppercut-Cross)"],
-        tips: [
-          "Bend your knees to go to the body. Don't just lean",
-          "Come back upstairs with authority",
-        ],
-      },
-      // Round 5: Freeform - 4-punch combos with defense
-      {
-        type: "bagwork",
-        durationSec: 180,
-        restSec: 90,
-        title: "4-Punch Combinations",
-        instructions:
-          "Longer combos now. Throw 4-punch sequences and move. Slip after your combo like someone's firing back.",
-        combos: ["1-2-3-2 (Jab-Cross-Hook-Cross)", "1-2-5-2 (Jab-Cross-Uppercut-Cross)", "1-1-2-3 (Jab-Jab-Cross-Hook)"],
-        tips: [
-          "Stay balanced through all 4 punches",
-          "Slip or roll after every combo",
-        ],
-      },
-      // Round 6: Freeform - mixing everything, 4-5 punch
-      {
-        type: "bagwork",
-        durationSec: 180,
-        restSec: 90,
-        title: "Full Arsenal",
-        instructions:
-          "Everything is on the table. Long combos, body shots, uppercuts, hooks. Work the bag like a real opponent.",
-        combos: ["1-2-3-4-2 (Jab-Cross-Hook-Hook-Cross)", "1-2-3body-2-3 (Jab-Cross-Body Hook-Cross-Hook)", "1-6-3-2 (Jab-Rear Uppercut-Hook-Cross)"],
-        tips: [
-          "Punch in bunches then reset",
-          "Throw combos from different angles",
-        ],
-      },
-      // Round 7: Freeform - hardest combos, 5-6 punch
-      {
-        type: "bagwork",
-        durationSec: 180,
-        restSec: 90,
-        title: "Championship Round",
-        instructions:
-          "Dig deep. Long combinations with power on every shot. Move your head between combos. Fight like it's the last round.",
-        combos: ["1-2-3-2-1-2 (Jab-Cross-Hook-Cross-Jab-Cross)", "1-2-5body-2-3-2 (Jab-Cross-Body Uppercut-Cross-Hook-Cross)", "1-1-2-3-4-2 (Jab-Jab-Cross-Hook-Hook-Cross)"],
-        tips: [
-          "Don't slow down. Empty the tank",
-          "Snap every punch, even when tired",
-        ],
-      },
-      // Round 8: Burnout - 1:30 jab-cross, 20s rest, 1:30 body hooks
-      {
-        type: "conditioning",
-        durationSec: 90,
-        restSec: 20,
-        title: "Burnout: Jab-Cross",
-        instructions:
-          "Non-stop jab-cross for 90 seconds. Don't stop. Short, fast punches. Breathe through it.",
-        combos: ["1-2 (Jab-Cross)"],
-        tips: [
-          "Short punches. Don't overextend",
-          "Exhale on every punch",
-          "Your arms will burn. Keep going",
-        ],
-      },
-      // Round 9: Burnout part 2
-      {
-        type: "conditioning",
-        durationSec: 90,
-        restSec: 90,
-        title: "Burnout: Body Hooks",
-        instructions:
-          "Non-stop body hooks for 90 seconds. Alternate left and right. Dig deep and rip to the body.",
-        combos: ["3body-4body (Body Hook-Body Hook)"],
-        tips: [
-          "Stay low, bend your knees",
-          "Turn into every hook",
-          "This is the hardest part. Don't quit",
-        ],
-      },
-      // Round 10: Closer
-      {
-        type: "bagwork",
-        durationSec: 180,
-        restSec: 0,
-        title: "Victory Lap",
-        instructions:
-          "Last round. You survived the burnout. Move and pick your shots. Throw what feels good. Leave it all on the bag.",
-        combos: ["1-2-3 (Jab-Cross-Hook)", "1-2-3-2 (Jab-Cross-Hook-Cross)", "1-2-5-2-3 (Jab-Cross-Uppercut-Cross-Hook)"],
-        tips: [
-          "Compose yourself. Clean technique to finish",
-          "End the last 30 seconds with everything you've got",
         ],
       },
     ],
