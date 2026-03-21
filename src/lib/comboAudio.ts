@@ -6,23 +6,24 @@ import NativeAudioPlayer from "./nativeAudio";
 // ─── Audio clip path mapping ───
 
 const PUNCH_AUDIO_MAP: Record<string, string> = {
-  // Names mode
+  // Names mode - punches
   "jab": "/audio/jab.mp3",
   "cross": "/audio/cross.mp3",
   "lead hook": "/audio/hook.mp3",
   "rear hook": "/audio/rear-hook.mp3",
   "lead uppercut": "/audio/uppercut.mp3",
   "rear uppercut": "/audio/rear-uppercut.mp3",
+  // Names mode - body shots
   "body jab": "/audio/body-jab.mp3",
   "body cross": "/audio/body-cross.mp3",
   "body lead hook": "/audio/body-hook.mp3",
-  "body rear hook": "/audio/body-hook.mp3",
+  "body rear hook": "/audio/body-rear-hook.mp3",
   "body lead uppercut": "/audio/body-uppercut.mp3",
-  "body rear uppercut": "/audio/body-uppercut.mp3",
-  "slip left": "/audio/slip.mp3",
-  "slip right": "/audio/slip.mp3",
-  "roll left": "/audio/roll.mp3",
-  "roll right": "/audio/roll.mp3",
+  "body rear uppercut": "/audio/body-rear-uppercut.mp3",
+  // Defense moves (simplified notation)
+  "slip": "/audio/slip.mp3",
+  "roll": "/audio/roll.mp3",
+  "pull": "/audio/pull.mp3",
   // Numbers mode
   "one": "/audio/one.mp3",
   "two": "/audio/two.mp3",
@@ -31,12 +32,12 @@ const PUNCH_AUDIO_MAP: Record<string, string> = {
   "five": "/audio/five.mp3",
   "six": "/audio/six.mp3",
   // Body + number compounds
-  "body one": "/audio/body-jab.mp3",
-  "body two": "/audio/body-cross.mp3",
-  "body three": "/audio/body-hook.mp3",
-  "body four": "/audio/body-hook.mp3",
-  "body five": "/audio/body-uppercut.mp3",
-  "body six": "/audio/body-uppercut.mp3",
+  "body one": "/audio/body-one.mp3",
+  "body two": "/audio/body-two.mp3",
+  "body three": "/audio/body-three.mp3",
+  "body four": "/audio/body-four.mp3",
+  "body five": "/audio/body-five.mp3",
+  "body six": "/audio/body-six.mp3",
 };
 
 const isNative = typeof window !== "undefined" && Capacitor.isNativePlatform();

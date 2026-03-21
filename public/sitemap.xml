@@ -66,22 +66,12 @@
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://getjab.app/workouts/power-punching/</loc>
+    <loc>https://getjab.app/workouts/sweet-science-rounds/</loc>
     <priority>0.6</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://getjab.app/workouts/speed-precision/</loc>
-    <priority>0.6</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://getjab.app/workouts/defensive-boxing/</loc>
-    <priority>0.6</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://getjab.app/workouts/body-shot-specialist/</loc>
+    <loc>https://getjab.app/workouts/fight-conditioning/</loc>
     <priority>0.6</priority>
     <changefreq>monthly</changefreq>
   </url>
@@ -91,7 +81,32 @@
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://getjab.app/workouts/fight-conditioning/</loc>
+    <loc>https://getjab.app/workouts/speed-precision/</loc>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://getjab.app/workouts/body-shot-specialist/</loc>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://getjab.app/workouts/anhs-heavy-bag/</loc>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://getjab.app/workouts/kronk-gym-rounds/</loc>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://getjab.app/workouts/power-punching/</loc>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://getjab.app/workouts/philly-shell-rounds/</loc>
     <priority>0.6</priority>
     <changefreq>monthly</changefreq>
   </url>
@@ -102,11 +117,6 @@
   </url>
   <url>
     <loc>https://getjab.app/workouts/full-camp-round/</loc>
-    <priority>0.6</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://getjab.app/workouts/anhs-heavy-bag/</loc>
     <priority>0.6</priority>
     <changefreq>monthly</changefreq>
   </url>
