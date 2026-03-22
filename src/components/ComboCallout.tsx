@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Fragment } from "react";
+import { useState, useRef, useEffect, Fragment } from "react";
 import type {
   ParsedPunch,
   CalloutState,
@@ -43,11 +43,16 @@ const PUNCH_COLORS: Record<string, { text: string; border: string; bg: string; g
 
 // ─── Row layout by punch count ───
 
-function getRowLayout(count: number): number[][] {
+function getRowLayout(count: number, isWide: boolean): number[][] {
+  // Wide screens (iPad): everything in 1 row
+  if (isWide) {
+    return [Array.from({ length: count }, (_, i) => i)];
+  }
+  // Phone: split into rows
   switch (count) {
     case 1: return [[0]];
     case 2: return [[0, 1]];
-    case 3: return [[0, 1, 2]];
+    case 3: return [[0, 1], [2]];
     case 4: return [[0, 1], [2, 3]];
     case 5: return [[0, 1, 2], [3, 4]];
     case 6: return [[0, 1, 2], [3, 4, 5]];
@@ -146,26 +151,43 @@ function ComboIdle() {
 
 // ─── Active Combo Display ───
 
+const WIDE_THRESHOLD = 500;
+
 function ActiveCombo({
   state,
 }: {
   state: CalloutState;
 }) {
   const { activeCombo, phase } = state;
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isWide, setIsWide] = useState(
+    () => typeof window !== "undefined" && window.innerWidth >= 768
+  );
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver((entries) => {
+      setIsWide(entries[0].contentRect.width >= WIDE_THRESHOLD);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   if (!activeCombo) return null;
 
   const punches = activeCombo.punches;
-  const rows = getRowLayout(punches.length);
+  const rows = getRowLayout(punches.length, isWide);
   const maxCols = Math.max(...rows.map(r => r.length));
   const compact = maxCols >= 3;
   const cardAspect = rows.length === 1 ? "2 / 3" : "5 / 6";
 
   return (
     <div
+      ref={containerRef}
       className={`w-full ${phase === "exiting" ? "animate-combo-exit" : "animate-combo-enter"}`}
     >
-      <div className="w-full max-w-[420px] mx-auto flex flex-col items-center gap-2 px-2">
+      <div className="w-full max-w-[420px] md:max-w-[720px] mx-auto flex flex-col items-center gap-2 px-2">
         {rows.map((rowIndices, rowIdx) => (
           <div key={rowIdx} className="flex items-center justify-center gap-1.5 w-full">
             {rowIndices.map((punchIdx, posInRow) => (
@@ -174,7 +196,7 @@ function ActiveCombo({
                 <div
                   className="flex-1 min-w-0"
                   style={{
-                    maxWidth: compact ? "130px" : "170px",
+                    maxWidth: "160px",
                     aspectRatio: cardAspect,
                   }}
                 >
