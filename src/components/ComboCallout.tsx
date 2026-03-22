@@ -51,9 +51,9 @@ interface CardSize {
 }
 
 function getCardSize(punchCount: number): CardSize {
-  // More uniform sizing - use vertical space aggressively
-  if (punchCount <= 3) return { w: "clamp(150px, 21vw, 260px)", h: "clamp(200px, 26vh, 300px)", numText: "text-6xl", nameText: "text-base" };
-  return { w: "clamp(130px, 17vw, 220px)", h: "clamp(170px, 22vh, 260px)", numText: "text-5xl", nameText: "text-sm" };
+  // Size based on row count: 1-4 punches = max 2 rows, 5-6 = 3 rows
+  if (punchCount <= 4) return { w: "clamp(140px, 40vw, 220px)", h: "clamp(170px, 21vh, 240px)", numText: "text-5xl", nameText: "text-sm" };
+  return { w: "clamp(100px, 28vw, 170px)", h: "clamp(110px, 13vh, 160px)", numText: "text-3xl", nameText: "text-xs" };
 }
 
 // ─── Punch Card ───
