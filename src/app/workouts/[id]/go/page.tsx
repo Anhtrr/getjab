@@ -960,7 +960,7 @@ export default function WorkoutGoPage() {
         </div>
 
         {/* Combo callout (running) or rest info or paused details */}
-        <div className="w-full max-w-lg md:max-w-2xl lg:max-w-4xl">
+        <div className="w-full max-w-lg md:max-w-2xl lg:max-w-4xl flex-1 min-h-0 flex items-center justify-center">
           {!isResting ? (
             <>
               {/* Instructions & tips - only visible when paused */}

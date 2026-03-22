@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import type {
   ParsedPunch,
   CalloutState,
@@ -41,19 +41,24 @@ const PUNCH_COLORS: Record<string, { text: string; border: string; bg: string; g
   },
 };
 
-// ─── Adaptive card sizing (scales with viewport on tablets) ───
+// ─── Row layout by punch count ───
 
-interface CardSize {
-  w: string;
-  h: string;
-  numText: string;
-  nameText: string;
-}
-
-function getCardSize(punchCount: number): CardSize {
-  // Size based on row count: 1-4 punches = max 2 rows, 5-6 = 3 rows
-  if (punchCount <= 4) return { w: "clamp(140px, 40vw, 220px)", h: "clamp(170px, 21vh, 240px)", numText: "text-5xl", nameText: "text-sm" };
-  return { w: "clamp(100px, 28vw, 170px)", h: "clamp(110px, 13vh, 160px)", numText: "text-3xl", nameText: "text-xs" };
+function getRowLayout(count: number): number[][] {
+  switch (count) {
+    case 1: return [[0]];
+    case 2: return [[0, 1]];
+    case 3: return [[0, 1, 2]];
+    case 4: return [[0, 1], [2, 3]];
+    case 5: return [[0, 1, 2], [3, 4]];
+    case 6: return [[0, 1, 2], [3, 4, 5]];
+    default: {
+      const rows: number[][] = [];
+      for (let i = 0; i < count; i += 3) {
+        rows.push(Array.from({ length: Math.min(3, count - i) }, (_, j) => i + j));
+      }
+      return rows;
+    }
+  }
 }
 
 // ─── Punch Card ───
@@ -62,12 +67,12 @@ function PunchCard({
   punch,
   index,
   phase,
-  size,
+  compact,
 }: {
   punch: ParsedPunch;
   index: number;
   phase: string;
-  size: CardSize;
+  compact: boolean;
 }) {
   const colors = PUNCH_COLORS[punch.type] || PUNCH_COLORS.straight;
   const isActive = phase === "entering" || phase === "holding";
@@ -75,13 +80,11 @@ function PunchCard({
   return (
     <div
       className={`
-        flex flex-col items-center justify-center rounded-xl
+        w-full h-full flex flex-col items-center justify-center rounded-xl
         ${isActive ? "animate-punch-slam" : "opacity-0 scale-75 translate-y-3"}
         ${phase === "holding" ? "animate-punch-breathe" : ""}
       `}
       style={{
-        width: size.w,
-        height: size.h,
         border: `3px solid ${isActive ? colors.border : "transparent"}`,
         background: isActive ? colors.bg : "transparent",
         boxShadow: isActive ? colors.glow : "none",
@@ -90,20 +93,22 @@ function PunchCard({
     >
       <span
         className={`font-mono font-black leading-none ${
-          typeof punch.number === "string" ? size.nameText : size.numText
+          typeof punch.number === "string"
+            ? (compact ? "text-sm" : "text-base")
+            : (compact ? "text-3xl" : "text-5xl")
         }`}
         style={{ color: colors.text }}
       >
         {punch.number}
       </span>
       <span
-        className={`font-bold uppercase tracking-wider mt-1 ${size.nameText}`}
+        className={`font-bold uppercase tracking-wider mt-1 ${compact ? "text-[10px]" : "text-xs"}`}
         style={{ color: colors.text, opacity: 0.8 }}
       >
         {punch.shortName}
       </span>
       {punch.target === "body" && (
-        <span className="text-[9px] font-bold uppercase text-amber-400 mt-0.5">
+        <span className={`font-bold uppercase text-amber-400 mt-0.5 ${compact ? "text-[7px]" : "text-[9px]"}`}>
           BODY
         </span>
       )}
@@ -117,7 +122,7 @@ function Connector({ index, phase }: { index: number; phase: string }) {
   const isActive = phase === "entering" || phase === "holding";
   return (
     <div
-      className={`w-4 h-1 rounded-full ${
+      className={`w-2.5 h-0.5 rounded-full shrink-0 ${
         isActive ? "bg-muted animate-fade-in" : "opacity-0"
       }`}
       style={{
@@ -150,24 +155,38 @@ function ActiveCombo({
 
   if (!activeCombo) return null;
 
-  const size = getCardSize(activeCombo.punches.length);
+  const punches = activeCombo.punches;
+  const rows = getRowLayout(punches.length);
+  const maxCols = Math.max(...rows.map(r => r.length));
+  const compact = maxCols >= 3;
+  const cardAspect = rows.length === 1 ? "2 / 3" : "5 / 6";
 
   return (
     <div
-      className={`py-4 ${phase === "exiting" ? "animate-combo-exit" : "animate-combo-enter"}`}
+      className={`w-full ${phase === "exiting" ? "animate-combo-exit" : "animate-combo-enter"}`}
     >
-      <div
-        className="flex items-center justify-center gap-1.5 flex-wrap"
-      >
-        {activeCombo.punches.map((punch, i) => (
-          <div key={i} className="flex items-center gap-1.5">
-            {i > 0 && <Connector index={i} phase={phase} />}
-            <PunchCard
-              punch={punch}
-              index={i}
-              phase={phase}
-              size={size}
-            />
+      <div className="w-full max-w-[420px] mx-auto flex flex-col items-center gap-2 px-2">
+        {rows.map((rowIndices, rowIdx) => (
+          <div key={rowIdx} className="flex items-center justify-center gap-1.5 w-full">
+            {rowIndices.map((punchIdx, posInRow) => (
+              <Fragment key={punchIdx}>
+                {posInRow > 0 && <Connector index={punchIdx} phase={phase} />}
+                <div
+                  className="flex-1 min-w-0"
+                  style={{
+                    maxWidth: compact ? "130px" : "170px",
+                    aspectRatio: cardAspect,
+                  }}
+                >
+                  <PunchCard
+                    punch={punches[punchIdx]}
+                    index={punchIdx}
+                    phase={phase}
+                    compact={compact}
+                  />
+                </div>
+              </Fragment>
+            ))}
           </div>
         ))}
       </div>
