@@ -42,3 +42,6 @@ next-env.d.ts
 
 # personal docs (strategy, playbooks, analysis)
 /docs/
+
+# mock data
+mock-*.json
