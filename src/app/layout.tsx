@@ -59,6 +59,10 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+        <meta
+          name="apple-itunes-app"
+          content="app-id=6760632499"
+        />
       </head>
       <body className="antialiased bg-background text-foreground overflow-x-hidden">
         <main className="min-h-screen pb-20 pt-safe">{children}</main>
