@@ -133,6 +133,8 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
 
     @objc func stopDucking(_ call: CAPPluginCall) {
         do {
+            // Deactivate with notification so iOS tells other audio to un-duck
+            try AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
             try AVAudioSession.sharedInstance().setCategory(
                 .playback,
                 options: [.mixWithOthers]

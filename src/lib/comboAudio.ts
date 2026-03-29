@@ -272,11 +272,11 @@ export function speakCombo(
   if (isNative && nativeAvailable) {
     // Native: play through AVAudioPlayer (ducks background music)
     // Pause web audio keep-alive so WKWebView doesn't override our session
-    import("./audio").then(({ stopAudioKeepAlive, startAudioKeepAlive }) => {
+    import("./audio").then(async ({ stopAudioKeepAlive, startAudioKeepAlive }) => {
       stopAudioKeepAlive();
 
-      // Start ducking and wait for iOS to apply it
-      NativeAudioPlayer.startDucking().catch(() => {});
+      // Start ducking and wait for iOS to fully apply it
+      try { await NativeAudioPlayer.startDucking(); } catch {}
 
       async function playNextNative(index: number) {
         if (!clipPlaybackActive || index >= keys.length) {
@@ -300,8 +300,8 @@ export function speakCombo(
         clipTimeouts.push(t);
       }
 
-      // Small delay to let iOS apply the ducking before first clip
-      const t = setTimeout(() => playNextNative(0), 50);
+      // Delay to let iOS release TTS audio session before first clip
+      const t = setTimeout(() => playNextNative(0), 200);
       clipTimeouts.push(t);
     });
   } else {
