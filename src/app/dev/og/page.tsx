@@ -55,20 +55,22 @@ export default function OgImagePage() {
               width: 200,
               height: 200,
               borderRadius: 40,
-              background: "linear-gradient(135deg, #00e5ff, #0090ff)",
-              boxShadow: "0 0 60px rgba(0,229,255,0.3), 0 0 120px rgba(0,144,255,0.1)",
+              background: "#0a0a0a",
+              border: "1px solid rgba(255,255,255,0.08)",
+              boxShadow: "0 0 60px rgba(0,229,255,0.2), 0 0 120px rgba(0,144,255,0.08)",
             }}
           >
             <span
               style={{
-                fontFamily: "'Arial Black', 'Helvetica Neue', sans-serif",
-                fontSize: 80,
-                fontWeight: 900,
-                color: "white",
-                letterSpacing: -4,
+                fontFamily: "'Space Grotesk', system-ui, sans-serif",
+                fontSize: 120,
+                fontWeight: 700,
+                background: "linear-gradient(135deg, #00e5ff, #0066ff)",
+                WebkitBackgroundClip: "text",
+                color: "transparent",
               }}
             >
-              JAB
+              J
             </span>
           </div>
 
@@ -77,16 +79,17 @@ export default function OgImagePage() {
             <h1
               style={{
                 fontSize: 72,
-                fontWeight: 900,
-                letterSpacing: -2,
+                fontWeight: 700,
+                letterSpacing: -1,
                 lineHeight: 1,
                 marginBottom: 16,
-                background: "linear-gradient(135deg, #00e5ff, #0090ff)",
+                fontFamily: "'Space Grotesk', system-ui, sans-serif",
+                background: "linear-gradient(135deg, #00e5ff, #0066ff)",
                 WebkitBackgroundClip: "text",
                 color: "transparent",
               }}
             >
-              JAB
+              Jab
             </h1>
             <p
               style={{
